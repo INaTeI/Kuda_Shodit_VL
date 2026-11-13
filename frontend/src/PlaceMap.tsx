@@ -124,17 +124,12 @@ export function PlaceMap({
       {geo.position && !userOnMap && (
         <p>Ваша геопозиция за пределами локальной карты Владивостока.</p>
       )}
-      <p className="fine-print" id="map-help">
-        Перетаскивайте карту мышью или касанием. С клавиатуры: стрелки для
-        перемещения, + и − для масштаба, Home для исходного вида.
-      </p>
-      <div className="map-frame">
+      <div className="map-frame" onDragStart={(e) => e.preventDefault()}>
         <div
           className="map-viewport"
           tabIndex={0}
           role="region"
           aria-label={`Карта: ${name}`}
-          aria-describedby="map-help"
           onKeyDown={(e) => {
             if (
               ![
@@ -170,6 +165,7 @@ export function PlaceMap({
           }}
           onPointerDown={(e) => {
             if (e.button !== 0) return;
+            e.preventDefault();
             e.currentTarget.focus({ preventScroll: true });
             e.currentTarget.setPointerCapture(e.pointerId);
             drag.current = { id: e.pointerId, x: e.clientX, y: e.clientY };
@@ -269,6 +265,7 @@ export function PlaceMap({
             ) : (
               <img
                 className="map-location-icon"
+                draggable={false}
                 src={`${import.meta.env.BASE_URL}icons/location.svg`}
                 alt=""
                 aria-hidden="true"

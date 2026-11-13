@@ -1122,12 +1122,14 @@ main:focus-visible {
   line-height: 1;
   box-shadow: 0 1px 4px #16343b33;
 }
-.map-controls button:disabled,
 .map-location-icon {
   display: block;
   width: 24px;
   height: 24px;
+  margin: auto;
+  pointer-events: none;
 }
+.map-controls button:disabled,
 .map-location-controls button:disabled {
   opacity: 0.65;
 }
@@ -1139,6 +1141,7 @@ main:focus-visible {
   border-radius: 16px;
   cursor: grab;
   touch-action: none;
+  user-select: none;
 }
 .map-viewport:active {
   cursor: grabbing;
@@ -1156,7 +1159,6 @@ main:focus-visible {
   display: block;
   width: 100%;
   aspect-ratio: 1600 / 2192;
-  user-select: none;
   pointer-events: none;
 }
 .map-marker {
