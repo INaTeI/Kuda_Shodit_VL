@@ -1,3 +1,4 @@
+import { PlaceMap } from "./PlaceMap";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import {
   Link,
@@ -822,6 +823,7 @@ function PlaceDetail() {
                 <hr />
                 <h3>Где находится</h3>
                 <p>{p.address || "Адрес уточняется"}</p>
+                <PlaceMap key={p.id} latitude={p.latitude} longitude={p.longitude} name={p.name} />
                 <h3>Когда прийти</h3>
                 <p>{p.opening_hours || "Часы работы уточняются"}</p>
                 <hr />

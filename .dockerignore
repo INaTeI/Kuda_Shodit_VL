@@ -14,3 +14,9 @@ import-report*.json
 **/__pycache__
 **/*.pyc
 recommender/
+
+frontend/node_modules/
+frontend/dist/
+frontend/test-results/
+frontend/playwright-report/
+frontend/.env*
