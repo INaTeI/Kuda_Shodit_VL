@@ -29,6 +29,7 @@ import {
 } from "./components";
 import { useGuest } from "./state";
 import TasteSetup, { TasteInvitation } from "./TasteSetup";
+import Weather from "./Weather";
 const nav = [
   ["/catalog", "Каталог"],
   ["/recommendations", "Подборка"],
@@ -52,6 +53,7 @@ export default function App() {
           <span aria-hidden="true">≋</span> VDK GID
           <span className="logo-dot">.</span>
         </Link>
+        <Weather />
         <nav aria-label="Основная навигация">
           {nav.map(([p, n]) => (
             <NavLink key={p} to={p}>

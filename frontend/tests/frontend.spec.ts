@@ -24,7 +24,8 @@ test.beforeEach(async ({ page }) => {
   await page.route("**/api/v1/**", async (route) => {
     const path = new URL(route.request().url()).pathname;
     let data: unknown = {};
-    if (path.endsWith("/categories")) data = place.categories;
+    if (path.endsWith("/weather/current")) data = {temperature_c: 9, wind_kph: 8};
+    else if (path.endsWith("/categories")) data = place.categories;
     else if (path.endsWith("/places"))
       data = {
         items: [
