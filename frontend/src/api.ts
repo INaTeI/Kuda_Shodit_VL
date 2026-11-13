@@ -33,6 +33,7 @@ export interface PlaceState {
   place_id: string;
   reaction: Reaction | null;
   is_known: boolean;
+  reaction_revision: number;
 }
 export interface Filters {
   categories?: string[];
@@ -50,6 +51,7 @@ export interface Page {
   offset: number;
 }
 export interface Recommendations {
+  recommendation_id: string;
   items: {
     place: Place;
     reasons: string[];
@@ -58,6 +60,21 @@ export interface Recommendations {
   }[];
   total: number;
   algorithm_version: string;
+}
+export interface CardEvent {
+  event_id: string;
+  recommendation_id: string;
+  place_id: string;
+  event_type: "card_view" | "place_open" | "swipe" | "swipe_undo";
+  reaction?: Reaction;
+  expected_reaction_revision?: number;
+  undo_event_id?: string;
+}
+export interface EventReceipt {
+  event_id: string;
+  duplicate: boolean;
+  reaction: Reaction | null;
+  reaction_revision: number | null;
 }
 export class ApiError extends Error {
   constructor(
@@ -119,12 +136,16 @@ export async function api<T>(
   if (response.status === 204) return undefined as T;
   const contentType = response.headers.get("content-type") || "";
   if (!contentType.toLowerCase().includes("json")) {
-    throw new Error("Сервис вернул страницу вместо данных API. Проверьте адрес API и перезапустите frontend и backend.");
+    throw new Error(
+      "Сервис вернул страницу вместо данных API. Проверьте адрес API и перезапустите frontend и backend.",
+    );
   }
   try {
     return await response.json();
   } catch {
-    throw new Error("Сервис вернул некорректные данные. Попробуйте повторить запрос.");
+    throw new Error(
+      "Сервис вернул некорректные данные. Попробуйте повторить запрос.",
+    );
   }
 }
 export function query(filters: Filters) {
@@ -143,3 +164,14 @@ export function price(place: Pick<Place, "price_rub">) {
       : `${place.price_rub.toLocaleString("ru-RU")} ₽`;
 }
 
+// getRandomValues is available on HTTP previews as well as secure origins.
+export function eventId(): string {
+  if (typeof crypto.randomUUID === "function") return crypto.randomUUID();
+  const bytes = crypto.getRandomValues(new Uint8Array(16));
+  bytes[6] = (bytes[6] & 0x0f) | 0x40;
+  bytes[8] = (bytes[8] & 0x3f) | 0x80;
+  const hex = Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join(
+    "",
+  );
+  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
+}

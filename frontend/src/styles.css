@@ -1080,3 +1080,614 @@ main:focus-visible {
   background: #eef1eb;
   border-radius: 12px;
 }
+
+
+/* Optional taste setup: gestures share the same actions as accessible buttons. */
+.taste-invitation {
+  width: min(600px, calc(100% - 24px));
+}
+.taste-invitation[open] {
+  animation: taste-arrive 0.3s ease-out;
+}
+.taste-invitation::backdrop {
+  animation: taste-backdrop 0.3s ease-out;
+}
+.taste-invitation .dialog-head {
+  margin-bottom: 8px;
+}
+.taste-intro {
+  font-size: 18px;
+  line-height: 1.6;
+}
+.taste-promise {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 20px 0;
+}
+.taste-promise span {
+  padding: 6px 12px;
+  border-radius: 30px;
+  background: #e3efeb;
+  font-size: 13px;
+}
+.taste-invite-actions {
+  display: grid;
+  gap: 10px;
+  margin-top: 24px;
+}
+.taste-invite-actions button {
+  min-height: 48px;
+}
+.swipe-preview {
+  height: 180px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.preview-stack {
+  position: relative;
+  width: 96px;
+  height: 122px;
+}
+.preview-stack i {
+  position: absolute;
+  inset: 0;
+  background: #d5e6df;
+  border: 1px solid #a0bdb0;
+  border-radius: 14px;
+  transform: rotate(-10deg);
+}
+.preview-stack i:nth-child(2) {
+  transform: rotate(9deg);
+  background: #edf1e4;
+}
+.preview-stack .preview-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  font-style: normal;
+  font-size: 42px;
+  color: white;
+  background: var(--accent);
+  border-color: var(--accent);
+  transform: rotate(-5deg);
+}
+.preview-card small {
+  font-size: 9px;
+  letter-spacing: 1px;
+}
+.preview-stack .preview-left {
+  background: #e8ddd0;
+  color: #644333;
+  border-color: #c8ae96;
+  animation: preview-left 4s ease-in-out infinite;
+}
+.preview-stack .preview-right {
+  animation: preview-right 4s ease-in-out infinite;
+}
+.preview-caption {
+  position: absolute;
+  top: 50%;
+  font-size: 12px;
+  font-weight: 600;
+}
+.preview-no {
+  left: 0;
+  color: #805044;
+}
+.preview-yes {
+  right: 0;
+  color: #126c60;
+}
+.taste-page {
+  max-width: 1000px;
+}
+.taste-page-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+.taste-page-head h1 {
+  font-size: clamp(30px, 5vw, 52px);
+}
+.taste-page-head button {
+  flex-shrink: 0;
+  min-height: 44px;
+}
+.taste-subtitle {
+  color: var(--muted);
+  margin: 12px 0 24px;
+}
+.taste-progress,
+.taste-controls,
+.taste-secondary,
+.taste-saving {
+  max-width: 420px;
+  margin-inline: auto;
+}
+.taste-progress {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 12px;
+}
+.taste-progress span:first-child {
+  font-weight: 700;
+}
+.taste-progress progress {
+  width: 100%;
+  height: 5px;
+  accent-color: var(--accent);
+  border: 0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.taste-progress progress::-webkit-progress-bar {
+  background: #dfe8e4;
+}
+.taste-progress progress::-webkit-progress-value {
+  background: var(--accent);
+}
+.taste-arena {
+  position: relative;
+  padding: 16px 20px 20px;
+  margin: 0 -20px;
+  overflow: clip;
+}
+.taste-back-card {
+  position: absolute;
+  inset: 20px max(20px, calc((100% - 400px) / 2)) 12px;
+  background: #d6e5dd;
+  border-radius: 22px;
+  transform: rotate(2deg);
+}
+.taste-card {
+  position: relative;
+  max-width: 420px;
+  margin: auto;
+  border-radius: 20px;
+  overflow: hidden;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  box-shadow: 0 10px 24px #16343b14;
+  transform: translateX(var(--drag-x, 0px)) rotate(var(--drag-rotate, 0deg));
+  touch-action: pan-y;
+  user-select: none;
+}
+.taste-card .art {
+  width: 100%;
+  aspect-ratio: auto;
+  height: 175px;
+  min-height: 0;
+}
+.taste-card-body {
+  padding: 18px 22px;
+}
+.taste-card-body h2 {
+  font-size: 24px;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+  margin: 6px 0 8px;
+}
+.taste-card-body p {
+  margin: 0 0 10px;
+  color: var(--muted);
+}
+.taste-card-body small {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+}
+.taste-card-price {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.taste-card-price button {
+  min-height: 44px;
+}
+.taste-stamp {
+  position: absolute;
+  top: 30px;
+  padding: 7px 12px;
+  border: 3px solid currentColor;
+  border-radius: 6px;
+  font-size: 18px;
+  font-weight: 800;
+  background: var(--paper);
+  opacity: 0;
+}
+.stamp-no {
+  right: 20px;
+  color: #8b4232;
+  transform: rotate(10deg);
+}
+.stamp-yes {
+  left: 20px;
+  color: #126c60;
+  transform: rotate(-10deg);
+}
+.taste-card[data-drag="dislike"] .stamp-no,
+.taste-card[data-drag="like"] .stamp-yes {
+  opacity: 1;
+}
+.taste-exit-like {
+  animation: taste-like 0.23s ease-in forwards;
+}
+.taste-exit-dislike {
+  animation: taste-dislike 0.23s ease-in forwards;
+}
+.taste-exit-neutral {
+  animation: taste-neutral 0.23s ease-in forwards;
+}
+.taste-controls {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 34px;
+  width: fit-content;
+  margin-top: -34px;
+  padding: 10px 32px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  box-shadow: 0 16px 32px #16343b21;
+}
+.taste-controls button {
+  display: grid;
+  place-items: center;
+  width: 58px;
+  height: 58px;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  transition:
+    background 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.15s ease;
+}
+.taste-controls button:disabled {
+  opacity: 0.4;
+}
+.taste-controls svg {
+  width: 34px;
+  height: 34px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.taste-controls .icon-heart {
+  fill: transparent;
+  transition: fill 0.2s ease;
+}
+.taste-controls .icon-slash {
+  transition: stroke 0.2s ease;
+}
+.taste-controls .icon-eye {
+  fill: currentColor;
+  stroke: none;
+}
+.taste-no {
+  color: #b4513d;
+}
+.taste-yes {
+  color: var(--accent);
+}
+.taste-skip {
+  width: 52px;
+  height: 52px;
+  color: #5d6f73;
+}
+.taste-skip svg {
+  width: 30px;
+  height: 30px;
+}
+.taste-no:is(:hover, :focus-visible):not(:disabled),
+.taste-yes:is(:hover, :focus-visible):not(:disabled) {
+  transform: translateY(-2px) scale(1.05);
+}
+.taste-no:is(:hover, :focus-visible):not(:disabled) .icon-heart,
+.taste-yes:is(:hover, :focus-visible):not(:disabled) .icon-heart {
+  fill: currentColor;
+}
+.taste-no:is(:hover, :focus-visible):not(:disabled) .icon-slash {
+  stroke: var(--paper);
+}
+.taste-skip:is(:hover, :focus-visible):not(:disabled) {
+  background: #e7efec;
+  box-shadow: 0 0 0 6px #e7efec;
+}
+.taste-secondary {
+  display: flex;
+  justify-content: center;
+  margin-top: 14px;
+  gap: 8px;
+}
+.taste-secondary button {
+  min-height: 44px;
+  background: transparent;
+}
+.taste-saving {
+  min-height: 38px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 8px;
+}
+.taste-finish {
+  max-width: 520px;
+  margin: 28px auto;
+  text-align: center;
+  display: grid;
+  gap: 16px;
+  padding: 32px;
+}
+.finish-symbol {
+  color: var(--accent);
+  font-size: 64px;
+}
+.taste-reentry {
+  margin-top: 12px;
+}
+@keyframes taste-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes taste-backdrop {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes preview-right {
+  0%,
+  15%,
+  85%,
+  100% {
+    transform: rotate(-5deg);
+    opacity: 1;
+  }
+  40%,
+  55% {
+    transform: translate(115px, -8px) rotate(18deg);
+    opacity: 0;
+  }
+  56% {
+    transform: rotate(-5deg);
+    opacity: 0;
+  }
+}
+@keyframes preview-left {
+  0%,
+  40%,
+  100% {
+    transform: rotate(-5deg);
+    opacity: 1;
+  }
+  65%,
+  80% {
+    transform: translate(-115px, -8px) rotate(-18deg);
+    opacity: 0;
+  }
+  81% {
+    transform: rotate(-5deg);
+    opacity: 0;
+  }
+}
+@keyframes taste-like {
+  to {
+    transform: translateX(110%) rotate(15deg);
+    opacity: 0;
+  }
+}
+@keyframes taste-dislike {
+  to {
+    transform: translateX(-110%) rotate(-15deg);
+    opacity: 0;
+  }
+}
+@keyframes taste-neutral {
+  to {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+}
+@media (max-width: 600px) {
+  .taste-page {
+    padding-top: 22px;
+  }
+  .taste-page-head {
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .taste-page-head h1 {
+    margin: 8px 0 0;
+    font-size: 30px;
+  }
+  .taste-page-head button {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+  .taste-page-head .eyebrow {
+    font-size: 10px;
+  }
+  .taste-subtitle {
+    font-size: 13px;
+    margin: 12px 0 16px;
+  }
+  .taste-card .art {
+    height: 145px;
+  }
+  .taste-card-body {
+    padding: 14px 16px;
+  }
+  .taste-card-body h2 {
+    font-size: 22px;
+  }
+  .taste-progress span {
+    font-size: 11px;
+  }
+  .taste-invitation {
+    padding: 20px;
+  }
+  .taste-invitation .dialog-head h2 {
+    font-size: 24px;
+  }
+  .preview-caption {
+    font-size: 10px;
+  }
+  .swipe-preview {
+    height: 155px;
+  }
+  .preview-stack {
+    width: 82px;
+    height: 105px;
+  }
+  .taste-promise {
+    gap: 6px;
+    margin: 12px 0;
+  }
+  .taste-promise span {
+    font-size: 11px;
+    padding: 6px 8px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .taste-invitation[open],
+  .taste-invitation::backdrop,
+  .preview-stack .preview-card,
+  .taste-exit-like,
+  .taste-exit-dislike,
+  .taste-exit-neutral {
+    animation: none;
+  }
+}
+@media (max-width: 600px) {
+  .taste-arena {
+    margin-inline: -16px;
+    padding-inline: 16px;
+  }
+}
+.mobile-nav.taste-nav-hidden {
+  display: none;
+}
+@media (max-width: 600px) {
+  .taste-invitation .taste-intro {
+    display: none;
+  }
+  .taste-invitation .dialog-head h2 {
+    font-size: 22px;
+  }
+  .taste-invitation > p {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .taste-invitation .swipe-preview {
+    height: 112px;
+  }
+  .taste-invitation .preview-stack {
+    width: 66px;
+    height: 86px;
+  }
+  .taste-invitation .preview-card {
+    font-size: 32px;
+  }
+  .taste-invitation .preview-card small {
+    font-size: 7px;
+  }
+  .taste-invitation .taste-promise span {
+    font-size: 10px;
+    padding: 5px 7px;
+  }
+  .taste-invite-actions {
+    margin-top: 16px;
+    gap: 8px;
+  }
+}
+
+.taste-mobile-hint {
+  display: none;
+}
+@media (max-width: 600px) {
+  .taste-controls,
+  .taste-secondary,
+  .taste-desktop-hint {
+    display: none;
+  }
+  .taste-mobile-hint {
+    display: inline;
+  }
+}
+
+.weather { display:flex; gap:12px; align-items:center; margin-top:28px; color:#16343b; }
+.weather > span { font-size:28px; color:#167d8d; }
+.weather div { display:flex; flex-direction:column; gap:4px; font-size:12px; }
+.weather div span { color:#5d6f73; line-height:1.5; }
+.weather button { min-height:44px; padding:4px 10px; font-size:12px; margin-left:4px; }
+
+.weather { display: inline-flex; gap: 16px; align-items: center; margin-top: 32px; padding: 14px 22px 14px 14px; border: 1px solid #dfe7e5; border-radius: 18px; background: #fff; }
+.weather .weather-sun { display:grid; place-items:center; flex: 0 0 54px; width:54px; height:54px; border-radius:16px; background:#fbf2e4; color:#aa6d20; font-size:38px; line-height:1; }
+.weather .weather-body { display:flex; flex-direction:column; gap:6px; }
+.weather .weather-city { color:#5d6f73; font-size:10px; font-weight:700; letter-spacing:.12em; }
+.weather .weather-reading { display:flex; flex-direction:row; align-items:center; gap:12px; }
+.weather .weather-reading strong { font-size:28px; line-height:1; letter-spacing:-.04em; font-weight:650; }
+.weather .weather-wind { font-size:12px; color:#365d60; padding-left:12px; border-left:1px solid #dfe7e5; }
+.weather .weather-state { font-size:13px; color:#5d6f73; }
+.weather .weather-state button { border:0; text-decoration:underline; padding:0 6px; min-height:44px; }
+
+/* Persistent, compact weather in the site header. */
+.header { position: sticky; top: 0; z-index: 20; background: #f7f8f5; }
+.header .weather { order: 2; margin: 0 0 0 auto; padding: 5px 10px 5px 6px; gap: 8px; border-radius: 14px; flex-shrink: 0; }
+.header nav { order: 1; }
+.header .header-cta { order: 3; }
+.header .weather .weather-sun { flex-basis: 34px; width: 34px; height: 34px; border-radius: 10px; font-size: 26px; }
+.header .weather .weather-reading strong { font-size: 21px; }
+.header .weather .weather-wind { white-space: nowrap; }
+.header .weather .weather-state { max-width: 145px; }
+@media (max-width: 1050px) { .header .weather { order: 3; } }
+@media (max-width: 600px) { .header { gap: 8px; } .header .header-cta { display: none !important; } .header .weather { margin-left: auto; } .header .weather .weather-wind { font-size: 11px; padding-left: 7px; } .header .weather .weather-reading { gap: 7px; } .header .weather .weather-state { max-width: 155px; font-size: 11px; } }
+
+.header .weather .weather-trigger { min-height: 44px; border: 0; padding: 0 5px; background: transparent; border-radius: 9px; }
+.header .weather:has(.weather-trigger) { padding-top: 0; padding-bottom: 0; }
+.forecast-intro { margin: 0 0 24px; font-size: 14px; }
+.forecast-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 12px; }
+.forecast-period { padding: 18px; border-radius: 16px; background: #f2f7f4; border: 1px solid #dfe7e5; }
+.forecast-period-head { display:flex; flex-wrap:wrap; justify-content:space-between; gap: 6px; font-size:13px; }
+.forecast-period-head span,.forecast-detail { color:#5d6f73; font-size:12px; }
+.forecast-icon { display:block; color:#9f6a24; font-size:38px; margin:20px 0 12px; line-height:1; }
+.forecast-temp { font-size:32px; font-weight:650; letter-spacing:-.04em; }
+.forecast-condition { font-size:13px; min-height:3em; margin:8px 0 14px; color:#16343b; }
+.forecast-detail { margin:4px 0; }
+@media(max-width:480px) { .forecast-grid { grid-template-columns:1fr; } .forecast-period { display:grid; grid-template-columns:1fr auto; align-items:center; gap:4px 12px; } .forecast-icon { grid-column:2; grid-row:1 / span 2; margin:0; } .forecast-temp { font-size:26px; } .forecast-condition { min-height:0; margin:4px 0; } .forecast-detail { grid-column:1 / -1; } }
+
+.header .weather { padding: 0; }
+.header .weather .weather-trigger { display:flex; align-items:center; gap:8px; padding:5px 10px 5px 6px; }
+
+.forecast-icon svg { display:block; }
+.forecast-astro { color:#80601d; font-size:12px; font-weight:600; margin:0 0 10px; }
+.header .weather-wind { max-width:220px; overflow:hidden; text-overflow:ellipsis; }
+@media(max-width:600px) { .header .weather-wind { max-width:110px; } .forecast-astro { grid-column:1 / -1; } }
+@media(max-width:600px){.header .weather-wind{white-space:normal;line-height:1.2;overflow-wrap:anywhere}}
+@media(max-width:600px){.header .logo{font-size:clamp(13px,3.6vw,18px);letter-spacing:-.5px}}

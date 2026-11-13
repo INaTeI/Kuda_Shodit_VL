@@ -125,7 +125,7 @@ export function Artwork({
             />
           </svg>
           <span className="art-caption">
-            ВДК / {hero ? "ГОРОД У МОРЯ" : "ГРАФИЧЕСКИЙ ЭСКИЗ"}
+            КСВЛ / {hero ? "ГОРОД У МОРЯ" : "ГРАФИЧЕСКИЙ ЭСКИЗ"}
           </span>
         </>
       )}
@@ -285,11 +285,13 @@ export function Dialog({
   onClose,
   title,
   children,
+  className,
 }: {
   open: boolean;
   onClose: () => void;
   title: string;
   children: ReactNode;
+  className?: string;
 }) {
   const ref = useRef<HTMLDialogElement>(null);
   useEffect(() => {
@@ -297,7 +299,13 @@ export function Dialog({
     else if (!open && ref.current?.open) ref.current.close();
   }, [open]);
   return (
-    <dialog ref={ref} onCancel={onClose} onClose={onClose} aria-label={title}>
+    <dialog
+      className={className}
+      ref={ref}
+      onCancel={onClose}
+      onClose={onClose}
+      aria-label={title}
+    >
       <div className="dialog-head">
         <h2>{title}</h2>
         <button onClick={onClose} aria-label="Закрыть">

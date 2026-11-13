@@ -1,0 +1,366 @@
+import { test, expect, type Page } from "@playwright/test";
+import AxeBuilder from "@axe-core/playwright";
+async function mock(
+  page: Page,
+  options: {
+    count?: number;
+    guest?: boolean;
+    lostReply?: boolean;
+    conflict?: boolean;
+  } = {},
+) {
+  const events: any[] = [],
+    receipts = new Map<string, any>(),
+    revisions = new Map<string, number>();
+  let failed = false;
+  const places = Array.from({ length: options.count ?? 12 }, (_, n) => ({
+    id: `11111111-1111-4111-8111-${String(n + 1).padStart(12, "0")}`,
+    name: `ТЕСТ: ${n + 1}. Приморский парк`,
+    description: "Описание из тестового каталога.",
+    activity: "Погулять и посмотреть на море",
+    address: "Тестовый адрес",
+    price_rub: 0,
+    price_note: "Посещение без расходов",
+    categories: [{ slug: "nature", name: "Природа и виды" }],
+    photo_url: null,
+    interest_tags: [],
+    latitude: 43,
+    longitude: 131,
+    status: "published",
+  }));
+  if (options.guest !== false)
+    await page.addInitScript(() =>
+      localStorage.setItem("vdk-guest-token", "taste-token"),
+    );
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.route("**/api/v1/**", async (route) => {
+    const path = new URL(route.request().url()).pathname;
+    const profile = {
+      id: "taste-profile",
+      interests: ["nature"],
+      budget_rub: null,
+    };
+    let data: any = {};
+    if (path.endsWith("/categories"))
+      data = [{ slug: "nature", name: "Природа и виды" }];
+    else if (path.endsWith("/profiles"))
+      data = { access_token: "taste-token", profile };
+    else if (path.endsWith("/me") || path.endsWith("/preferences"))
+      data = profile;
+    else if (path.endsWith("/place-states")) data = [];
+    else if (path.endsWith("/discovery") || path.endsWith("/recommendations"))
+      data = {
+        recommendation_id: "22222222-2222-4222-8222-222222222222",
+        total: places.length,
+        items: places.map((place) => ({
+          place,
+          reasons: ["Совпадает с интересами"],
+          score: 3,
+          distance_km: null,
+        })),
+      };
+    else if (path.endsWith("/events")) {
+      const body = route.request().postDataJSON();
+      events.push(body);
+      if (receipts.has(body.event_id))
+        data = { ...receipts.get(body.event_id), duplicate: true };
+      else {
+        if (body.event_type === "swipe" && options.conflict && !failed) {
+          failed = true;
+          await route.fulfill({
+            status: 409,
+            json: { detail: "Версия изменилась" },
+          });
+          return;
+        }
+        const mutation =
+          body.event_type === "swipe" || body.event_type === "swipe_undo";
+        const revision = mutation
+          ? (revisions.get(body.place_id) || 0) + 1
+          : null;
+        if (mutation) revisions.set(body.place_id, revision!);
+        data = {
+          event_id: body.event_id,
+          duplicate: false,
+          reaction: body.reaction || null,
+          reaction_revision: revision,
+        };
+        receipts.set(body.event_id, data);
+        if (body.event_type === "swipe" && options.lostReply && !failed) {
+          failed = true;
+          await route.fulfill({
+            status: 503,
+            json: { detail: "Ответ потерян. Повтори запрос." },
+          });
+          return;
+        }
+      }
+    }
+    await route.fulfill({ json: data });
+  });
+  return { events, places };
+}
+async function begin(page: Page) {
+  await page.goto("/preferences");
+  await page.getByRole("button", { name: "Сохранить и подобрать" }).click();
+  const modal = page.getByRole("dialog", {
+    name: "Сделаем подборку ещё точнее?",
+  });
+  await expect(modal).toBeVisible();
+  return modal;
+}
+test("first questionnaire offers optional setup; returning profile is not prompted", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 360, height: 640 });
+  await mock(page, { guest: false });
+  const modal = await begin(page);
+  expect(
+    (
+      await new AxeBuilder({ page })
+        .withTags(["wcag2a", "wcag2aa", "wcag21aa"])
+        .analyze()
+    ).violations,
+  ).toEqual([]);
+  await page.screenshot({
+    path: "test-results/taste-invitation.png",
+    fullPage: false,
+  });
+  await modal.getByRole("button", { name: "Пока к подборке" }).click();
+  await expect(modal).not.toBeVisible();
+  await page.goto("/preferences");
+  await page.getByRole("button", { name: "Сохранить и подобрать" }).click();
+  await expect(
+    page.getByRole("link", { name: "Уточнить мой вкус ♡" }),
+  ).toBeVisible();
+  await page.waitForTimeout(500);
+  await expect(modal).not.toBeVisible();
+});
+test("keyboard directions, view ordering, undo and completion of 12 cards", async ({
+  page,
+}) => {
+  const { events } = await mock(page, { guest: false });
+  const modal = await begin(page);
+  await modal.getByRole("button", { name: "Давай попробуем →" }).click();
+  await expect(page).toHaveURL(/\/taste$/);
+  const card = page.locator(".taste-card");
+  await card.focus();
+  await page.keyboard.press("ArrowLeft");
+  await expect(page.getByText("Карточка 2 из 12")).toBeVisible();
+  const first = events.find((e) => e.event_type === "swipe");
+  expect(first.reaction).toBe("dislike");
+  expect(
+    events.findIndex(
+      (e) => e.event_type === "card_view" && e.place_id === first.place_id,
+    ),
+  ).toBeLessThan(events.indexOf(first));
+  await page.getByRole("button", { name: "↶ Отменить", exact: true }).click();
+  await expect(page.getByText("Карточка 1 из 12")).toBeVisible();
+  expect(events.find((e) => e.event_type === "swipe_undo")).toMatchObject({
+    undo_event_id: first.event_id,
+    expected_reaction_revision: 1,
+  });
+  await card.focus();
+  await page.keyboard.press("ArrowRight");
+  await expect(page.getByText("Карточка 2 из 12")).toBeVisible();
+  expect(events.filter((e) => e.event_type === "swipe")[1]).toMatchObject({
+    reaction: "like",
+    expected_reaction_revision: 2,
+  });
+  for (let n = 2; n <= 12; n++) {
+    await page.getByRole("button", { name: "Нравится — вправо" }).click();
+    if (n < 12)
+      await expect(page.getByText(`Карточка ${n + 1} из 12`)).toBeVisible();
+  }
+  await expect(
+    page.getByText("Сохранено 12 ответов.", { exact: false }),
+  ).toBeVisible();
+  await page.getByRole("button", { name: "Посмотреть мою подборку →" }).click();
+  await expect(page).toHaveURL(/\/recommendations$/);
+});
+test("lost response retries identical event and keeps card", async ({
+  page,
+}) => {
+  const { events } = await mock(page, { count: 3, lostReply: true });
+  await page.goto("/taste");
+  await page.getByRole("button", { name: "Давай попробуем →" }).click();
+  await page.getByRole("button", { name: "Нравится — вправо" }).click();
+  await expect(page.getByText("Ответ потерян. Повтори запрос.")).toBeVisible();
+  await expect(page.getByText("Карточка 1 из 3")).toBeVisible();
+  await page.getByRole("button", { name: "Повторить запрос ↻" }).click();
+  await expect(page.getByText("Карточка 2 из 3")).toBeVisible();
+  const swipes = events.filter((e) => e.event_type === "swipe");
+  expect(swipes).toHaveLength(2);
+  expect(swipes[0]).toEqual(swipes[1]);
+});
+test("stale reaction refreshes without losing deck", async ({ page }) => {
+  await mock(page, { count: 3, conflict: true });
+  await page.goto("/taste");
+  await page.getByRole("button", { name: "Давай попробуем →" }).click();
+  await page.getByRole("button", { name: "Нравится — вправо" }).click();
+  await expect(
+    page.getByText(/Оценка изменилась в другой вкладке/),
+  ).toBeVisible();
+  await expect(page.getByText("Карточка 1 из 3")).toBeVisible();
+  await page.getByRole("button", { name: "Нравится — вправо" }).click();
+  await expect(page.getByText("Карточка 2 из 3")).toBeVisible();
+});
+for (const width of [360, 390, 768, 1280])
+  test(`taste layout, drag and accessibility ${width}`, async ({ page }) => {
+    await page.setViewportSize({ width, height: width < 500 ? 740 : 900 });
+    const { events } = await mock(page, { count: 3 });
+    await page.goto("/taste");
+    await page.getByRole("button", { name: "Давай попробуем →" }).click();
+    const card = page.locator(".taste-card");
+    await expect(card).toBeVisible();
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= innerWidth,
+      ),
+    ).toBe(true);
+    expect(
+      (
+        await new AxeBuilder({ page })
+          .withTags(["wcag2a", "wcag2aa", "wcag21aa"])
+          .analyze()
+      ).violations,
+    ).toEqual([]);
+    await page.screenshot({
+      path: `test-results/taste-${width}.png`,
+      fullPage: true,
+    });
+    const box = (await card.boundingBox())!;
+    await page.mouse.move(box.x + box.width / 2, box.y + 90);
+    await page.mouse.down();
+    await page.mouse.move(box.x + box.width / 2 - 100, box.y + 95, {
+      steps: 8,
+    });
+    await page.mouse.up();
+    await expect(page.getByText("Карточка 2 из 3")).toBeVisible();
+    expect(events.find((e) => e.event_type === "swipe").reaction).toBe(
+      "dislike",
+    );
+    if (width <= 600) {
+      await expect(page.locator(".taste-controls")).toBeHidden();
+      await expect(page.locator(".taste-secondary")).toBeHidden();
+      await card.focus();
+      await page.keyboard.press("ArrowRight");
+    } else {
+      await expect(page.locator(".taste-controls")).toBeVisible();
+      await page.getByRole("button", { name: "Пока не знаю" }).click();
+    }
+    await expect(page.getByText("Карточка 3 из 3")).toBeVisible();
+    await page.getByRole("button", { name: "Закончить пока" }).click();
+    await expect(page).toHaveURL(/\/recommendations$/);
+  });
+test("empty discovery keeps preferences", async ({ page }) => {
+  await mock(page, { count: 0 });
+  await page.goto("/taste");
+  await page.getByRole("button", { name: "Давай попробуем →" }).click();
+  await expect(page.getByText("Пока нет новых карточек")).toBeVisible();
+  await page.getByRole("button", { name: "Перейти к подборке" }).click();
+  await expect(page).toHaveURL(/\/recommendations$/);
+});
+
+test("phone touch swipe right likes the place; vertical scrolling does not react", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 740 });
+  const { events } = await mock(page, { count: 3 });
+  await page.goto("/taste");
+  await page.getByRole("button", { name: "Давай попробуем →" }).click();
+  const card = page.locator(".taste-card");
+  await expect(card).toBeVisible();
+  const box = (await card.boundingBox())!;
+  const cdp = await page.context().newCDPSession(page);
+  const x = box.x + box.width / 2,
+    y = box.y + 80;
+  await cdp.send("Input.dispatchTouchEvent", {
+    type: "touchStart",
+    touchPoints: [{ x, y }],
+  });
+  await cdp.send("Input.dispatchTouchEvent", {
+    type: "touchMove",
+    touchPoints: [{ x: x + 10, y: y + 90 }],
+  });
+  await cdp.send("Input.dispatchTouchEvent", {
+    type: "touchEnd",
+    touchPoints: [],
+  });
+  expect(events.filter((e) => e.event_type === "swipe")).toHaveLength(0);
+  await card.scrollIntoViewIfNeeded();
+  const after = (await card.boundingBox())!;
+  const sx = after.x + after.width / 2,
+    sy = Math.max(after.y + 80, 120);
+  await cdp.send("Input.dispatchTouchEvent", {
+    type: "touchStart",
+    touchPoints: [{ x: sx, y: sy }],
+  });
+  for (let dx = 20; dx <= 100; dx += 20)
+    await cdp.send("Input.dispatchTouchEvent", {
+      type: "touchMove",
+      touchPoints: [{ x: sx + dx, y: sy }],
+    });
+  await cdp.send("Input.dispatchTouchEvent", {
+    type: "touchEnd",
+    touchPoints: [],
+  });
+  await expect(page.getByText("Карточка 2 из 3")).toBeVisible();
+  expect(events.find((e) => e.event_type === "swipe").reaction).toBe("like");
+  await cdp.detach();
+});
+
+test("invitation appears on every reentry and reload before cards are requested", async ({
+  page,
+}) => {
+  await mock(page, { count: 3 });
+  await page.goto("/recommendations");
+  for (let n = 0; n < 2; n++) {
+    await page.getByRole("link", { name: "Уточнить мой вкус ♡" }).click();
+    await expect(
+      page.getByRole("dialog", { name: "Сделаем подборку ещё точнее?" }),
+    ).toBeVisible();
+    await expect(page.locator(".taste-card")).toHaveCount(0);
+    await page.getByRole("button", { name: "Давай попробуем →" }).click();
+    await expect(page.locator(".taste-card")).toBeVisible();
+    await page.getByRole("button", { name: "Закончить пока" }).click();
+  }
+  await page.getByRole("link", { name: "Уточнить мой вкус ♡" }).click();
+  await page.getByRole("button", { name: "Давай попробуем →" }).click();
+  await expect(page.locator(".taste-card")).toBeVisible();
+  await page.reload();
+  await expect(
+    page.getByRole("dialog", { name: "Сделаем подборку ещё точнее?" }),
+  ).toBeVisible();
+  await page.getByRole("button", { name: "Пока к подборке" }).click();
+  await expect(page).toHaveURL(/\/recommendations$/);
+});
+
+test("invitation animation loops and respects reduced motion", async ({
+  page,
+}) => {
+  await mock(page);
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await page.goto("/taste");
+  const preview = page.locator(".preview-right");
+  await expect(page.getByRole("dialog")).toBeVisible();
+  await expect(preview).toHaveCSS("animation-iteration-count", "infinite");
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await expect(preview).toHaveCSS("animation-name", "none");
+});
+
+test("swipe IDs work when randomUUID is unavailable on HTTP", async ({
+  page,
+}) => {
+  await mock(page, { count: 3 });
+  await page.addInitScript(() =>
+    Object.defineProperty(crypto, "randomUUID", {
+      value: undefined,
+      configurable: true,
+    }),
+  );
+  await page.goto("/taste");
+  await page.getByRole("button", { name: "Давай попробуем →" }).click();
+  await page.getByRole("button", { name: "Нравится — вправо" }).click();
+  await expect(page.getByText("Карточка 2 из 3")).toBeVisible();
+});

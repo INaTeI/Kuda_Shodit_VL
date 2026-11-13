@@ -1,6 +1,6 @@
 import secrets
 from fastapi import APIRouter, Response
-from sqlalchemy import case, select
+from sqlalchemy import case, select, update
 from sqlalchemy.dialects.postgresql import insert
 from app.api.dependencies import DB, CurrentProfile, hash_token
 from app.catalog.service import get_public, validate_categories
@@ -28,9 +28,21 @@ async def me(profile: CurrentProfile):
 
 @router.put("/me/preferences", response_model=ProfileOut, summary="Заменить интересы и бюджет")
 async def preferences(data: Preferences, db: DB, profile: CurrentProfile):
+    await lock_profile(db, profile.id)
     await validate_categories(db, data.interests)
     profile.interests = list(dict.fromkeys(data.interests))
     profile.budget_rub = data.budget_rub
+    await db.commit()
+    return profile
+
+
+@router.post("/me/interests/reset", response_model=ProfileOut, summary="Сбросить интересы и оценки мест")
+async def reset_interests(db: DB, profile: CurrentProfile):
+    await lock_profile(db, profile.id)
+    profile.interests = []
+    await db.execute(update(PlaceState).where(
+        PlaceState.profile_id == profile.id, PlaceState.reaction.is_not(None)
+    ).values(reaction=None, reaction_revision=PlaceState.reaction_revision + 1))
     await db.commit()
     return profile
 

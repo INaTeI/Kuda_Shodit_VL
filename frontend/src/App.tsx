@@ -29,6 +29,8 @@ import {
   useLoad,
 } from "./components";
 import { useGuest } from "./state";
+import TasteSetup, { TasteInvitation } from "./TasteSetup";
+import Weather from "./Weather";
 const nav = [
   ["/catalog", "Каталог"],
   ["/recommendations", "Подборка"],
@@ -39,7 +41,7 @@ export default function App() {
   const guest = useGuest();
   useEffect(() => {
     window.scrollTo(0, 0);
-    document.title = `VDK GID — ${nav.find(([p]) => location.pathname === p)?.[1] || "Владивосток, который подходит тебе"}`;
+    document.title = `Куда_Сходить_ВЛ — ${nav.find(([p]) => location.pathname === p)?.[1] || "Владивосток, который подходит тебе"}`;
     document.querySelector<HTMLElement>("main")?.focus();
   }, [location.pathname]);
   return (
@@ -48,10 +50,11 @@ export default function App() {
         Перейти к содержимому
       </a>
       <header className="header wrap">
-        <Link to="/" className="logo" aria-label="VDK GID — главная">
-          <span aria-hidden="true">≋</span> VDK GID
+        <Link to="/" className="logo" aria-label="Куда_Сходить_ВЛ — главная">
+          <span aria-hidden="true">≋</span> Куда_Сходить_ВЛ
           <span className="logo-dot">.</span>
         </Link>
+        <Weather />
         <nav aria-label="Основная навигация">
           {nav.map(([p, n]) => (
             <NavLink key={p} to={p}>
@@ -79,6 +82,7 @@ export default function App() {
           <Route path="/preferences" element={<Preferences />} />
           <Route path="/recommendations" element={<Selection />} />
           <Route path="/discovery" element={<Selection discovery />} />
+          <Route path="/taste" element={<TasteSetup />} />
           <Route
             path="*"
             element={
@@ -93,12 +97,15 @@ export default function App() {
       </main>
       <footer className="wrap footer">
         <Link className="logo" to="/">
-          ≋ VDK GID.
+          ≋ КСВЛ.
         </Link>
         <p>Свой ритм. Свои места. Свой Владивосток.</p>
         <span>43°07′ с. ш. / 131°53′ в. д.</span>
       </footer>
-      <nav className="mobile-nav" aria-label="Мобильная навигация">
+      <nav
+        className={`mobile-nav ${location.pathname === "/taste" ? "taste-nav-hidden" : ""}`}
+        aria-label="Мобильная навигация"
+      >
         {nav.map(([p, n], i) => (
           <NavLink key={p} to={p}>
             <span aria-hidden="true">{["▦", "✳", "☷"][i]}</span>
@@ -436,6 +443,8 @@ function Preferences() {
     [busy, setBusy] = useState(false),
     [error, setError] = useState(""),
     [confirm, setConfirm] = useState(false),
+    [resetting, setResetting] = useState(false),
+    [resetMessage, setResetMessage] = useState(""),
     [geo, setGeo] = useState<Filters>({});
   useEffect(() => {
     if (g.profile) {
@@ -450,8 +459,11 @@ function Preferences() {
     setBusy(true);
     setError("");
     try {
+      const firstVisit = !g.profile;
       await g.save(interests, budget === "" ? null : Number(budget));
-      navigate("/recommendations", { state: { geo } });
+      navigate("/recommendations", {
+        state: { geo, offerTasteSetup: firstVisit },
+      });
     } catch (e) {
       setError((e as Error).message);
     } finally {
@@ -526,7 +538,7 @@ function Preferences() {
           </section>
           {error && <ErrorBox message={error} />}
           <div className="actions">
-            <button className="primary" disabled={busy}>
+            <button className="primary" disabled={busy || resetting}>
               {busy ? "Сохраняем…" : "Сохранить и подобрать ↗"}
             </button>
             <Link to="/catalog">Пока посмотреть каталог</Link>
@@ -536,6 +548,38 @@ function Preferences() {
             привести к потере доступа.
           </p>
         </form>
+      )}
+      {g.profile && (
+        <section className="panel">
+          <h2>Начать подбор заново</h2>
+          <p>
+            Очистим любимые категории и все оценки мест, включая свайпы. Бюджет
+            и отметки «Уже знакомо» сохранятся.
+          </p>
+          <button
+            disabled={busy || resetting}
+            onClick={async () => {
+              setResetting(true);
+              setError("");
+              setResetMessage("");
+              try {
+                await g.resetInterests();
+                setInterests([]);
+                setResetMessage(
+                  "Интересы и оценки сброшены. Выбери категории заново или перейди к свайпам.",
+                );
+              } catch (e) {
+                setError((e as Error).message);
+              } finally {
+                setResetting(false);
+              }
+            }}
+          >
+            {resetting ? "Сбрасываем…" : "Сбросить мои интересы"}
+          </button>
+          <p role="status">{resetMessage}</p>
+          <Link to="/taste">Заново оценить места →</Link>
+        </section>
       )}
       {g.profile && (
         <button className="danger" onClick={() => setConfirm(true)}>
@@ -640,6 +684,12 @@ function SelectionResults({ discovery }: { discovery: boolean }) {
   }
   return (
     <>
+      {!discovery && <TasteInvitation />}
+      {!discovery && (
+        <Link className="button taste-reentry" to="/taste" state={{ geo }}>
+          Уточнить мой вкус ♡
+        </Link>
+      )}
       <div className="selection-toolbar">
         <p>
           {discovery
@@ -655,9 +705,8 @@ function SelectionResults({ discovery }: { discovery: boolean }) {
       </div>
       {discovery && (
         <p className="notice">
-          Направления отличаются от привычных: ← нравится · → не подходит · ↑
-          нейтрально. Кнопки доступны под карточкой. На карточке работают и
-          стрелки клавиатуры.
+          ← не подходит · → нравится · ↑ нейтрально. Кнопки доступны под
+          карточкой. На карточке работают и стрелки клавиатуры.
         </p>
       )}
       <p role="status">{message}</p>
@@ -682,8 +731,8 @@ function SelectionResults({ discovery }: { discovery: boolean }) {
                   if (!discovery || e.target !== e.currentTarget) return;
                   const r = (
                     {
-                      ArrowLeft: "like",
-                      ArrowRight: "dislike",
+                      ArrowLeft: "dislike",
+                      ArrowRight: "like",
                       ArrowUp: "neutral",
                     } as const
                   )[e.key as "ArrowLeft"];
@@ -705,7 +754,7 @@ function SelectionResults({ discovery }: { discovery: boolean }) {
                     dy = e.changedTouches[0].clientY - touch.current.y;
                   touch.current = null;
                   if (Math.abs(dx) > 75 && Math.abs(dx) > Math.abs(dy))
-                    void gesture(dx < 0 ? "like" : "dislike");
+                    void gesture(dx < 0 ? "dislike" : "like");
                   else if (dy < -100 && Math.abs(dy) > Math.abs(dx) * 2)
                     void gesture("neutral");
                 }}

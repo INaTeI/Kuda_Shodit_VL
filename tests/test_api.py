@@ -207,3 +207,26 @@ async def test_cors_for_react(client):
     )
     assert response.status_code == 200
     assert response.headers["access-control-allow-origin"] == "http://localhost:5173"
+
+async def test_reset_interests_keeps_budget_known_and_other_profiles(client, admin, place_payload):
+    place_id = (await client.post(P + "/admin/places", json=place_payload, headers=admin)).json()["id"]
+    async def guest():
+        data = (await client.post(P + "/profiles")).json()
+        return {"Authorization": "Bearer " + data["access_token"]}
+    owner, other = await guest(), await guest()
+    for auth in [owner, other]:
+        await client.put(P + "/me/preferences", headers=auth, json={"interests": ["nature"], "budget_rub": 1000})
+        await client.put(P + f"/me/reactions/{place_id}", headers=auth, json={"reaction": "like"})
+        await client.put(P + f"/me/known-places/{place_id}", headers=auth, json={"is_known": True})
+    assert (await client.post(P + "/me/interests/reset")).status_code == 401
+    reset = await client.post(P + "/me/interests/reset", headers=owner)
+    assert reset.status_code == 200
+    assert reset.json()["interests"] == []
+    assert reset.json()["budget_rub"] == 1000
+    state = (await client.get(P + "/me/place-states", headers=owner)).json()[0]
+    assert state["reaction"] is None and state["is_known"] is True
+    assert state["reaction_revision"] == 2
+    await client.post(P + "/me/interests/reset", headers=owner)
+    assert (await client.get(P + "/me/place-states", headers=owner)).json()[0]["reaction_revision"] == 2
+    assert (await client.get(P + "/me", headers=other)).json()["interests"] == ["nature"]
+    assert (await client.get(P + "/me/place-states", headers=other)).json()[0]["reaction"] == "like"
