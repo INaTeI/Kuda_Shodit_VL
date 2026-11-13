@@ -25,7 +25,7 @@ app = FastAPI(
     version="0.1.0",
     lifespan=lifespan,
     description="Городской гид Владивостока. MVP: каталог, подбор, гостевой профиль и реакции. "
-    "Данные seed демонстрационные. Влево → like, вправо → dislike, вверх → neutral.",
+    "Данные seed демонстрационные. Влево → dislike, вправо → like, вверх → neutral.",
 )
 app.add_middleware(ImportBodyLimitMiddleware)
 app.add_middleware(

@@ -171,7 +171,8 @@ class ImportPlan:
     duplicates: list[dict] = field(default_factory=list)
 
 
-def prepare_row(row, values, raw, sha256, file_name):
+def prepare_row(row, values, raw, sha256, file_name, *, type_categories=None):
+    type_categories = TYPE_CATEGORIES if type_categories is None else type_categories
     name, short, full, address, lat, lon, kind, tags, activity = values[:9]
     name, short, activity, kind = map(clean, (name, short, activity, kind))
     for label, value, max_length in [
@@ -216,9 +217,9 @@ def prepare_row(row, values, raw, sha256, file_name):
     interest_tags = list(
         dict.fromkeys(clean(t) for t in str(tags).split(";") if clean(t))
     )
-    if kind.casefold() not in TYPE_CATEGORIES:
+    if kind.casefold() not in type_categories:
         raise ValueError(f"Не настроено сопоставление категории для типа «{kind}»")
-    categories = set(TYPE_CATEGORIES[kind.casefold()])
+    categories = set(type_categories[kind.casefold()])
     for tag in interest_tags:
         if tag.casefold() in TAG_CATEGORIES:
             categories.add(TAG_CATEGORIES[tag.casefold()])

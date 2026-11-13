@@ -12,6 +12,8 @@ import {
   type Profile,
   type PlaceState,
   type Reaction,
+  type CardEvent,
+  type EventReceipt,
 } from "./api";
 const KEY = "vdk-guest-token";
 function read() {
@@ -29,7 +31,10 @@ function useSession() {
     [loading, setLoading] = useState(!!token),
     [error, setError] = useState(""),
     [notice, setNotice] = useState("");
+  const tokenRef = useRef(token);
+  tokenRef.current = token;
   function remember(t: string) {
+    tokenRef.current = t;
     setToken(t);
     try {
       if (t) localStorage.setItem(KEY, t);
@@ -86,7 +91,13 @@ function useSession() {
     const s =
       reaction === null
         ? (await api<void>(`/me/reactions/${id}`, { method: "DELETE", token }),
-          { place_id: id, reaction: null, is_known: old?.is_known || false })
+          {
+            place_id: id,
+            reaction: null,
+            is_known: old?.is_known || false,
+            reaction_revision:
+              (old?.reaction_revision || 0) + (old?.reaction ? 1 : 0),
+          })
         : await api<PlaceState>(`/me/reactions/${id}`, {
             method: "PUT",
             token,
@@ -101,6 +112,46 @@ function useSession() {
       body: { is_known },
     });
     setStates((prev) => [...prev.filter((x) => x.place_id !== id), s]);
+  }
+  async function recordEvent(event: CardEvent, signal?: AbortSignal) {
+    const receipt = await api<EventReceipt>("/me/events", {
+      method: "POST",
+      token,
+      body: event,
+      signal,
+    });
+    if (tokenRef.current === token && receipt.reaction_revision !== null) {
+      setStates((prev) => {
+        const old = prev.find((s) => s.place_id === event.place_id);
+        if ((old?.reaction_revision || 0) > receipt.reaction_revision!)
+          return prev;
+        return [
+          ...prev.filter((s) => s.place_id !== event.place_id),
+          {
+            place_id: event.place_id,
+            reaction: receipt.reaction,
+            reaction_revision: receipt.reaction_revision!,
+            is_known: old?.is_known || false,
+          },
+        ];
+      });
+    }
+    return receipt;
+  }
+  async function resetInterests() {
+    const p = await api<Profile>("/me/interests/reset", {
+      method: "POST",
+      token,
+    });
+    setProfile(p);
+    setStates((prev) =>
+      prev.map((s) => ({
+        ...s,
+        reaction: null,
+        reaction_revision: s.reaction_revision + (s.reaction === null ? 0 : 1),
+      })),
+    );
+    await refresh();
   }
   async function remove() {
     await api("/me", { method: "DELETE", token });
@@ -123,6 +174,8 @@ function useSession() {
     save,
     react,
     known,
+    recordEvent,
+    resetInterests,
     remove,
     forget,
   };
