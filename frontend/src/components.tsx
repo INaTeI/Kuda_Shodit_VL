@@ -125,7 +125,7 @@ export function Artwork({
             />
           </svg>
           <span className="art-caption">
-            ВДК / {hero ? "ГОРОД У МОРЯ" : "ГРАФИЧЕСКИЙ ЭСКИЗ"}
+            КСВЛ / {hero ? "ГОРОД У МОРЯ" : "ГРАФИЧЕСКИЙ ЭСКИЗ"}
           </span>
         </>
       )}

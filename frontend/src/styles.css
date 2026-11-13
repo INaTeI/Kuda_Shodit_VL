@@ -1631,3 +1631,4 @@ main:focus-visible {
 .header .weather-wind { max-width:220px; overflow:hidden; text-overflow:ellipsis; }
 @media(max-width:600px) { .header .weather-wind { max-width:110px; } .forecast-astro { grid-column:1 / -1; } }
 @media(max-width:600px){.header .weather-wind{white-space:normal;line-height:1.2;overflow-wrap:anywhere}}
+@media(max-width:600px){.header .logo{font-size:clamp(13px,3.6vw,18px);letter-spacing:-.5px}}
