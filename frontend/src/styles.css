@@ -1875,10 +1875,31 @@ main:focus-visible {
 .pagination-refresh-label{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 }
 .logo{display:inline-flex;align-items:center;gap:10px}.logo .brand-mark{display:block;width:44px;height:44px;flex:none}.logo .brand-name:first-of-type{font-size:inherit;color:inherit;vertical-align:baseline;margin:0}.footer .brand-mark{width:36px;height:36px}@media(max-width:600px){.header .logo .brand-mark{width:38px;height:38px}.header .logo{gap:7px}}
-.cookie-notice { margin-block: 16px; padding: 20px; border: 1px solid #c4d1ce; border-radius: 16px; background: #eef1eb; }
-.cookie-notice h2 { font-size: 22px; }
-.cookie-notice p { max-width: 900px; line-height: 1.6; }
-.cookie-notice .actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.cookie-notice {
+  width: min(560px, calc(100% - 32px));
+  max-height: min(90dvh, calc(100dvh - 32px));
+  padding: clamp(20px, 5vw, 32px);
+  box-shadow: 0 20px 64px #16343b33;
+  overscroll-behavior: contain;
+}
+.cookie-notice h2 {
+  font-size: 26px;
+}
+.cookie-notice p {
+  line-height: 1.6;
+}
+.cookie-notice .actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 20px;
+}
+.cookie-notice .actions button {
+  flex: 1 1 200px;
+}
+.cookie-notice .fine-print {
+  margin-bottom: 0;
+}
 .cookie-settings { padding-bottom: 100px; }
 
 .taste-page .taste-complete-card { overflow-y: auto; align-content: center; padding: 24px; }

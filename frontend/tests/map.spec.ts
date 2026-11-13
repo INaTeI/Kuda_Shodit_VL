@@ -229,6 +229,7 @@ test("user marker, straight-line distance and both points survive zoom; no persi
   page,
   context,
 }) => {
+  await context.clearCookies({ name: "vdk-cookie-choice" });
   await context.grantPermissions(["geolocation"]);
   await context.setGeolocation({ latitude: 43.1255, longitude: 131.8855 });
   await openPlace(page);
@@ -285,6 +286,7 @@ test("user position restores from consented cookie and disappears on revocation"
   page,
   context,
 }) => {
+  await context.clearCookies({ name: "vdk-cookie-choice" });
   await context.grantPermissions(["geolocation"]);
   await context.setGeolocation({ latitude: 43.1255, longitude: 131.8855 });
   await openPlace(page);
@@ -308,7 +310,6 @@ test("user outside the local map gets distance without a misleading marker", asy
   await context.grantPermissions(["geolocation"]);
   await context.setGeolocation({ latitude: 55.75, longitude: 37.62 });
   await openPlace(page);
-  await page.getByRole("button", { name: "Только необходимые" }).click();
   await page
     .getByRole("button", { name: "Моё расположение", exact: true })
     .click();
