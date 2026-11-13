@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { api, price, type Category, type Place, type Reaction } from "./api";
 import { useGuest } from "./state";
+import { useAdmin } from "./admin";
 
 export const HEART_PATH =
   "M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 " +
@@ -146,6 +147,7 @@ export function Card({
   reasons?: string[];
   children?: ReactNode;
 }) {
+  const { isAdmin } = useAdmin();
   return (
     <article className="card">
       <Link to={`/places/${place.id}`} className="card-link">
@@ -161,6 +163,7 @@ export function Card({
           {place.address && <p className="address">↗ {place.address}</p>}
         </div>
       </Link>
+      {isAdmin && <a className="button" href={`/constructor/?place_id=${encodeURIComponent(place.id)}`}>Конструктор</a>}
       {reasons && reasons.length > 0 && (
         <ul className="reasons">
           {reasons.map((r) => (

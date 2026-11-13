@@ -57,6 +57,7 @@ class Place(Base):
     visiting_notes: Mapped[str | None] = mapped_column(Text)
     opening_hours: Mapped[str | None] = mapped_column(String(500))
     source_url: Mapped[str | None] = mapped_column(String(2000))
+    photo_url: Mapped[str | None] = mapped_column(String(2000))
     checked_at: Mapped[date | None] = mapped_column(Date)
     status: Mapped[str] = mapped_column(String(20), default="draft", index=True)
     created_at: Mapped[datetime] = mapped_column(
@@ -80,6 +81,15 @@ class Profile(Base):
     budget_rub: Mapped[int | None] = mapped_column(Integer)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()
+    )
+
+
+class ConstructorState(Base):
+    __tablename__ = "constructor_states"
+    key: Mapped[str] = mapped_column(String(80), primary_key=True)
+    state: Mapped[dict] = mapped_column(JSON, nullable=False)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
     )
 
 

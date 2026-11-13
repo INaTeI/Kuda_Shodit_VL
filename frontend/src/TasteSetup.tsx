@@ -752,12 +752,19 @@ function TasteDeck() {
       >
         {place && (
           <>
-            <p>{place.description}</p>
-            <p>
-              <strong>{price(place)}</strong> · {place.price_note}
-            </p>
-            <p>{place.address || "Адрес уточняется"}</p>
-            <button onClick={() => setDetails(false)}>
+            <address className="taste-details-address">
+              <span>Адрес</span>
+              <strong>{place.address || "Адрес уточняется"}</strong>
+            </address>
+            <section className="taste-details-section" aria-labelledby="taste-details-description">
+              <h3 id="taste-details-description">Описание:</h3>
+              <p>{place.description}</p>
+            </section>
+            <section className="taste-details-price" aria-label="Стоимость">
+              <strong>{price(place)}</strong>
+              <p>{place.price_note}</p>
+            </section>
+            <button className="taste-details-return" onClick={() => setDetails(false)}>
               Вернуться к выбору
             </button>
           </>
