@@ -384,6 +384,20 @@ em, .serif { font-family: var(--serif); font-style: italic; font-weight: 400; }
   .topbar .seg button { padding: 7px 6px; }
 }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+/* Вход и выбор места */
+.gate { position: fixed; inset: 0; z-index: 60; display: grid; place-items: center; background: var(--bg); padding: 20px; }
+.gate[hidden] { display: none; }
+.gate form { width: min(400px, 100%); background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); padding: 28px; box-shadow: var(--shadow); display: grid; gap: 14px; }
+.gate h1 { margin: 0; font-size: 26px; letter-spacing: -.03em; }
+.gate .lead { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.5; }
+.gate label { display: grid; gap: 6px; font-size: 14px; font-weight: 600; }
+.gate input { border: 1px solid #c6d5d3; border-radius: 10px; padding: 10px 12px; min-height: 44px; background: #fff; }
+.gate .err { color: var(--danger); margin: 0; font-size: 14px; min-height: 1em; }
+.picker { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--muted); min-width: 0; }
+.picker select { max-width: 260px; min-width: 0; border: 1px solid #c6d5d3; border-radius: 10px; padding: 6px 8px; background: var(--paper); }
+.status[data-state="saved"] .dot { background: #2f8f5b; }
+.stage-msg { max-width: 560px; margin: 40px auto; color: var(--muted); text-align: center; }
+@media (max-width: 760px) { .picker .picker-l { display: none; } .picker select { max-width: 130px; } }
 </style>
 </head>
 <body>
@@ -401,13 +415,11 @@ em, .serif { font-family: var(--serif); font-style: italic; font-weight: 400; }
   <button class="btn ghost icon-btn" id="undo" aria-label="Отменить (Ctrl+Z)" title="Отменить (Ctrl+Z)">↶</button>
   <button class="btn ghost icon-btn" id="redo" aria-label="Повторить (Ctrl+Shift+Z)" title="Повторить (Ctrl+Shift+Z)">↷</button>
   <span class="status" id="status" role="status"><span class="dot"></span><span id="status-text">Черновик</span></span>
-  <label class="role">Роль
-    <select id="role">
-      <option value="owner">Владелец места</option>
-      <option value="moderator">Модератор</option>
-    </select>
+  <label class="picker"><span class="picker-l">Место</span>
+    <select id="place" aria-label="Место для оформления"></select>
   </label>
-  <button class="btn primary" id="publish"><span class="publish-long">Отправить на проверку</span><span class="publish-short">Отправить</span></button>
+  <button class="btn ghost small" id="logout">Выйти</button>
+  <button class="btn primary" id="publish"><span class="publish-long">Опубликовать</span><span class="publish-short">Опубликовать</span></button>
 </header>
 
 <div class="workspace" id="workspace">
@@ -416,12 +428,23 @@ em, .serif { font-family: var(--serif); font-style: italic; font-weight: 400; }
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <input type="file" id="file" accept="image/jpeg,image/png,image/webp" multiple class="sr" tabindex="-1" aria-hidden="true" />
+<div class="gate" id="gate" hidden>
+  <form id="login-form" novalidate>
+    <div class="brand">VDK <em>гид</em></div>
+    <h1>Конструктор мест</h1>
+    <p class="lead">Только для администраторов. Опубликованные изменения сразу видят все посетители сайта.</p>
+    <label>Логин<input id="login-user" name="username" autocomplete="username" maxlength="60" required></label>
+    <label>Пароль<input id="login-pass" name="password" type="password" autocomplete="current-password" maxlength="200" required></label>
+    <p class="err" id="login-err" role="alert"></p>
+    <button class="btn primary" type="submit" id="login-btn">Войти</button>
+  </form>
+</div>
 
 <script>
 "use strict";
 /* ═════════════ Справочники ═════════════ */
-const MAX_WEIGHT = 50, MAX_PHOTOS = 12, MAX_FILE_MB = 8;
-const LIMITS = { name: 60, description: 1200, address: 120 };
+const MAX_WEIGHT = 50, MAX_PHOTOS = 12, MAX_FILE_MB = 20;
+const LIMITS = { name: 200, description: 10000, address: 500 }; // как в app/editor/schemas.py
 
 const BG = [
   { id: "paper", name: "Бумага", hex: "#F6F7F5" },
@@ -554,45 +577,101 @@ function art(v) {
 }
 
 /* ═════════════ Состояние ═════════════ */
-function demo() {
-  const photos = [
-    { id: "p1", src: art(0), alt: "Демо-иллюстрация: утро у воды, сопки и бухта" },
-    { id: "p2", src: art(1), alt: "Демо-иллюстрация: закат над бухтой" },
-    { id: "p3", src: art(2), alt: "Демо-иллюстрация: ночной вантовый мост" },
-    { id: "p4", src: art(3), alt: "Демо-иллюстрация: туман над сопками" },
-  ];
-  const p = PAGE_PRESETS.classic;
-  return {
-    place: {
-      name: "ДЕМО Кофейня у маяка",
-      accent: 3,
-      category: "Кофейни · Виды на море",
-      description: "Демонстрационный текст. Небольшая кофейня на набережной с окнами на бухту.\nЗдесь варят фильтр-кофе на зёрнах местной обжарки и пекут булочки с морской солью. Днём тихо — можно поработать, вечером приходят смотреть закат.",
-      address: "ДЕМО, Владивосток, ул. Набережная, 1",
-      price: { max: 600, note: "на человека: кофе и выпечка", checked: "2 ноября 2026" },
-      photos, mainId: "p1",
-    },
-    page: { preset: "classic", order: [...p.order], blocks: structuredClone(p.blocks) },
-    card: { preset: "light", bg: "white", framed: false, items: ["wave", "coffee", "sunset", "seaview"] },
-  };
-}
-const KEY = "vdk-place-constructor-v1";
-let S;
-try { S = JSON.parse(localStorage.getItem(KEY)) || demo(); } catch { S = demo(); }
-const UI = { tab: "page", mode: "edit", role: "owner", selected: null, viewport: "desktop", photoSel: S.place.mainId, viewPhoto: null, sheet: innerWidth <= 980 ? "closed" : "open", reviewed: false, dirty: false, savedAt: null, live: "", liveErr: false, uploadErr: "", reactions: null };
+const API = "/api/v1";
+let S = null, PLACES = [];
+const UI = { tab: "page", mode: "edit", role: "moderator", selected: null, viewport: "desktop", photoSel: null, viewPhoto: null, sheet: innerWidth <= 980 ? "closed" : "open", dirty: false, saving: false, uploading: 0, savedAt: null, live: "", liveErr: false, uploadErr: "", reactions: null };
 const past = [], future = [];
 const snap = () => JSON.stringify(S);
-
-function save() {
-  try { localStorage.setItem(KEY, snap()); UI.savedAt = new Date(); }
-  catch { toast("Фото слишком большие для хранения в прототипе: изменения сохранятся до перезагрузки страницы."); }
-}
+function save() {} // черновик живёт в памяти вкладки; на сервер уходит только по «Опубликовать»
 function commit(fn, { inspector = true } = {}) {
   past.push(snap()); if (past.length > 60) past.shift(); future.length = 0;
-  fn(); UI.dirty = true; UI.reviewed = false; save(); render({ inspector });
+  fn(); UI.dirty = true; render({ inspector });
 }
-function undo() { if (!past.length) return; future.push(snap()); S = JSON.parse(past.pop()); UI.dirty = true; save(); render(); toast("Действие отменено"); }
-function redo() { if (!future.length) return; past.push(snap()); S = JSON.parse(future.pop()); UI.dirty = true; save(); render(); }
+function undo() { if (!past.length) return; future.push(snap()); S = JSON.parse(past.pop()); UI.dirty = true; render(); toast("Действие отменено"); }
+function redo() { if (!future.length) return; past.push(snap()); S = JSON.parse(future.pop()); UI.dirty = true; render(); }
+
+/* ═════════════ Сервер ═════════════ */
+class HttpError extends Error { constructor(status, message) { super(message); this.status = status; } }
+async function call(path, { method = "GET", body, raw, type } = {}) {
+  const headers = { "X-VDK-Editor": "1" };
+  if (body !== undefined) headers["Content-Type"] = "application/json";
+  if (raw) headers["Content-Type"] = type;
+  let r;
+  try {
+    r = await fetch(API + path, { method, headers, credentials: "same-origin", cache: "no-store", body: raw || (body === undefined ? undefined : JSON.stringify(body)) });
+  } catch { throw new HttpError(0, "Нет связи с сервером. Проверьте подключение."); }
+  if (r.status === 204) return null;
+  const data = await r.json().catch(() => null);
+  if (!r.ok) {
+    const d = data?.detail;
+    const msg = typeof d === "string" ? d : Array.isArray(d) ? d.map((x) => String(x.msg || "").replace(/^Value error, /, "")).join("; ") : r.status === 413 ? "Файл слишком большой" : `Ошибка сервера (${r.status})`;
+    if (r.status === 401 && path !== "/editor/login" && path !== "/editor/session") showGate("Сессия закончилась. Войдите снова — несохранённые правки остались в этой вкладке.");
+    throw new HttpError(r.status, msg);
+  }
+  return data;
+}
+const fmtDate = (d) => d ? new Date(d + "T00:00:00").toLocaleDateString("ru-RU", { day: "numeric", month: "long", year: "numeric" }) : null;
+function fromServer(v) {
+  const p = v.place, d = v.design, preset = PAGE_PRESETS.classic;
+  return {
+    revision: v.revision,
+    place: {
+      id: p.id, status: p.status, name: p.name, accent: d?.title_accent ?? -1,
+      category: p.categories.map((c) => c.name).join(" · ") || "Без категории",
+      description: p.description, address: p.address || "",
+      price: { max: p.price_rub, note: p.price_note || "", checked: fmtDate(p.checked_at) },
+      photos: (d?.photos || []).map((x) => ({ id: x.id, src: x.url, alt: x.alt || "" })),
+      mainId: d?.main_photo_id || null,
+    },
+    page: d ? structuredClone(d.page) : { preset: "classic", order: [...preset.order], blocks: structuredClone(preset.blocks) },
+    card: d ? structuredClone(d.card) : { preset: "light", bg: "white", framed: false, items: [] },
+  };
+}
+function payload() {
+  const page = structuredClone(S.page);
+  for (const cfg of Object.values(page.blocks)) {
+    const t = TEXT.find((x) => x.id === cfg.text);
+    if (cfg.text !== "auto" && (!t || ratio(t.hex, hex(cfg.bg)) < 4.5)) cfg.text = "auto";
+  }
+  const words = S.place.name.trim().split(/\s+/).filter(Boolean);
+  return {
+    expected_revision: S.revision, name: S.place.name, description: S.place.description,
+    address: S.place.address.trim() || null,
+    title_accent: S.place.accent >= 0 && S.place.accent < words.length ? S.place.accent : null,
+    page, card: S.card, photos: S.place.photos.map((p) => ({ id: p.id, alt: p.alt })), main_photo_id: S.place.mainId,
+  };
+}
+const STATUS_NOTE = { draft: " · черновик", archived: " · в архиве" };
+function renderPicker() {
+  $("#place").innerHTML = PLACES.map((p) => `<option value="${p.id}">${esc(p.name)}${STATUS_NOTE[p.status] || ""}${p.has_design ? " ✦" : ""}</option>`).join("");
+  if (S) $("#place").value = S.place.id;
+}
+function stageMessage(text) { $("#stage").innerHTML = `<p class="stage-msg">${esc(text)}</p>`; $("#panel").innerHTML = ""; }
+async function openPlace(id) {
+  if (S && UI.dirty && !confirm("Есть неопубликованные изменения. Открыть другое место без сохранения?")) { $("#place").value = S.place.id; return; }
+  stageMessage("Загружаем место…");
+  try { S = fromServer(await call(`/editor/places/${encodeURIComponent(id)}`)); }
+  catch (e) { if (S) { render(); $("#place").value = S.place.id; } else stageMessage(e.message); if (e.status !== 401) toast(e.message); return; }
+  past.length = 0; future.length = 0;
+  Object.assign(UI, { selected: null, dirty: false, savedAt: null, photoSel: S.place.mainId, viewPhoto: null, uploadErr: "", live: "" });
+  history.replaceState(null, "", "#" + id);
+  $("#place").value = id;
+  render();
+}
+function showGate(msg) {
+  $("#gate").hidden = false; $("#login-err").textContent = msg || "";
+  setTimeout(() => ($("#login-user").value ? $("#login-pass") : $("#login-user")).focus(), 0);
+}
+async function boot() {
+  try { await call("/editor/session"); }
+  catch (e) { return showGate(e.status === 401 ? "" : e.message); }
+  $("#gate").hidden = true;
+  try { PLACES = await call("/editor/places"); } catch (e) { return stageMessage(e.message); }
+  renderPicker();
+  if (!PLACES.length) return stageMessage("В каталоге пока нет мест. Сначала добавьте их через импорт.");
+  const want = decodeURIComponent(location.hash.slice(1));
+  await openPlace(PLACES.some((p) => p.id === want) ? want : PLACES[0].id);
+}
 
 /* ═════════════ Производные ═════════════ */
 const mainPhoto = () => S.place.photos.find((p) => p.id === S.place.mainId) || null;
@@ -606,7 +685,7 @@ function blockColors(cfg) {
   const bgH = hex(cfg.bg), t = textHex(cfg.text, bgH);
   return { bgH, t, a: accentFor(bgH, t), border: isLight(bgH) ? "#DFE7E5" : "transparent" };
 }
-const priceText = () => (S.place.price.max === 0 ? "Бесплатно" : `до ${S.place.price.max.toLocaleString("ru-RU")} ₽`);
+const priceText = () => { const m = S.place.price.max; return m == null ? "Стоимость уточняется" : m === 0 ? "Без расходов" : `${m.toLocaleString("ru-RU")} ₽`; };
 
 /* ═════════════ Рендер: страница места ═════════════ */
 const HEART = "M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z";
@@ -628,11 +707,10 @@ function blockBody(id, cfg, c) {
       return `<p class="blk-label">О месте</p>${paras}`;
     }
     case "address":
-      return `<p class="blk-label">Адрес</p><p class="addr">${P.address.trim() ? esc(P.address) : '<span style="opacity:.6">Адрес не указан</span>'}</p>
-        <button class="inline-link" data-act="map">Открыть на карте ↗</button>`;
+      return `<p class="blk-label">Адрес</p><p class="addr">${P.address.trim() ? esc(P.address) : '<span style="opacity:.6">Адрес не указан</span>'}</p>`;
     case "price":
       return `<p class="blk-label">Стоимость</p><div class="amount">${priceText()}</div>
-        <p class="note">${esc(P.price.note)} · проверено ${esc(P.price.checked)}</p>`;
+        ${P.price.note ? `<p class="note">${esc(P.price.note)}</p>` : ""}`;
     case "gallery": {
       if (!P.photos.length) return `<div class="gal-empty"><strong>Фото пока нет</strong><span>${edit ? "Добавьте первое фото — оно станет главным и появится на карточке." : "Владелец ещё не добавил фотографии."}</span></div>`;
       const ordered = [mainPhoto(), ...P.photos.filter((p) => p.id !== P.mainId)].filter(Boolean);
@@ -668,7 +746,7 @@ function renderPage() {
       <div class="page"><div class="crumbs">← К подборке</div>
         <div class="grid" id="grid">${blocks}</div>
         ${visible === 1 ? `<p class="hint warn">Видно только название. Покажите хотя бы фото или описание — иначе посетителю не на что опереться.</p>` : ""}
-        <div class="actions-bar">${reactPill()}<button class="btn primary" data-act="route">Построить маршрут</button></div>
+        <div class="actions-bar">${reactPill()}</div>
         ${edit ? `<p class="sys-note">🔒 Кнопки оценки и маршрута одинаковы для всех мест и не настраиваются — так посетитель всегда знает, где их искать.</p>` : ""}
       </div></div></div>`;
 }
@@ -741,7 +819,7 @@ function panelPage() {
           <button class="mini" data-hide="${id}" ${BLOCKS[id].hideable ? "" : "disabled"} aria-label="${cfg.hidden ? "Показать" : "Скрыть"} «${BLOCKS[id].name}»" title="${BLOCKS[id].hideable ? "" : BLOCKS[id].why}" data-fk="hd-${id}">${cfg.hidden ? "◌" : "◉"}</button></li>`;
       }).join("")}</ul>
       <p class="hint">Блок «Оценка и маршрут» системный: он всегда внизу страницы.</p></div>
-    <div class="sec"><button class="btn small" data-act="reset" data-fk="reset">Сбросить всё к демо-данным</button></div>`;
+    <div class="sec"><button class="btn small" data-act="reset" data-fk="reset">Вернуть опубликованную версию</button></div>`;
 }
 function panelBlock(id) {
   const cfg = S.page.blocks[id], P = S.place, idx = S.page.order.indexOf(id);
@@ -763,7 +841,7 @@ function panelBlock(id) {
       ${UI.role === "owner" ? `<p class="hint warn">После смены адреса модератор заново проверит точку на карте.</p>` : ""}</div>`;
   } else if (id === "price") {
     content = `<div class="field"><span class="lbl">Стоимость <span class="lock">🔒 проверенные данные</span></span>
-      <div class="readonly"><b>${priceText()}</b> · ${esc(P.price.note)}<br><small>проверено ${esc(P.price.checked)}</small></div>
+      <div class="readonly"><b>${priceText()}</b>${P.price.note ? ` · ${esc(P.price.note)}` : ""}<br><small>${P.price.checked ? `проверено ${esc(P.price.checked)}` : "дата проверки не указана"}</small></div>
       <p class="hint">Цену меняет редакция после проверки — так посетители видят только подтверждённые суммы. Здесь настраивается только вид блока.</p></div>`;
   } else if (id === "gallery") content = galleryManager();
 
@@ -794,7 +872,7 @@ function galleryManager() {
       <div class="row"><button class="btn small" data-phmove="-1" ${P.photos.indexOf(sel) === 0 ? "disabled" : ""} data-fk="phl">← Раньше</button><button class="btn small" data-phmove="1" ${P.photos.indexOf(sel) === P.photos.length - 1 ? "disabled" : ""} data-fk="phr">Позже →</button><button class="btn small" data-act="delphoto" style="color:var(--danger)" data-fk="phdel">Удалить</button></div></div>` : "";
   return `${grid}
     <div class="drop" id="drop"><span>Перетащите фото сюда или</span><button class="btn small primary" data-act="upload" ${P.photos.length >= MAX_PHOTOS ? 'aria-disabled="true"' : ""} data-fk="upload">+ Добавить фото</button>
-      <small>JPG, PNG или WebP до ${MAX_FILE_MB} МБ · ${P.photos.length} из ${MAX_PHOTOS}</small></div>
+      <small>JPG, PNG или WebP до ${MAX_FILE_MB} МБ · ${P.photos.length} из ${MAX_PHOTOS}${UI.uploading ? ` · загружается: ${UI.uploading}` : ""}</small></div>
     ${UI.uploadErr ? `<p class="hint err" role="alert">${esc(UI.uploadErr)}</p>` : ""}${detail}`;
 }
 function panelCard() {
@@ -835,6 +913,7 @@ function panelCard() {
 /* ═════════════ Общий рендер ═════════════ */
 const $ = (s, r = document) => r.querySelector(s);
 function render({ inspector = true } = {}) {
+  if (!S) return;
   const fk = document.activeElement?.dataset?.fk;
   const edit = UI.mode === "edit";
   $("#workspace").classList.toggle("view", !edit);
@@ -847,13 +926,13 @@ function render({ inspector = true } = {}) {
   panel.classList.toggle("collapsed", UI.sheet !== "open");
   if (edit && inspector) { panel.innerHTML = UI.tab === "page" ? panelPage() : panelCard(); bindDrop(); }
   $("#undo").disabled = !past.length; $("#redo").disabled = !future.length;
-  const mod = UI.role === "moderator";
-  const pl = mod ? ["Опубликовать", "Опубликовать"] : UI.reviewed ? ["На проверке", "На проверке"] : ["Отправить на проверку", "Отправить"];
-  $("#publish .publish-long").textContent = pl[0]; $("#publish .publish-short").textContent = pl[1];
-  $("#publish").disabled = !mod && UI.reviewed;
+  $("#publish .publish-long").textContent = UI.saving ? "Публикуем…" : "Опубликовать";
+  $("#publish .publish-short").textContent = UI.saving ? "…" : "Опубликовать";
+  $("#publish").disabled = UI.saving || (!UI.dirty && S.revision > 0);
   const st = $("#status");
-  st.dataset.state = UI.reviewed ? "review" : UI.dirty ? "dirty" : "clean";
-  $("#status-text").textContent = UI.reviewed ? "Отправлено на проверку" : UI.savedAt ? `Черновик · сохранено ${UI.savedAt.toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" })}` : "Черновик";
+  st.dataset.state = UI.dirty ? "dirty" : S.revision ? "saved" : "clean";
+  const placeNote = S.place.status === "published" ? "" : " · место не опубликовано в каталоге";
+  $("#status-text").textContent = (UI.dirty ? "Есть неопубликованные правки" : UI.savedAt ? `Опубликовано в ${UI.savedAt.toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" })}` : S.revision ? "Опубликованная версия" : "Оформление ещё не настроено") + placeNote;
   if (fk) document.querySelector(`[data-fk="${CSS.escape(fk)}"]`)?.focus({ preventScroll: true });
 }
 let toastT;
@@ -892,28 +971,39 @@ function addFiles(files) {
   if (list.length - bad.length - big.length > room) errs.push(`поместилось только ${room}`);
   UI.uploadErr = errs.length ? "Не загружено — " + errs.join("; ") + "." : "";
   if (!ok.length) return render();
-  Promise.all(ok.map(downscale)).then((srcs) => {
-    commit(() => {
-      srcs.forEach((src, i) => {
-        const id = uid();
-        S.place.photos.push({ id, src, alt: "" });
-        if (!S.place.mainId) S.place.mainId = id;
-        if (i === srcs.length - 1) UI.photoSel = id;
-      });
-    });
-    toast(srcs.length === 1 ? "Фото добавлено. Добавьте описание для незрячих." : `Добавлено фото: ${srcs.length}`);
-  }).catch(() => { UI.uploadErr = "Не удалось прочитать файл. Попробуйте другое фото."; render(); });
+  const placeId = S.place.id;
+  UI.uploading += ok.length; render();
+  (async () => {
+    let added = 0; const failed = [];
+    for (const f of ok) {
+      try {
+        const blob = await downscale(f);
+        const ph = await call(`/editor/places/${encodeURIComponent(placeId)}/photos`, { method: "POST", raw: blob, type: blob.type });
+        UI.uploading--;
+        if (S?.place.id !== placeId) continue;
+        commit(() => { S.place.photos.push({ id: ph.id, src: ph.url, alt: "" }); if (!S.place.mainId) S.place.mainId = ph.id; UI.photoSel = ph.id; });
+        added++;
+        continue;
+      } catch (e) { failed.push(`${f.name} (${e?.message || "не удалось прочитать файл"})`); }
+      UI.uploading--;
+    }
+    UI.uploading = Math.max(0, UI.uploading);
+    if (failed.length) UI.uploadErr = "Не загружено: " + failed.join("; ") + ".";
+    if (S?.place.id === placeId) render();
+    if (added) toast(added === 1 ? "Фото загружено. Добавьте описание и опубликуйте." : `Загружено фото: ${added}. Добавьте описания и опубликуйте.`);
+  })();
 }
 function downscale(file) {
   return new Promise((res, rej) => {
     const img = new Image(), url = URL.createObjectURL(file);
     img.onload = () => {
-      const k = Math.min(1, 1400 / Math.max(img.width, img.height)), c = document.createElement("canvas");
+      const k = Math.min(1, 1600 / Math.max(img.width, img.height)), c = document.createElement("canvas");
       c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
-      c.getContext("2d").drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(url);
-      res(c.toDataURL("image/jpeg", 0.82));
+      const g = c.getContext("2d"); g.fillStyle = "#fff"; g.fillRect(0, 0, c.width, c.height);
+      g.drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(url);
+      c.toBlob((b) => (b ? res(b) : rej(new Error("не удалось сжать фото"))), "image/jpeg", 0.85);
     };
-    img.onerror = () => { URL.revokeObjectURL(url); rej(); };
+    img.onerror = () => { URL.revokeObjectURL(url); rej(new Error("файл не читается как изображение")); };
     img.src = url;
   });
 }
@@ -967,7 +1057,7 @@ document.addEventListener("click", (e) => {
   if (d.tab) { UI.tab = d.tab; UI.selected = null; UI.live = ""; return render(); }
   if (d.mode) { UI.mode = d.mode; UI.selected = null; return render(); }
   if (d.vp) { UI.viewport = d.vp; return render({ inspector: false }); }
-  if (d.react) { UI.reactions = UI.reactions === d.react ? null : d.react; render({ inspector: false }); return toast(UI.mode === "edit" ? "Это предпросмотр: реакция не сохраняется" : "Реакция сохранена (в прототипе — локально)"); }
+  if (d.react) { UI.reactions = UI.reactions === d.react ? null : d.react; render({ inspector: false }); return toast("Это предпросмотр: реакция не сохраняется"); }
   if (d.drag) return;
   if (d.hide) { e.stopPropagation(); return toggleHidden(d.hide); }
   if (d.select) return select(d.select);
@@ -1004,9 +1094,7 @@ document.addEventListener("click", (e) => {
     }
     case "gotogallery": UI.tab = "page"; UI.mode = "edit"; return select("gallery");
     case "resetblock": { const p = PAGE_PRESETS[S.page.preset || "classic"]; return commit(() => { S.page.blocks[UI.selected] = structuredClone(p.blocks[UI.selected]); }); }
-    case "reset": if (confirm("Вернуть демо-данные? Текущие правки пропадут (их можно вернуть через «Отменить»).")) { commit(() => { S = demo(); }); UI.selected = null; render(); } return;
-    case "map": return toast("В прототипе карта не подключена");
-    case "route": return toast("В прототипе маршрут не строится");
+    case "reset": if (!UI.dirty) return toast("Неопубликованных правок нет"); if (confirm("Вернуть опубликованную версию? Неопубликованные правки пропадут.")) { UI.dirty = false; openPlace(S.place.id); } return;
   }
 });
 document.addEventListener("pointerdown", (e) => { const h = e.target.closest("[data-drag]"); if (h && UI.mode === "edit") startDrag(e, h.dataset.drag); });
@@ -1044,7 +1132,7 @@ document.addEventListener("input", (e) => {
 document.addEventListener("change", (e) => {
   const t = e.target;
   if (t.matches("[data-text], [data-alt]")) {
-    if (pending && pending !== snap()) { past.push(pending); future.length = 0; UI.reviewed = false; }
+    if (pending && pending !== snap()) { past.push(pending); future.length = 0; }
     pending = snap(); save(); return render({ inspector: false }); // панель не перерисовываем: фокус уже уходит к другому полю
   }
   if (t.id === "f-accent") return commit(() => { S.place.accent = +t.value; });
@@ -1053,24 +1141,52 @@ document.addEventListener("change", (e) => {
   if (t.name === "cardbg") return setCard(() => { S.card.bg = t.value; S.card.preset = Object.keys(CARD_PRESETS).find((k) => CARD_PRESETS[k].bg === t.value && CARD_PRESETS[k].framed === S.card.framed) || null; });
   if (t.dataset.visible) return toggleHidden(t.dataset.visible);
   if (t.id === "file") { addFiles(t.files); t.value = ""; }
-  if (t.id === "role") {
-    UI.role = t.value; UI.reviewed = false; UI.live = "";
-    render(); toast(UI.role === "moderator" ? "Режим модератора: можно публиковать и ставить «Выбор редакции»" : "Режим владельца: изменения уходят на проверку");
-  }
+  if (t.id === "place") return openPlace(t.value);
 });
 $("#undo").addEventListener("click", undo);
 $("#redo").addEventListener("click", redo);
-$("#publish").addEventListener("click", () => {
+$("#publish").addEventListener("click", async () => {
+  if (!S || UI.saving) return;
   const issues = [];
   if (!S.place.name.trim()) issues.push("название");
-  if (!S.place.photos.length) issues.push("хотя бы одно фото");
+  if (!S.place.description.trim()) issues.push("описание");
   if (S.place.photos.some((p) => !p.alt.trim())) issues.push("описания у всех фото");
-  if (issues.length) return toast("Перед отправкой заполните: " + issues.join(", "));
-  if (UI.role === "moderator") { UI.dirty = false; render(); return toast("Опубликовано: изменения видны посетителям"); }
-  UI.reviewed = true; UI.dirty = false; render(); toast("Отправлено модератору. Пока идёт проверка, посетители видят прежнюю версию.");
+  if (UI.uploading) issues.push("дождитесь загрузки фото");
+  if (issues.length) return toast("Перед публикацией: " + issues.join(", "));
+  UI.saving = true; render({ inspector: false });
+  try {
+    const v = await call(`/editor/places/${encodeURIComponent(S.place.id)}`, { method: "PUT", body: payload() });
+    const sel = UI.photoSel;
+    S = fromServer(v); past.length = 0; future.length = 0;
+    UI.dirty = false; UI.savedAt = new Date(); UI.photoSel = S.place.photos.some((p) => p.id === sel) ? sel : S.place.mainId;
+    const item = PLACES.find((p) => p.id === S.place.id);
+    if (item) { item.has_design = true; item.name = S.place.name; renderPicker(); }
+    toast(S.place.status === "published" ? "Опубликовано: изменения видны всем посетителям" : "Сохранено. Посетители увидят оформление, когда место опубликуют в каталоге");
+  } catch (e) {
+    toast(e.status === 409 ? "Оформление уже изменили в другой вкладке. Правки не сохранены: откройте место заново." : e.status === 401 ? "Войдите снова и нажмите «Опубликовать» ещё раз" : "Не опубликовано: " + e.message);
+  } finally { UI.saving = false; render({ inspector: false }); }
 });
+$("#login-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const user = $("#login-user").value.trim(), pass = $("#login-pass").value, btn = $("#login-btn");
+  if (!user || !pass) { $("#login-err").textContent = "Введите логин и пароль"; return; }
+  btn.disabled = true; $("#login-err").textContent = "";
+  try {
+    await call("/editor/login", { method: "POST", body: { username: user, password: pass } });
+    $("#login-pass").value = "";
+    if (S) { $("#gate").hidden = true; render(); } else await boot();
+  } catch (err) { $("#login-err").textContent = err.message; $("#login-pass").select(); }
+  finally { btn.disabled = false; }
+});
+$("#logout").addEventListener("click", async () => {
+  if (UI.dirty && !confirm("Есть неопубликованные правки. Выйти без сохранения?")) return;
+  try { await call("/editor/logout", { method: "POST" }); } catch { /* cookie всё равно истечёт */ }
+  S = null; UI.dirty = false; past.length = 0; future.length = 0;
+  stageMessage(""); showGate("Вы вышли из конструктора.");
+});
+addEventListener("beforeunload", (e) => { if (UI.dirty) { e.preventDefault(); e.returnValue = ""; } });
 new ResizeObserver(([e]) => document.documentElement.style.setProperty("--top-h", Math.ceil(e.target.getBoundingClientRect().height) + "px")).observe($(".topbar"));
-render();
+boot();
 </script>
 </body>
 </html>

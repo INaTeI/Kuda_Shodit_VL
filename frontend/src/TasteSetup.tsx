@@ -12,6 +12,7 @@ import {
 } from "./api";
 import { Artwork, Dialog, Empty, ErrorBox, HEART_PATH, Skeleton } from "./components";
 import { useGuest } from "./state";
+import { AccentName, CardDecor, colors } from "./placeDesign";
 
 export const TASTE_CARD_LIMIT = 12;
 
@@ -469,7 +470,8 @@ function TasteDeck() {
             <div className="taste-back-card" aria-hidden="true" />
             <article
               ref={card}
-              className={`taste-card ${exit ? `taste-exit-${exit}` : ""}`}
+              className={`taste-card ${exit ? `taste-exit-${exit}` : ""} ${place.card_style ? "styled" : ""} ${place.card_style?.framed ? "framed" : ""}`}
+              style={place.card_style ? colors(place.card_style.bg, "auto", "--c") : undefined}
               tabIndex={0}
               aria-label={`Карточка места: ${place.name}. Влево — не подходит, вправо — нравится.`}
               aria-busy={busy}
@@ -509,7 +511,10 @@ function TasteDeck() {
                   void decide(dx < 0 ? "dislike" : "like");
               }}
             >
-              <Artwork key={place.id} place={place} />
+              <div className="taste-photo">
+                <Artwork key={place.id} place={place} />
+                <CardDecor style={place.card_style ?? null} />
+              </div>
               <span className="taste-stamp stamp-no" aria-hidden="true">
                 НЕ ПОДХОДИТ
               </span>
@@ -520,7 +525,9 @@ function TasteDeck() {
                 <div className="eyebrow">
                   {place.categories.map((c) => c.name).join(" · ")}
                 </div>
-                <h2>{place.name}</h2>
+                <h2>
+                  <AccentName name={place.name} accent={place.title_accent} />
+                </h2>
                 <p>{place.activity}</p>
                 <div className="taste-card-price">
                   <strong>{price(place)}</strong>

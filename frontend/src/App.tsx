@@ -32,6 +32,7 @@ import {
 import { useGuest } from "./state";
 import TasteSetup, { TasteInvitation } from "./TasteSetup";
 import Weather from "./Weather";
+import { AccentName, DesignedPage, usePlaceDesign } from "./placeDesign";
 const nav = [
   ["/catalog", "Каталог"],
   ["/recommendations", "Подборка"],
@@ -806,12 +807,13 @@ function PlaceDetail() {
   const { id } = useParams();
   const q = useLoad<Place>(`/places/${encodeURIComponent(id || "")}`);
   const p = q.data;
+  const { design, pending } = usePlaceDesign(p);
   return (
     <section className="wrap page">
       <Link className="back-link" to="/catalog">
         ← В каталог
       </Link>
-      {q.loading ? (
+      {q.loading || pending ? (
         <Skeleton />
       ) : q.error ? (
         <>
@@ -821,15 +823,25 @@ function PlaceDetail() {
       ) : (
         p && (
           <>
-            <div className="detail-art">
-              <Artwork place={p} hero />
-            </div>
+            {design ? (
+              <DesignedPage place={p} design={design} />
+            ) : (
+              <div className="detail-art">
+                <Artwork place={p} hero />
+              </div>
+            )}
             <div className="detail-layout">
               <div>
-                <div className="eyebrow">
-                  {p.categories.map((c) => c.name).join(" · ")}
-                </div>
-                <h1>{p.name}</h1>
+                {!design && (
+                  <>
+                    <div className="eyebrow">
+                      {p.categories.map((c) => c.name).join(" · ")}
+                    </div>
+                    <h1>
+                      <AccentName name={p.name} accent={p.title_accent} />
+                    </h1>
+                  </>
+                )}
                 {p.interest_tags?.length ? (
                   <div className="chips">
                     {p.interest_tags.map((t) => (
@@ -842,7 +854,7 @@ function PlaceDetail() {
                 <Reactions id={p.id} />
                 <h2>Чем здесь заняться</h2>
                 <p className="lede">{p.activity}</p>
-                <p className="description">{p.description}</p>
+                {!design && <p className="description">{p.description}</p>}
                 {p.visiting_notes && (
                   <>
                     <h2>Перед выходом</h2>

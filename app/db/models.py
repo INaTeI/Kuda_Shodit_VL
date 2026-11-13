@@ -10,7 +10,10 @@ from sqlalchemy import (
     DateTime,
     ForeignKey,
     JSON,
+    LargeBinary,
     Table,
+    UniqueConstraint,
+    inspect,
     Column,
     CheckConstraint,
     func,
@@ -70,6 +73,31 @@ class Place(Base):
     categories: Mapped[list[Category]] = relationship(
         secondary=place_categories, lazy="selectin"
     )
+    design: Mapped["PlaceDesign | None"] = relationship(
+        lazy="selectin", uselist=False, passive_deletes=True
+    )
+
+    def _loaded_design(self):
+        # Только уже загруженное значение: свойство не должно делать запрос в async-сессии.
+        value = inspect(self).attrs.design.loaded_value
+        return value if isinstance(value, PlaceDesign) else None
+
+    @property
+    def photo_url(self) -> str | None:
+        design = self._loaded_design()
+        if design is None or design.main_photo_id is None:
+            return None
+        return f"/api/v1/photos/{design.main_photo_id}"
+
+    @property
+    def card_style(self) -> dict | None:
+        design = self._loaded_design()
+        return design.card if design is not None else None
+
+    @property
+    def title_accent(self) -> int | None:
+        design = self._loaded_design()
+        return design.title_accent if design is not None else None
 
 
 class Profile(Base):
@@ -101,3 +129,47 @@ class PlaceState(Base):
     reaction: Mapped[str | None] = mapped_column(String(10))
     is_known: Mapped[bool] = mapped_column(Boolean, default=False)
     reaction_revision: Mapped[int] = mapped_column(Integer, default=0, server_default="0")
+
+
+class PlaceDesign(Base):
+    """Опубликованное оформление страницы и карточки места из конструктора."""
+
+    __tablename__ = "place_designs"
+    __table_args__ = (CheckConstraint("revision >= 1", name="ck_design_revision"),)
+    place_id: Mapped[UUID] = mapped_column(
+        ForeignKey("places.id", ondelete="CASCADE"), primary_key=True
+    )
+    page: Mapped[dict] = mapped_column(JSON)
+    card: Mapped[dict] = mapped_column(JSON)
+    title_accent: Mapped[int | None] = mapped_column(Integer)
+    main_photo_id: Mapped[UUID | None] = mapped_column()
+    revision: Mapped[int] = mapped_column(Integer, default=1)
+    updated_by: Mapped[str] = mapped_column(String(60))
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
+    )
+
+
+class PlacePhoto(Base):
+    """Фото места. position NULL — загружено, но ещё не сохранено в оформлении."""
+
+    __tablename__ = "place_photos"
+    __table_args__ = (
+        CheckConstraint("content_type IN ('image/jpeg','image/png','image/webp')", name="ck_photo_type"),
+        CheckConstraint("size_bytes > 0", name="ck_photo_size"),
+        CheckConstraint("position IS NULL OR position >= 0", name="ck_photo_position"),
+        UniqueConstraint("place_id", "position", name="uq_photo_position"),
+    )
+    id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)
+    place_id: Mapped[UUID] = mapped_column(
+        ForeignKey("places.id", ondelete="CASCADE"), index=True
+    )
+    content_type: Mapped[str] = mapped_column(String(20))
+    data: Mapped[bytes] = mapped_column(LargeBinary, deferred=True)
+    size_bytes: Mapped[int] = mapped_column(Integer)
+    sha256: Mapped[str] = mapped_column(String(64))
+    alt: Mapped[str] = mapped_column(String(140), default="")
+    position: Mapped[int | None] = mapped_column(Integer)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now()
+    )

@@ -10,6 +10,13 @@ class Settings(BaseSettings):
     cors_origins: list[str] = ["http://localhost:5173", "http://localhost:3000"]
     weatherapi_key: str = ""
     analytics_retention_days: int = Field(default=90, ge=1, le=365)
+    # Вход в конструктор мест. Пароль хранится только как PBKDF2-хеш:
+    # python -m app.editor.hash_password. Пустой хеш отключает вход.
+    editor_username: str = Field(default="admin", min_length=1, max_length=60)
+    editor_password_hash: str = ""
+    editor_session_hours: int = Field(default=12, ge=1, le=168)
+    # True только за HTTPS: иначе браузер не отправит Secure-cookie.
+    editor_cookie_secure: bool = False
 
 
 @lru_cache
