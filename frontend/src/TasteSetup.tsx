@@ -203,7 +203,14 @@ function TasteDeck() {
   const views = useRef(new Map<string, ViewAttempt>());
   const swipeAttempt = useRef<CardEvent | null>(null),
     undoAttempt = useRef<CardEvent | null>(null);
-  const pointer = useRef<{ id: number; x: number; y: number } | null>(null);
+  const pointer = useRef<{
+    id: number;
+    x: number;
+    y: number;
+    dx: number;
+    dy: number;
+  } | null>(null);
+  const exitAnimation = useRef<Animation | null>(null);
   const guestRef = useRef(guest);
   guestRef.current = guest;
   const filtersKey = JSON.stringify(geo);
@@ -301,6 +308,9 @@ function TasteDeck() {
     };
   }, [place?.id, runId]);
   useEffect(() => {
+    exitAnimation.current?.cancel();
+    exitAnimation.current = null;
+    resetDrag();
     if (place && index > 0) card.current?.focus({ preventScroll: true });
   }, [place?.id]);
   function leave() {
@@ -312,6 +322,35 @@ function TasteDeck() {
     card.current?.style.setProperty("--drag-rotate", "0deg");
     card.current?.removeAttribute("data-drag");
   }
+  function playExit(reaction: Reaction) {
+    const element = card.current;
+    if (!element || matchMedia("(prefers-reduced-motion: reduce)").matches)
+      return Promise.resolve();
+    exitAnimation.current?.cancel();
+    const startX = element.style.getPropertyValue("--drag-x") || "0px";
+    const startRotate =
+      element.style.getPropertyValue("--drag-rotate") || "0deg";
+    const direction = reaction === "like" ? 1 : reaction === "dislike" ? -1 : 0;
+    const finishTransform = direction
+      ? `translateX(${direction * Math.max(innerWidth, element.offsetWidth * 2)}px) rotate(${direction * 18}deg)`
+      : "translateY(-28px) scale(.98)";
+    const animation = element.animate(
+      [
+        {
+          transform: `translateX(${startX}) rotate(${startRotate})`,
+          opacity: 1,
+        },
+        { transform: finishTransform, opacity: 0 },
+      ],
+      {
+        duration: 320,
+        easing: "cubic-bezier(.22,.72,.24,1)",
+        fill: "forwards",
+      },
+    );
+    exitAnimation.current = animation;
+    return animation.finished.catch(() => undefined);
+  }
   async function decide(reaction: Reaction) {
     if (!place || lock.current || undoAttempt.current) return;
     if (swipeAttempt.current && swipeAttempt.current.reaction !== reaction)
@@ -321,9 +360,7 @@ function TasteDeck() {
     setError("");
     pointer.current = null;
     setExit(reaction);
-    const animationDone = matchMedia("(prefers-reduced-motion: reduce)").matches
-      ? Promise.resolve()
-      : new Promise((resolve) => setTimeout(resolve, 320));
+    const animationDone = playExit(reaction);
     try {
       await ensureView();
       if (!swipeAttempt.current)
@@ -345,11 +382,15 @@ function TasteDeck() {
         { index, eventId: event.event_id, reaction },
       ]);
       swipeAttempt.current = null;
+      exitAnimation.current?.cancel();
+      exitAnimation.current = null;
       resetDrag();
       setIndex((n) => n + 1);
       setExit("");
     } catch (e) {
       if (!mounted.current) return;
+      exitAnimation.current?.cancel();
+      exitAnimation.current = null;
       setExit("");
       resetDrag();
       if (e instanceof ApiError && e.status === 409) {
@@ -412,6 +453,8 @@ function TasteDeck() {
     if (!start || start.id !== event.pointerId || busy || retryKind) return;
     const dx = event.clientX - start.x,
       dy = event.clientY - start.y;
+    start.dx = dx;
+    start.dy = dy;
     if (Math.abs(dx) < Math.abs(dy)) return;
     card.current?.style.setProperty(
       "--drag-x",
@@ -529,6 +572,8 @@ function TasteDeck() {
                   id: event.pointerId,
                   x: event.clientX,
                   y: event.clientY,
+                  dx: 0,
+                  dy: 0,
                 };
                 event.currentTarget.setPointerCapture(event.pointerId);
               }}
@@ -537,8 +582,8 @@ function TasteDeck() {
               onPointerUp={(event) => {
                 const start = pointer.current;
                 if (!start) return;
-                const dx = event.clientX - start.x,
-                  dy = event.clientY - start.y;
+                const dx = start.dx || event.clientX - start.x,
+                  dy = start.dy || event.clientY - start.y;
                 pointer.current = null;
                 if (Math.abs(dx) > 75 && Math.abs(dx) > Math.abs(dy) * 1.3)
                   void decide(dx < 0 ? "dislike" : "like");

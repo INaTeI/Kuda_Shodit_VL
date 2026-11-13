@@ -1261,13 +1261,13 @@ main:focus-visible {
   opacity: 1;
 }
 .taste-exit-like {
-  animation: taste-like 0.32s ease-out forwards;
+  will-change: transform, opacity;
 }
 .taste-exit-dislike {
-  animation: taste-dislike 0.32s ease-out forwards;
+  will-change: transform, opacity;
 }
 .taste-exit-neutral {
-  animation: taste-neutral 0.32s ease-out forwards;
+  will-change: transform, opacity;
 }
 .taste-reaction-dock {
   position: relative;
