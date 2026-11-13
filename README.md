@@ -248,3 +248,16 @@ docker compose exec api python -m app.importing.cleanup
 После выбора протокола модели адаптер подключается в get_ranker; фильтры и контракт API сохраняются.
 При неверных ID, недоступности или таймауте ранжировщика применяется текущий алгоритм.
 Адрес LLM и серверный токен в React передавать не требуется.
+
+## React frontend
+
+Готовый локальный интерфейс находится в `frontend/`. Инструкция и ограничения —
+[frontend/README.md](frontend/README.md). При работающем backend выполните:
+
+```powershell
+cd frontend
+npm.cmd ci
+npm.cmd run dev
+```
+
+Адрес: http://127.0.0.1:5173. Сборка: `npm.cmd run build`. Проверки: `npm.cmd test`.
