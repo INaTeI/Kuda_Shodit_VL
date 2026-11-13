@@ -29,6 +29,7 @@ export function PlaceMap({
   name: string;
 }) {
   const [view, setView] = useState({ scale: 1, x: 0, y: 0 });
+  const layer = useRef<HTMLDivElement>(null);
   const [failed, setFailed] = useState(false);
   const drag = useRef<{ id: number; x: number; y: number } | null>(null);
   const valid =
@@ -60,11 +61,13 @@ export function PlaceMap({
       </p>
     );
   const point = project(latitude, longitude);
+  const centeredView = (scale: number) => ({
+    scale,
+    x: (0.5 - point.x / 100) * (layer.current?.offsetWidth ?? 0) * scale,
+    y: (0.5 - point.y / 100) * (layer.current?.offsetHeight ?? 0) * scale,
+  });
   const zoom = (factor: number) =>
-    setView((v) => ({
-      ...v,
-      scale: Math.min(6, Math.max(1, v.scale * factor)),
-    }));
+    setView((v) => centeredView(Math.min(6, Math.max(1, v.scale * factor))));
   const move = (e: PointerEvent<HTMLDivElement>) => {
     const d = drag.current;
     if (!d || d.id !== e.pointerId) return;
@@ -92,11 +95,15 @@ export function PlaceMap({
         >
           −
         </button>
+        <button type="button" onClick={() => setView(centeredView(4))}>
+          Приблизить к месту
+        </button>
         <button type="button" onClick={() => setView({ scale: 1, x: 0, y: 0 })}>
           Сбросить карту
         </button>
       </div>
       <p className="fine-print" id="map-help">
+        «Приблизить к месту» показывает точку крупнее в центре карты.
         Перетаскивайте карту. С клавиатуры: стрелки для перемещения, + и − для
         масштаба, Home для сброса. Голубая линия — берег, коричневые — основные
         дороги.
@@ -154,6 +161,7 @@ export function PlaceMap({
         }}
       >
         <div
+          ref={layer}
           className="map-layer"
           style={{
             transform: `translate(${view.x}px, ${view.y}px) scale(${view.scale})`,

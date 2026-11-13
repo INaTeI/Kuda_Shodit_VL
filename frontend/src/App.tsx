@@ -1,3 +1,4 @@
+import { useGeo } from "./geo";
 import { PlaceMap } from "./PlaceMap";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import {
@@ -232,33 +233,11 @@ function LocationFields({
   value: Filters;
   onChange: (v: Filters) => void;
 }) {
-  const [error, setError] = useState(""),
-    [busy, setBusy] = useState(false);
-  function locate() {
-    setError("");
-    if (!navigator.geolocation) {
-      setError("Геолокация недоступна. Вы можете выбирать места без неё.");
-      return;
-    }
-    setBusy(true);
-    navigator.geolocation.getCurrentPosition(
-      (p) => {
-        onChange({
-          ...value,
-          latitude: p.coords.latitude,
-          longitude: p.coords.longitude,
-          radius_km: value.radius_km || 5,
-        });
-        setBusy(false);
-      },
-      () => {
-        setError(
-          "Не получилось определить расположение. Разрешите доступ или продолжайте без него.",
-        );
-        setBusy(false);
-      },
-      { timeout: 10000 },
-    );
+  const geo = useGeo();
+  const { busy, error } = geo;
+  async function locate() {
+    const p = await geo.locate();
+    if (p) onChange({ ...value, latitude: p.latitude, longitude: p.longitude, radius_km: value.radius_km || 5 });
   }
   return (
     <div className="location-fields">
@@ -285,7 +264,7 @@ function LocationFields({
               }
             />
           </label>
-          <button type="button" onClick={() => onChange({})}>
+          <button type="button" onClick={() => { geo.clearPosition(); onChange({}); }}>
             Убрать расположение
           </button>
         </>
