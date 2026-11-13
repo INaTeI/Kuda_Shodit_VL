@@ -9,6 +9,15 @@ async function mock(
     conflict?: boolean;
   } = {},
 ) {
+  await page
+    .context()
+    .addCookies([
+      {
+        name: "vdk-cookie-choice",
+        value: "necessary",
+        url: "http://127.0.0.1:5173",
+      },
+    ]);
   const events: any[] = [],
     receipts = new Map<string, any>(),
     revisions = new Map<string, number>();
@@ -229,6 +238,7 @@ for (const width of [360, 390, 768, 1280])
       path: `test-results/taste-${width}.png`,
       fullPage: true,
     });
+    await card.scrollIntoViewIfNeeded();
     const box = (await card.boundingBox())!;
     await page.mouse.move(box.x + box.width / 2, box.y + 90);
     await page.mouse.down();
@@ -274,6 +284,7 @@ test("phone touch swipe right likes the place; vertical scrolling does not react
   await page.getByRole("button", { name: "Давай попробуем →" }).click();
   const card = page.locator(".taste-card");
   await expect(card).toBeVisible();
+  await card.scrollIntoViewIfNeeded();
   const box = (await card.boundingBox())!;
   const cdp = await page.context().newCDPSession(page);
   const x = box.x + box.width / 2,
@@ -386,6 +397,7 @@ test("drag release flies from the released position while server reply is delaye
   await page.getByRole("button", { name: "Давай попробуем →" }).click();
   const card = page.locator(".taste-card");
   await expect(card).toBeVisible();
+  await card.scrollIntoViewIfNeeded();
   const box = (await card.boundingBox())!;
   await page.mouse.move(box.x + box.width / 2, box.y + 80);
   await page.mouse.down();
@@ -449,4 +461,43 @@ test("reaction dock keeps outlined icons and shows hover states", async ({
   await expect(neutralIcon).toHaveCSS("color", "rgb(99, 119, 123)");
   await neutral.hover();
   await expect(neutralIcon).toHaveCSS("color", "rgb(22, 125, 141)");
+});
+
+test("next card is underneath without a view event, last card reveals green check", async ({
+  page,
+}) => {
+  const { events, places } = await mock(page, { count: 2 });
+  await page.goto("/taste");
+  await page.getByRole("button", { name: "Давай попробуем →" }).click();
+  const active = page.locator(".taste-card");
+  const underneath = page.locator(".taste-under-card");
+  await expect(underneath).toHaveAttribute("inert", "");
+  await expect(underneath).toContainText(places[1].name);
+  await expect(active).toHaveCSS("box-shadow", "none");
+  const firstBox = (await active.boundingBox())!;
+  const nextBox = (await underneath.boundingBox())!;
+  expect(Math.abs(firstBox.width - nextBox.width)).toBeLessThan(2);
+  expect(Math.abs(firstBox.height - nextBox.height)).toBeLessThan(2);
+  expect(
+    events.some(
+      (e) => e.event_type === "card_view" && e.place_id === places[1].id,
+    ),
+  ).toBe(false);
+  await page.getByRole("button", { name: "Нравится — вправо" }).click();
+  await expect(page.getByText("Карточка 2 из 2")).toBeVisible();
+  await expect(underneath.locator(".finish-symbol")).toHaveText("✓");
+  await expect(underneath.locator(".finish-symbol")).toHaveCSS(
+    "color",
+    "rgb(33, 134, 75)",
+  );
+  const lastBox = (await active.boundingBox())!;
+  await page.getByRole("button", { name: "Пока не знаю" }).click();
+  const finish = page.locator(".taste-complete-card");
+  await expect(finish).toBeVisible();
+  expect(
+    Math.abs((await finish.boundingBox())!.width - lastBox.width),
+  ).toBeLessThan(2);
+  expect(
+    Math.abs((await finish.boundingBox())!.height - lastBox.height),
+  ).toBeLessThan(2);
 });

@@ -216,6 +216,7 @@ function TasteDeck() {
   guestRef.current = guest;
   const filtersKey = JSON.stringify(geo);
   const place = deck[index]?.place;
+  const nextPlace = deck[index + 1]?.place;
   const finished = !loading && deck.length > 0 && index >= deck.length;
   useEffect(() => {
     mounted.current = true;
@@ -349,8 +350,8 @@ function TasteDeck() {
         { transform: finishTransform, opacity: 0 },
       ],
       {
-        duration: 320,
-        easing: "cubic-bezier(.22,.72,.24,1)",
+        duration: 560,
+        easing: "cubic-bezier(.18,.72,.22,1)",
         fill: "forwards",
       },
     );
@@ -495,9 +496,13 @@ function TasteDeck() {
       {loading ? (
         <Skeleton />
       ) : finished ? (
-        <div className="taste-finish panel" role="status">
+        <div
+          className="taste-finish taste-complete-card"
+          
+          role="status"
+        >
           <div className="finish-symbol" aria-hidden="true">
-            ✳
+            ✓
           </div>
           <h2>Твой выбор — начало подборки.</h2>
           <p>
@@ -557,90 +562,116 @@ function TasteDeck() {
             />
           </div>
           <div className="taste-arena">
-            <div className="taste-back-card" aria-hidden="true" />
-            <article
-              ref={card}
-              className={`taste-card ${exit ? `taste-exit-${exit}` : ""}`}
-              tabIndex={0}
-              aria-label={`Карточка места: ${place.name}. Влево — не подходит, вправо — нравится.`}
-              aria-busy={busy}
-              onKeyDown={(event) => {
-                if (event.target !== event.currentTarget || busy || retryKind)
-                  return;
-                if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
-                  event.preventDefault();
-                  void decide(event.key === "ArrowLeft" ? "dislike" : "like");
-                }
-              }}
-              onPointerDown={(event) => {
-                if (
-                  busy ||
-                  retryKind ||
-                  !event.isPrimary ||
-                  (event.pointerType === "mouse" && event.button !== 0) ||
-                  (event.target as Element).closest("button,a")
-                )
-                  return;
-                pointer.current = {
-                  id: event.pointerId,
-                  x: event.clientX,
-                  y: event.clientY,
-                  dx: 0,
-                  dy: 0,
-                };
-                event.currentTarget.setPointerCapture(event.pointerId);
-              }}
-              onPointerMove={move}
-              onPointerCancel={resetDrag}
-              onPointerUp={(event) => {
-                const start = pointer.current;
-                if (!start) return;
-                const dx = start.dx || event.clientX - start.x,
-                  dy = start.dy || event.clientY - start.y;
-                pointer.current = null;
-                if (Math.abs(dx) > 75 && Math.abs(dx) > Math.abs(dy) * 1.3)
-                  void decide(dx < 0 ? "dislike" : "like");
-                else resetDrag();
-              }}
-            >
-              <Artwork key={place.id} place={place} />
-              <span className="taste-stamp stamp-no" aria-hidden="true">
-                НЕ ПОДХОДИТ
-              </span>
-              <span className="taste-stamp stamp-yes" aria-hidden="true">
-                НРАВИТСЯ
-              </span>
-              <div className="taste-card-body">
-                <div className="eyebrow">
-                  {place.categories.map((c) => c.name).join(" · ")}
-                </div>
-                <h2>{place.name}</h2>
-                <p>{place.activity}</p>
-                <div className="taste-card-price">
-                  <strong>{price(place)}</strong>
-                  <button
-                    disabled={busy || !!retryKind}
-                    onClick={() => {
-                      setDetails(true);
-                      void ensureView()
-                        .then(() =>
-                          guestRef.current.recordEvent(
-                            makeEvent("place_open"),
-                            requests.current.signal,
-                          ),
-                        )
-                        .catch((e) => {
-                          if (mounted.current && e.name !== "AbortError")
-                            setError(e.message);
-                        });
-                    }}
-                  >
-                    О месте ↗
-                  </button>
-                </div>
-                <small>{place.price_note}</small>
+            <div className="taste-stack">
+              <div className="taste-under-card" aria-hidden="true" inert>
+                {nextPlace ? (
+                  <>
+                    <Artwork key={nextPlace.id} place={nextPlace} />
+                    <div className="taste-card-body">
+                      <div className="eyebrow">
+                        {nextPlace.categories.map((c) => c.name).join(" · ")}
+                      </div>
+                      <h2>{nextPlace.name}</h2>
+                      <p>{nextPlace.activity}</p>
+                      <div className="taste-card-price">
+                        <strong>{price(nextPlace)}</strong>
+                        <button tabIndex={-1}>О месте ↗</button>
+                      </div>
+                      <small>{nextPlace.price_note}</small>
+                    </div>
+                  </>
+                ) : (
+                  <div className="taste-complete-preview">
+                    <div className="finish-symbol">✓</div>
+                    <h2>Все карточки просмотрены</h2>
+                    <p>Твой выбор — начало подборки.</p>
+                  </div>
+                )}
               </div>
-            </article>
+              <article
+                ref={card}
+                className={`taste-card ${exit ? `taste-exit-${exit}` : ""}`}
+                tabIndex={0}
+                aria-label={`Карточка места: ${place.name}. Влево — не подходит, вправо — нравится.`}
+                aria-busy={busy}
+                onKeyDown={(event) => {
+                  if (event.target !== event.currentTarget || busy || retryKind)
+                    return;
+                  if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
+                    event.preventDefault();
+                    void decide(event.key === "ArrowLeft" ? "dislike" : "like");
+                  }
+                }}
+                onPointerDown={(event) => {
+                  if (
+                    busy ||
+                    retryKind ||
+                    !event.isPrimary ||
+                    (event.pointerType === "mouse" && event.button !== 0) ||
+                    (event.target as Element).closest("button,a")
+                  )
+                    return;
+                  pointer.current = {
+                    id: event.pointerId,
+                    x: event.clientX,
+                    y: event.clientY,
+                    dx: 0,
+                    dy: 0,
+                  };
+                  event.currentTarget.setPointerCapture(event.pointerId);
+                }}
+                onPointerMove={move}
+                onPointerCancel={resetDrag}
+                onPointerUp={(event) => {
+                  const start = pointer.current;
+                  if (!start) return;
+                  const dx = start.dx || event.clientX - start.x,
+                    dy = start.dy || event.clientY - start.y;
+                  pointer.current = null;
+                  if (Math.abs(dx) > 75 && Math.abs(dx) > Math.abs(dy) * 1.3)
+                    void decide(dx < 0 ? "dislike" : "like");
+                  else resetDrag();
+                }}
+              >
+                <Artwork key={place.id} place={place} />
+                <span className="taste-stamp stamp-no" aria-hidden="true">
+                  НЕ ПОДХОДИТ
+                </span>
+                <span className="taste-stamp stamp-yes" aria-hidden="true">
+                  НРАВИТСЯ
+                </span>
+                <div className="taste-card-body">
+                  <div className="eyebrow">
+                    {place.categories.map((c) => c.name).join(" · ")}
+                  </div>
+                  <h2>{place.name}</h2>
+                  <p>{place.activity}</p>
+                  <div className="taste-card-price">
+                    <strong>{price(place)}</strong>
+                    <button
+                      disabled={busy || !!retryKind}
+                      onClick={() => {
+                        setDetails(true);
+                        void ensureView()
+                          .then(() =>
+                            guestRef.current.recordEvent(
+                              makeEvent("place_open"),
+                              requests.current.signal,
+                            ),
+                          )
+                          .catch((e) => {
+                            if (mounted.current && e.name !== "AbortError")
+                              setError(e.message);
+                          });
+                      }}
+                    >
+                      О месте ↗
+                    </button>
+                  </div>
+                  <small>{place.price_note}</small>
+                </div>
+              </article>
+            </div>
             <div className="taste-reaction-dock" aria-label="Оценить место">
               <button
                 className="taste-reaction taste-reaction-dislike"
