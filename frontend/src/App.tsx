@@ -1,3 +1,4 @@
+import { PlaceMap } from "./PlaceMap";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import {
   Link,
@@ -40,7 +41,7 @@ export default function App() {
   const guest = useGuest();
   useEffect(() => {
     window.scrollTo(0, 0);
-    document.title = `VDK GID — ${nav.find(([p]) => location.pathname === p)?.[1] || "Владивосток, который подходит тебе"}`;
+    document.title = `Куда_Сходить_ВЛ — ${nav.find(([p]) => location.pathname === p)?.[1] || "Владивосток, который подходит тебе"}`;
     document.querySelector<HTMLElement>("main")?.focus();
   }, [location.pathname]);
   return (
@@ -49,8 +50,8 @@ export default function App() {
         Перейти к содержимому
       </a>
       <header className="header wrap">
-        <Link to="/" className="logo" aria-label="VDK GID — главная">
-          <span aria-hidden="true">≋</span> VDK GID
+        <Link to="/" className="logo" aria-label="Куда_Сходить_ВЛ — главная">
+          <span aria-hidden="true">≋</span> Куда_Сходить_ВЛ
           <span className="logo-dot">.</span>
         </Link>
         <Weather />
@@ -96,7 +97,7 @@ export default function App() {
       </main>
       <footer className="wrap footer">
         <Link className="logo" to="/">
-          ≋ VDK GID.
+          ≋ КСВЛ.
         </Link>
         <p>Свой ритм. Свои места. Свой Владивосток.</p>
         <span>43°07′ с. ш. / 131°53′ в. д.</span>
@@ -877,6 +878,7 @@ function PlaceDetail() {
                 <hr />
                 <h3>Где находится</h3>
                 <p>{p.address || "Адрес уточняется"}</p>
+                <PlaceMap key={p.id} latitude={p.latitude} longitude={p.longitude} name={p.name} />
                 <h3>Когда прийти</h3>
                 <p>{p.opening_hours || "Часы работы уточняются"}</p>
                 <hr />

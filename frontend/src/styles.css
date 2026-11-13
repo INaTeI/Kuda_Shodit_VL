@@ -1091,6 +1091,65 @@ main:focus-visible {
   display: block;
   padding-right: 46px;
 }
+.place-map {
+  margin: 16px 0;
+}
+.map-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.map-controls button {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 8px 12px;
+}
+.map-viewport {
+  overflow: hidden;
+  position: relative;
+  background: #eef1eb;
+  border: 1px solid #c4d1ce;
+  border-radius: 16px;
+  cursor: grab;
+  touch-action: none;
+}
+.map-viewport:active {
+  cursor: grabbing;
+}
+.map-viewport:focus-visible {
+  outline: 3px solid #27717a;
+  outline-offset: 3px;
+}
+.map-layer {
+  position: relative;
+  width: 100%;
+  transform-origin: center;
+}
+.map-layer img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1600 / 2192;
+  user-select: none;
+  pointer-events: none;
+}
+.map-marker {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border: 3px solid white;
+  border-radius: 50%;
+  background: #a82d24;
+  box-shadow:
+    0 0 0 2px #7b221c,
+    0 2px 7px #0006;
+  pointer-events: none;
+}
+.map-message {
+  padding: 16px;
+  background: #eef1eb;
+  border-radius: 12px;
+}
+
 
 /* Optional taste setup: gestures share the same actions as accessible buttons. */
 .taste-invitation {
@@ -1700,3 +1759,4 @@ main:focus-visible {
 .header .weather-wind { max-width:220px; overflow:hidden; text-overflow:ellipsis; }
 @media(max-width:600px) { .header .weather-wind { max-width:110px; } .forecast-astro { grid-column:1 / -1; } }
 @media(max-width:600px){.header .weather-wind{white-space:normal;line-height:1.2;overflow-wrap:anywhere}}
+@media(max-width:600px){.header .logo{font-size:clamp(13px,3.6vw,18px);letter-spacing:-.5px}}

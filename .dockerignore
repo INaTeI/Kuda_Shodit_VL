@@ -17,3 +17,10 @@ recommender/**
 !recommender/data/
 recommender/data/*
 !recommender/data/catalog.json
+
+
+frontend/node_modules/
+frontend/dist/
+frontend/test-results/
+frontend/playwright-report/
+frontend/.env*
