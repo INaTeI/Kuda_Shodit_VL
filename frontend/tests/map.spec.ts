@@ -70,7 +70,8 @@ test("marker follows projected coordinates through zoom and drag; map stays loca
   await assertPosition();
   await page.getByRole("button", { name: "Отдалить карту" }).click();
   await assertPosition();
-  await page.getByRole("button", { name: "Сбросить карту" }).click();
+  await page.locator(".map-viewport").focus();
+  await page.keyboard.press("Home");
   await expect(page.locator(".map-layer")).toHaveAttribute(
     "style",
     /translate\(0px, 0px\) scale\(1\)/,
@@ -162,7 +163,7 @@ for (const width of [360, 1280]) {
     await page.locator(".map-viewport").focus();
     await page.keyboard.press("ArrowLeft");
     await page
-      .getByRole("button", { name: "Приблизить к месту", exact: true })
+      .getByRole("button", { name: "Приблизить карту", exact: true })
       .click();
     const assertCentered = async () => {
       const v = (await page.locator(".map-viewport").boundingBox())!;
@@ -172,7 +173,7 @@ for (const width of [360, 1280]) {
     };
     await expect(page.locator(".map-layer")).toHaveAttribute(
       "style",
-      /scale\(4\)/,
+      /scale\(1.5\)/,
     );
     await assertCentered();
     await page
@@ -180,9 +181,9 @@ for (const width of [360, 1280]) {
       .click();
     await expect(page.locator(".map-layer")).toHaveAttribute(
       "style",
-      /scale\(6\)/,
+      /scale\(2.25\)/,
     );
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 6; i++) {
       await page
         .getByRole("button", { name: "Приблизить карту", exact: true })
         .click();
@@ -194,20 +195,30 @@ for (const width of [360, 1280]) {
     await expect(
       page.getByRole("button", { name: "Приблизить карту", exact: true }),
     ).toBeDisabled();
-    const control = (await page
-      .getByRole("button", { name: "Сбросить карту" })
+    const plus = (await page
+      .getByRole("button", { name: "Приблизить карту", exact: true })
+      .boundingBox())!;
+    const minus = (await page
+      .getByRole("button", { name: "Отдалить карту", exact: true })
       .boundingBox())!;
     const map = (await page.locator(".map-viewport").boundingBox())!;
-    expect(control.x).toBeGreaterThan(map.x);
-    expect(control.x + control.width).toBeLessThan(map.x + map.width);
-    expect(control.y).toBeGreaterThan(map.y);
-    expect(control.y + control.height).toBeLessThan(map.y + map.height);
+    expect(plus.x).toBeCloseTo(minus.x);
+    expect(plus.x).toBeGreaterThan(map.x + map.width / 2);
+    expect(plus.y + plus.height).toBeLessThan(minus.y);
+    expect((plus.y + minus.y + minus.height) / 2).toBeCloseTo(
+      map.y + map.height / 2,
+      0,
+    );
+    await expect(
+      page.getByRole("button", { name: /Сбросить карту|Приблизить к месту/ }),
+    ).toHaveCount(0);
     await assertCentered();
     await page
       .getByRole("button", { name: "Отдалить карту", exact: true })
       .click();
     await assertCentered();
-    await page.getByRole("button", { name: "Сбросить карту" }).click();
+    await page.locator(".map-viewport").focus();
+    await page.keyboard.press("Home");
     await expect(page.locator(".map-layer")).toHaveAttribute(
       "style",
       /translate\(0px, 0px\) scale\(1\)/,
@@ -248,9 +259,12 @@ test("user marker, straight-line distance and both points survive zoom; no persi
   };
   await checkProjection();
   await page
-    .getByRole("button", { name: "Приблизить к месту", exact: true })
+    .getByRole("button", { name: "Приблизить карту", exact: true })
     .click();
-  await expect(page.locator(".map-layer")).toHaveAttribute("style", /scale\(4\)/);
+  await expect(page.locator(".map-layer")).toHaveAttribute(
+    "style",
+    /scale\(1.5\)/,
+  );
   await checkProjection();
   await page.getByRole("button", { name: "Показать обе точки" }).click();
   const v = (await page.locator(".map-viewport").boundingBox())!;

@@ -1097,15 +1097,23 @@ main:focus-visible {
 .map-frame {
   position: relative;
 }
-.map-controls {
+.map-controls,
+.map-location-controls {
   position: absolute;
-  top: 8px;
   right: 8px;
   display: grid;
-  grid-template-columns: repeat(2, 44px);
+  grid-template-columns: 44px;
   gap: 4px;
 }
-.map-controls button {
+.map-controls {
+  top: 50%;
+  transform: translateY(-50%);
+}
+.map-location-controls {
+  top: 8px;
+}
+.map-controls button,
+.map-location-controls button {
   height: 44px;
   padding: 0;
   background: #fff;
@@ -1114,7 +1122,13 @@ main:focus-visible {
   line-height: 1;
   box-shadow: 0 1px 4px #16343b33;
 }
-.map-controls button:disabled {
+.map-controls button:disabled,
+.map-location-icon {
+  display: block;
+  width: 24px;
+  height: 24px;
+}
+.map-location-controls button:disabled {
   opacity: 0.65;
 }
 .map-viewport {

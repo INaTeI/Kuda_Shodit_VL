@@ -125,9 +125,8 @@ export function PlaceMap({
         <p>Ваша геопозиция за пределами локальной карты Владивостока.</p>
       )}
       <p className="fine-print" id="map-help">
-        «Приблизить к месту» показывает точку крупнее в центре карты.
-        Перетаскивайте карту. С клавиатуры: стрелки для перемещения, + и − для
-        масштаба, Home для сброса. Кнопки управления находятся в правом верхнем углу карты.
+        Перетаскивайте карту мышью или касанием. С клавиатуры: стрелки для
+        перемещения, + и − для масштаба, Home для исходного вида.
       </p>
       <div className="map-frame">
         <div
@@ -248,22 +247,12 @@ export function PlaceMap({
           >
             −
           </button>
-          <button
-            type="button"
-            aria-label="Приблизить к месту"
-            title="Приблизить к месту"
-            onClick={() => setView(centeredView(4))}
-          >
-            ◎
-          </button>
-          <button
-            type="button"
-            aria-label="Сбросить карту"
-            title="Сбросить карту"
-            onClick={() => setView({ scale: 1, x: 0, y: 0 })}
-          >
-            ↺
-          </button>
+        </div>
+        <div
+          className="map-location-controls"
+          role="group"
+          aria-label="Геопозиция на карте"
+        >
           <button
             type="button"
             disabled={geo.busy}
@@ -275,7 +264,16 @@ export function PlaceMap({
               void geo.locate();
             }}
           >
-            {geo.busy ? "…" : "⌖"}
+            {geo.busy ? (
+              "…"
+            ) : (
+              <img
+                className="map-location-icon"
+                src={`${import.meta.env.BASE_URL}icons/location.svg`}
+                alt=""
+                aria-hidden="true"
+              />
+            )}
           </button>
           {userOnMap && userPoint && (
             <button
