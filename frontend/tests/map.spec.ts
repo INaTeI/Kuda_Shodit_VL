@@ -178,9 +178,30 @@ for (const width of [360, 1280]) {
     await page
       .getByRole("button", { name: "Приблизить карту", exact: true })
       .click();
+    await expect(page.locator(".map-layer")).toHaveAttribute(
+      "style",
+      /scale\(6\)/,
+    );
+    for (let i = 0; i < 3; i++) {
+      await page
+        .getByRole("button", { name: "Приблизить карту", exact: true })
+        .click();
+    }
+    await expect(page.locator(".map-layer")).toHaveAttribute(
+      "style",
+      /scale\(20\)/,
+    );
     await expect(
       page.getByRole("button", { name: "Приблизить карту", exact: true }),
     ).toBeDisabled();
+    const control = (await page
+      .getByRole("button", { name: "Сбросить карту" })
+      .boundingBox())!;
+    const map = (await page.locator(".map-viewport").boundingBox())!;
+    expect(control.x).toBeGreaterThan(map.x);
+    expect(control.x + control.width).toBeLessThan(map.x + map.width);
+    expect(control.y).toBeGreaterThan(map.y);
+    expect(control.y + control.height).toBeLessThan(map.y + map.height);
     await assertCentered();
     await page
       .getByRole("button", { name: "Отдалить карту", exact: true })
@@ -229,6 +250,7 @@ test("user marker, straight-line distance and both points survive zoom; no persi
   await page
     .getByRole("button", { name: "Приблизить к месту", exact: true })
     .click();
+  await expect(page.locator(".map-layer")).toHaveAttribute("style", /scale\(4\)/);
   await checkProjection();
   await page.getByRole("button", { name: "Показать обе точки" }).click();
   const v = (await page.locator(".map-viewport").boundingBox())!;
