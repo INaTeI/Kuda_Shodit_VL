@@ -84,7 +84,9 @@ test("marker follows projected coordinates through zoom and drag; map stays loca
   await page.keyboard.press("Home");
   await assertPosition();
   expect(external).toEqual([]);
-  await page.locator(".place-map").screenshot({ path: "test-results/map-desktop.png" });
+  await page
+    .locator(".place-map")
+    .screenshot({ path: "test-results/map-desktop.png" });
 });
 for (const coords of [
   { latitude: null },
@@ -144,3 +146,50 @@ test("mobile size and touch panning", async ({ page }) => {
     /translate\(20px, 15px\)/,
   );
 });
+
+for (const width of [360, 1280]) {
+  test(`zoom centers the place at width ${width}`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 });
+    await openPlace(page);
+    await expect
+      .poll(() =>
+        page
+          .locator(".map-layer img")
+          .evaluate((e: HTMLImageElement) => e.naturalWidth),
+      )
+      .toBeGreaterThan(0);
+    // Move the map first: focusing must also recover an off-center marker.
+    await page.locator(".map-viewport").focus();
+    await page.keyboard.press("ArrowLeft");
+    await page
+      .getByRole("button", { name: "Приблизить к месту", exact: true })
+      .click();
+    const assertCentered = async () => {
+      const v = (await page.locator(".map-viewport").boundingBox())!;
+      const m = (await page.locator(".map-marker").boundingBox())!;
+      expect(Math.abs(m.x + m.width / 2 - v.x - v.width / 2)).toBeLessThan(1);
+      expect(Math.abs(m.y + m.height / 2 - v.y - v.height / 2)).toBeLessThan(1);
+    };
+    await expect(page.locator(".map-layer")).toHaveAttribute(
+      "style",
+      /scale\(4\)/,
+    );
+    await assertCentered();
+    await page
+      .getByRole("button", { name: "Приблизить карту", exact: true })
+      .click();
+    await expect(
+      page.getByRole("button", { name: "Приблизить карту", exact: true }),
+    ).toBeDisabled();
+    await assertCentered();
+    await page
+      .getByRole("button", { name: "Отдалить карту", exact: true })
+      .click();
+    await assertCentered();
+    await page.getByRole("button", { name: "Сбросить карту" }).click();
+    await expect(page.locator(".map-layer")).toHaveAttribute(
+      "style",
+      /translate\(0px, 0px\) scale\(1\)/,
+    );
+  });
+}
