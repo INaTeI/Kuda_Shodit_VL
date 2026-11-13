@@ -13,6 +13,7 @@ from app.importing.middleware import ImportBodyLimitMiddleware
 from app.recommendations.routes import router as recommendations
 from app.analytics.routes import router as analytics
 from app.weather.routes import router as weather
+from app.web import router as web
 
 
 @asynccontextmanager
@@ -37,6 +38,7 @@ app.add_middleware(
 )
 for router in [catalog, admin, profiles, recommendations, imports, analytics, weather]:
     app.include_router(router, prefix="/api/v1")
+app.include_router(web)
 
 
 @app.get("/health/live", tags=["Состояние"], summary="Процесс приложения работает")

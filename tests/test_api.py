@@ -1,4 +1,5 @@
 from uuid import uuid4
+from xml.etree import ElementTree
 import pytest
 
 P = "/api/v1"
@@ -36,6 +37,44 @@ async def test_editor_lifecycle_and_public_visibility(client, admin, place_paylo
     assert (await client.delete(P + "/admin/places/" + place_id, headers=admin)).status_code == 204
     assert (await client.get(P + "/places/" + place_id)).status_code == 410
     assert (await client.get(P + "/places")).json()["total"] == 0
+
+
+async def test_web_sitemap_and_place_status_follow_publication(client, admin, place_payload):
+    robots = await client.get("/robots.txt")
+    assert robots.status_code == 200
+    assert robots.headers["content-type"].startswith("text/plain")
+    origin = robots.text.split("Sitemap: ", 1)[1].strip().removesuffix("/sitemap.xml")
+
+    async def sitemap_urls():
+        response = await client.get("/sitemap.xml")
+        assert response.status_code == 200
+        assert response.headers["content-type"].startswith("application/xml")
+        root = ElementTree.fromstring(response.content)
+        return {loc.text for loc in root.findall("./{*}url/{*}loc")}
+
+    place_payload["status"] = "draft"
+    created = await client.post(P + "/admin/places", json=place_payload, headers=admin)
+    place_id = created.json()["id"]
+    web_path = f"/web/places/{place_id}"
+    public_url = f"{origin}/places/{place_id}"
+    static_urls = {f"{origin}/", f"{origin}/catalog"}
+
+    assert await sitemap_urls() == static_urls
+    assert (await client.get(web_path)).status_code == 404
+    assert (await client.get(f"/web/places/{uuid4()}")).status_code == 404
+    updated = await client.put(
+        P + f"/admin/places/{place_id}",
+        json={**place_payload, "status": "published"},
+        headers=admin,
+    )
+    assert updated.status_code == 200
+    assert await sitemap_urls() == static_urls | {public_url}
+    published = await client.head(web_path)
+    assert published.status_code == 200
+    assert published.headers["x-accel-redirect"] == "/index.html"
+    assert (await client.delete(P + f"/admin/places/{place_id}", headers=admin)).status_code == 204
+    assert await sitemap_urls() == static_urls
+    assert (await client.get(web_path)).status_code == 410
 
 
 @pytest.mark.parametrize(
