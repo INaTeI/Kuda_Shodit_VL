@@ -116,7 +116,16 @@ export async function api<T>(
               : "Не удалось выполнить запрос. Попробуйте ещё раз.",
     );
   }
-  return response.status === 204 ? (undefined as T) : response.json();
+  if (response.status === 204) return undefined as T;
+  const contentType = response.headers.get("content-type") || "";
+  if (!contentType.toLowerCase().includes("json")) {
+    throw new Error("Сервис вернул страницу вместо данных API. Проверьте адрес API и перезапустите frontend и backend.");
+  }
+  try {
+    return await response.json();
+  } catch {
+    throw new Error("Сервис вернул некорректные данные. Попробуйте повторить запрос.");
+  }
 }
 export function query(filters: Filters) {
   const q = new URLSearchParams();
@@ -133,3 +142,4 @@ export function price(place: Pick<Place, "price_rub">) {
       ? "Без расходов"
       : `${place.price_rub.toLocaleString("ru-RU")} ₽`;
 }
+
