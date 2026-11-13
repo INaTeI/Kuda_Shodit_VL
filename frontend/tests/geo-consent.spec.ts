@@ -85,7 +85,9 @@ test("decline and denied permission do not save coordinates", async ({
   await page
     .getByRole("button", { name: "Принять и определить расположение" })
     .click();
-  await expect(page.getByText(/Доступ к геопозиции запрещён/)).toBeVisible();
+  await expect(page.locator(".cookie-settings").getByRole("status")).toContainText(
+    /Доступ к геопозиции запрещён/,
+  );
   expect(
     (await context.cookies()).find((c) => c.name === "vdk-location"),
   ).toBeUndefined();

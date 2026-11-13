@@ -23,10 +23,11 @@ async function openPlace(page: import("@playwright/test").Page, coords = {}) {
 }
 test("marker follows projected coordinates through zoom and drag; map stays local", async ({
   page,
+  baseURL,
 }) => {
   const external: string[] = [];
   page.on("request", (r) => {
-    if (!r.url().startsWith("http://127.0.0.1:5173")) external.push(r.url());
+    if (new URL(r.url()).origin !== new URL(baseURL!).origin) external.push(r.url());
   });
   await openPlace(page);
   const image = page.locator(".map-layer img");
