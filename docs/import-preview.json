@@ -1,0 +1,801 @@
+{
+  "file": "places_2gis.xlsm",
+  "sha256": "06397053518b7ffe89f55b12fbe67fa80ee43550034c7e9f54b521ed4419e207",
+  "mode": "dry-run",
+  "filled_rows": 55,
+  "blank_rows": 45,
+  "unique_places": 54,
+  "duplicates_in_file": [
+    {
+      "row": 33,
+      "same_as_row": 27,
+      "name": "Агатовый сквер",
+      "key": "2gis:70030077135101601"
+    }
+  ],
+  "errors": [],
+  "created": 0,
+  "would_create": 54,
+  "skipped_existing": 0,
+  "places": [
+    {
+      "row": 2,
+      "name": "Набережная Цесаревича",
+      "key": "2gis:3519124403652114",
+      "place_id": "c163ef7a-a431-5ee8-88b8-dd30ace763ee",
+      "action": "would_create",
+      "categories": [
+        "nature",
+        "relax"
+      ],
+      "warnings": [
+        "Дата проверки не указана"
+      ]
+    },
+    {
+      "row": 3,
+      "name": "Сквер Надибаидзе",
+      "key": "2gis:3519124403651541",
+      "place_id": "de4f4d95-a6ff-5d78-a779-43d7f6b1ae24",
+      "action": "would_create",
+      "categories": [
+        "nature",
+        "relax"
+      ],
+      "warnings": [
+        "Дата проверки не указана"
+      ]
+    },
+    {
+      "row": 4,
+      "name": "Некрасовский сквер",
+      "key": "2gis:3519124403651539",
+      "place_id": "30ca59d6-415e-5e85-8e9a-bd5dde336ace",
+      "action": "would_create",
+      "categories": [
+        "nature",
+        "relax"
+      ],
+      "warnings": [
+        "Дата проверки не указана"
+      ]
+    },
+    {
+      "row": 5,
+      "name": "Сквер Депутатская аллея",
+      "key": "2gis:3519124403651534",
+      "place_id": "f83fbfbd-cb4c-5738-bc63-950b8b127402",
+      "action": "would_create",
+      "categories": [
+        "nature",
+        "relax"
+      ],
+      "warnings": [
+        "Дата проверки не указана",
+        "Нет полного диапазона расходов: бюджет неизвестен"
+      ]
+    },
+    {
+      "row": 6,
+      "name": "Корабельная набережная",
+      "key": "2gis:3519124403650914",
+      "place_id": "bcfd78f3-31ab-5fa0-bff8-0db47c1b3271",
+      "action": "would_create",
+      "categories": [
+        "culture",
+        "nature",
+        "relax"
+      ],
+      "warnings": [
+        "Дата проверки не указана"
+      ]
+    },
+    {
+      "row": 7,
+      "name": "Парк Минного городка",
+      "key": "2gis:3519124403650607",
+      "place_id": "dc7693aa-55f9-5ca1-916a-a44432022d03",
+      "action": "would_create",
+      "categories": [
+        "culture",
+        "nature",
+        "relax"
+      ],
+      "warnings": [
+        "Дата проверки не указана"
+      ]
+    },
+    {
+      "row": 8,
+      "name": "Сквер Анны Щетининой",
+      "key": "2gis:3519124403650603",
+      "place_id": "b1f6be61-d6da-50b7-a594-a60b5cd5470b",
+      "action": "would_create",
+      "categories": [
+        "nature",
+        "relax"
+      ],
+      "warnings": [
+        "Дата проверки не указана"
+      ]
+    },
+    {
+      "row": 9,
+      "name": "Университетская набережная",
+      "key": "2gis:3519124403652163",
+      "place_id": "26ba0bc1-4f7c-5957-ae97-304ff6220109",
+      "action": "would_create",
+      "categories": [
+        "nature",
+        "relax"
+      ],
+      "warnings": [
+        "Дата проверки не указана"
+      ]
+    },
+    {
+      "row": 10,
+      "name": "Озеро на ул. Сафонова",
+      "key": "2gis:70030076892360418",
+      "place_id": "2232e802-d74a-5845-b915-e3eaafd2ec07",
+      "action": "would_create",
+      "categories": [
+        "nature"
+      ],
+      "warnings": [
+        "Дата проверки не указана"
+      ]
+    },
+    {
+      "row": 11,
+      "name": "Сквер Первой маёвки",
+      "key": "2gis:70030077186089269",
+      "place_id": "3784d7b7-ead9-5fd4-baf8-9844a2e52709",
+      "action": "would_create",
+      "categories": [
+        "culture",
+        "nature",
+        "relax"
+      ],
+      "warnings": [
+        "Нет координат: публикация и геопоиск недоступны",
+        "Ссылки в адресе и источнике указывают на разные ID 2ГИС: нужна проверка",
+        "Нет полного диапазона расходов: бюджет неизвестен"
+      ]
+    },
+    {
+      "row": 12,
+      "name": "Набережная Ахлёстышева",
+      "key": "2gis:70030077004425186",
+      "place_id": "223730b0-48d3-5ff3-811b-62d7f0f08d8f",
+      "action": "would_create",
+      "categories": [
+        "nature",
+        "relax"
+      ],
+      "warnings": [
+        "Нет координат: публикация и геопоиск недоступны",
+        "Дата проверки не указана"
+      ]
+    },
+    {
+      "row": 13,
+      "name": "Озеро Чан",
+      "key": "2gis:3519124403650809",
+      "place_id": "08c0521c-f689-50a9-ae06-0d0b0227a904",
+      "action": "would_create",
+      "categories": [
+        "nature"
+      ],
+      "warnings": [
+        "Дата проверки не указана"
+      ]
+    },
+    {
+      "row": 14,
+      "name": "Стадион МГУ",
+      "key": "2gis:70030076126731326",
+      "place_id": "7317357f-670e-5169-bb3f-782235718510",
+      "action": "would_create",
+      "categories": [
+        "relax"
+      ],
+      "warnings": [
+        "Дата проверки не указана",
+        "Нет полного диапазона расходов: бюджет неизвестен"
+      ]
+    },
+    {
+      "row": 15,
+      "name": "Бухта Фёдорова",
+      "key": "2gis:3519124403650803",
+      "place_id": "f0ed6607-7652-5c4a-a003-d78546683120",
+      "action": "would_create",
+      "categories": [
+        "nature"
+      ],
+      "warnings": [
+        "Дата проверки не указана",
+        "Нет полного диапазона расходов: бюджет неизвестен"
+      ]
+    },
+    {
+      "row": 16,
+      "name": "Кунгасный парк, пляж",
+      "key": "2gis:70000001074747936",
+      "place_id": "60d38f95-acf1-55dd-bd26-be55b32c1acc",
+      "action": "would_create",
+      "categories": [
+        "nature",
+        "relax"
+      ],
+      "warnings": [
+        "Дата проверки не указана"
+      ]
+    },
+    {
+      "row": 17,
+      "name": "Набережная им. Арсеньева",
+      "key": "2gis:70000001100836683",
+      "place_id": "a7afd192-77a9-57fa-8d2e-d20b939bb4e5",
+      "action": "would_create",
+      "categories": [
+        "nature",
+        "relax"
+      ],
+      "warnings": [
+        "Дата проверки не указана"
+      ]
+    },
+    {
+      "row": 18,
+      "name": "Набережная на Татарской",
+      "key": "2gis:70000001098631144",
+      "place_id": "4869ec85-db02-5f8d-a8e6-1c4f36242e43",
+      "action": "would_create",
+      "categories": [
+        "nature",
+        "relax"
+      ],
+      "warnings": [
+        "Дата проверки не указана"
+      ]
+    },
+    {
+      "row": 19,
+      "name": "Пианино на Русском",
+      "key": "2gis:70030076411677545",
+      "place_id": "0a35787f-087c-54c9-8151-ed99a544bc00",
+      "action": "would_create",
+      "categories": [
+        "culture",
+        "hidden-gems",
+        "nature"
+      ],
+      "warnings": [
+        "Нет координат: публикация и геопоиск недоступны",
+        "Дата проверки не указана"
+      ]
+    },
+    {
+      "row": 20,
+      "name": "Владивостокская крепость, форт №7",
+      "key": "2gis:70000001051405935",
+      "place_id": "f5d57cc7-d32c-5eb0-bb71-6a439d93c765",
+      "action": "would_create",
+      "categories": [
+        "culture",
+        "nature"
+      ],
+      "warnings": [
+        "Дата проверки не указана"
+      ]
+    },
+    {
+      "row": 21,
+      "name": "Маяк Токаревского",
+      "key": "2gis:70030076266367450",
+      "place_id": "bb537be7-bb6a-52c7-b7ed-8c91c7aafca9",
+      "action": "would_create",
+      "categories": [
+        "nature"
+      ],
+      "warnings": [
+        "Дата проверки не указана",
+        "Нет полного диапазона расходов: бюджет неизвестен"
+      ]
+    },
+    {
+      "row": 22,
+      "name": "Сопка Бурачка",
+      "key": "2gis:70030076352410809",
+      "place_id": "66c16d9e-ea25-5783-a776-86a9fcbd2f65",
+      "action": "would_create",
+      "categories": [
+        "nature"
+      ],
+      "warnings": [
+        "Дата проверки не указана"
+      ]
+    },
+    {
+      "row": 23,
+      "name": "Береговая батарея Уссурийская",
+      "key": "2gis:70030076142567484",
+      "place_id": "2acb4ee2-9aae-519e-a5ef-7e6a2f3638f4",
+      "action": "would_create",
+      "categories": [
+        "culture"
+      ],
+      "warnings": [
+        "Нет полного диапазона расходов: бюджет неизвестен"
+      ]
+    },
+    {
+      "row": 24,
+      "name": "Пляж мыса Поспелова",
+      "key": "2gis:70000001074853983",
+      "place_id": "088874c2-f4c3-50cb-93a7-096b5797cc85",
+      "action": "would_create",
+      "categories": [
+        "nature",
+        "relax"
+      ],
+      "warnings": [
+        "Дата проверки не указана"
+      ]
+    },
+    {
+      "row": 25,
+      "name": "Новосильцевская береговая батарея",
+      "key": "2gis:70000001061779703",
+      "place_id": "eea1123a-616f-5661-817d-e1be013cc025",
+      "action": "would_create",
+      "categories": [
+        "culture",
+        "nature"
+      ],
+      "warnings": [
+        "Дата проверки не указана",
+        "Нет полного диапазона расходов: бюджет неизвестен"
+      ]
+    },
+    {
+      "row": 26,
+      "name": "Мыс Тихий",
+      "key": "2gis:70030076813313007",
+      "place_id": "08cb8d22-4a21-5f12-98ab-9a4c9638c50a",
+      "action": "would_create",
+      "categories": [
+        "nature"
+      ],
+      "warnings": [
+        "Нет полного диапазона расходов: бюджет неизвестен"
+      ]
+    },
+    {
+      "row": 27,
+      "name": "Агатовый сквер",
+      "key": "2gis:70030077135101601",
+      "place_id": "2ccb2da7-9437-5fde-bb01-97cc8e45d318",
+      "action": "would_create",
+      "categories": [
+        "nature",
+        "relax"
+      ],
+      "warnings": [
+        "Нет полного диапазона расходов: бюджет неизвестен"
+      ]
+    },
+    {
+      "row": 28,
+      "name": "Царские конюшни",
+      "key": "2gis:70000001088730745",
+      "place_id": "bf9b42c0-579a-5d41-8af8-b9a54207f7ed",
+      "action": "would_create",
+      "categories": [
+        "nature"
+      ],
+      "warnings": [
+        "Дата проверки не указана",
+        "Нет полного диапазона расходов: бюджет неизвестен"
+      ]
+    },
+    {
+      "row": 29,
+      "name": "Курсантский сквер",
+      "key": "2gis:3519124403650589",
+      "place_id": "380d37ab-734c-5e46-a809-34560c134588",
+      "action": "would_create",
+      "categories": [
+        "culture",
+        "nature",
+        "relax"
+      ],
+      "warnings": [
+        "Нет полного диапазона расходов: бюджет неизвестен"
+      ]
+    },
+    {
+      "row": 30,
+      "name": "Три пещеры",
+      "key": "2gis:3519124403651058",
+      "place_id": "e61d0ee2-5bf9-5207-af35-6207f303567b",
+      "action": "would_create",
+      "categories": [
+        "hidden-gems",
+        "nature"
+      ],
+      "warnings": [
+        "Дата проверки не указана",
+        "Нет полного диапазона расходов: бюджет неизвестен"
+      ]
+    },
+    {
+      "row": 31,
+      "name": "Сквер им. Суханова",
+      "key": "2gis:3519124403650585",
+      "place_id": "d9694e2a-4654-5bb7-bf54-9139623a1af1",
+      "action": "would_create",
+      "categories": [
+        "culture",
+        "nature",
+        "relax"
+      ],
+      "warnings": [
+        "Дата проверки не указана"
+      ]
+    },
+    {
+      "row": 32,
+      "name": "Аллея на Кирова",
+      "key": "2gis:70030077190978973",
+      "place_id": "d8401cde-84d9-5414-af1a-de0076b23cce",
+      "action": "would_create",
+      "categories": [
+        "nature",
+        "relax"
+      ],
+      "warnings": [
+        "Нет полного диапазона расходов: бюджет неизвестен"
+      ]
+    },
+    {
+      "row": 34,
+      "name": "Парк на Кирова",
+      "key": "2gis:70030077043970739",
+      "place_id": "dd94127b-067f-59fc-95c7-c7737696fb42",
+      "action": "would_create",
+      "categories": [
+        "nature",
+        "relax"
+      ],
+      "warnings": [
+        "Дата проверки не указана"
+      ]
+    },
+    {
+      "row": 35,
+      "name": "Сосновая тропа",
+      "key": "2gis:70030076991560725",
+      "place_id": "558fc85e-e609-5ea1-b032-35e5104b7a14",
+      "action": "would_create",
+      "categories": [
+        "nature"
+      ],
+      "warnings": [
+        "Нет полного диапазона расходов: бюджет неизвестен"
+      ]
+    },
+    {
+      "row": 36,
+      "name": "Парк Снеговая падь",
+      "key": "2gis:70030076833964281",
+      "place_id": "731704d2-30ca-5255-9c85-076d19338ce6",
+      "action": "would_create",
+      "categories": [
+        "nature",
+        "relax"
+      ],
+      "warnings": [
+        "Дата проверки не указана"
+      ]
+    },
+    {
+      "row": 37,
+      "name": "Парк Орлиное гнездо",
+      "key": "2gis:70030076801133866",
+      "place_id": "23027804-3c1a-5381-b851-a344f8b8b825",
+      "action": "would_create",
+      "categories": [
+        "nature",
+        "relax"
+      ],
+      "warnings": [
+        "Дата проверки не указана"
+      ]
+    },
+    {
+      "row": 38,
+      "name": "Сквер на Окатовой",
+      "key": "2gis:70030076477023803",
+      "place_id": "a6023bd3-aca9-5836-b04a-41ec5d3c6c97",
+      "action": "would_create",
+      "categories": [
+        "nature",
+        "relax"
+      ],
+      "warnings": [
+        "Нет полного диапазона расходов: бюджет неизвестен"
+      ]
+    },
+    {
+      "row": 39,
+      "name": "Сквер путешественников",
+      "key": "2gis:70030076448892250",
+      "place_id": "8acaf144-ccaf-504b-b7cf-e74bb3375b30",
+      "action": "would_create",
+      "categories": [
+        "culture",
+        "nature",
+        "relax"
+      ],
+      "warnings": [
+        "Дата проверки не указана"
+      ]
+    },
+    {
+      "row": 40,
+      "name": "Сквер Героев-Даманцев",
+      "key": "2gis:70030076282767563",
+      "place_id": "49716ded-0190-5745-9a94-75e281acec11",
+      "action": "would_create",
+      "categories": [
+        "culture",
+        "nature",
+        "relax"
+      ],
+      "warnings": [
+        "Дата проверки не указана"
+      ]
+    },
+    {
+      "row": 41,
+      "name": "Дендропарк ВВГУ",
+      "key": "2gis:70030076217202728",
+      "place_id": "d80464d0-4d89-54ea-b698-6ce4172ee555",
+      "action": "would_create",
+      "categories": [
+        "hidden-gems",
+        "nature",
+        "relax"
+      ],
+      "warnings": [
+        "Дата проверки не указана",
+        "Нет полного диапазона расходов: бюджет неизвестен"
+      ]
+    },
+    {
+      "row": 42,
+      "name": "Сквер им. Пушкина",
+      "key": "2gis:70030076193059872",
+      "place_id": "fb05d467-9aa8-5045-9954-7dde65188a76",
+      "action": "would_create",
+      "categories": [
+        "culture",
+        "nature",
+        "relax"
+      ],
+      "warnings": [
+        "Нет полного диапазона расходов: бюджет неизвестен"
+      ]
+    },
+    {
+      "row": 43,
+      "name": "Сквер им. Ленина",
+      "key": "2gis:70030076192092363",
+      "place_id": "c40af74b-b7c7-5b04-b2cd-d9b0e226ca26",
+      "action": "would_create",
+      "categories": [
+        "culture",
+        "nature",
+        "relax"
+      ],
+      "warnings": [
+        "Нет полного диапазона расходов: бюджет неизвестен"
+      ]
+    },
+    {
+      "row": 44,
+      "name": "Театральный сквер",
+      "key": "2gis:70030076152558172",
+      "place_id": "52bdba33-6047-56e4-b862-5001b7f6690c",
+      "action": "would_create",
+      "categories": [
+        "culture",
+        "nature",
+        "relax"
+      ],
+      "warnings": [
+        "Дата проверки не указана"
+      ]
+    },
+    {
+      "row": 45,
+      "name": "Сквер им. Муравьёва-Амурского",
+      "key": "2gis:70030076152558102",
+      "place_id": "fcac39cb-7604-58fb-aa35-528b6c4c688f",
+      "action": "would_create",
+      "categories": [
+        "culture",
+        "nature",
+        "relax"
+      ],
+      "warnings": [
+        "Дата проверки не указана"
+      ]
+    },
+    {
+      "row": 46,
+      "name": "Сквер им. Игнатьева",
+      "key": "2gis:70030076152558058",
+      "place_id": "66c9c71d-76ec-560c-8d80-5339d083a85e",
+      "action": "would_create",
+      "categories": [
+        "culture",
+        "nature",
+        "relax"
+      ],
+      "warnings": [
+        "Нет полного диапазона расходов: бюджет неизвестен"
+      ]
+    },
+    {
+      "row": 47,
+      "name": "Парк на торфяном озере",
+      "key": "2gis:70000001110100737",
+      "place_id": "ff585baa-c73a-5c84-8458-4d801e3eeddc",
+      "action": "would_create",
+      "categories": [
+        "nature",
+        "relax"
+      ],
+      "warnings": [
+        "Дата проверки не указана"
+      ]
+    },
+    {
+      "row": 48,
+      "name": "Седанка парк",
+      "key": "2gis:70000001110272818",
+      "place_id": "9fe3f1f0-c4a4-5ef8-b667-20b6348a4924",
+      "action": "would_create",
+      "categories": [
+        "nature",
+        "relax"
+      ],
+      "warnings": [
+        "Дата проверки не указана",
+        "Нет полного диапазона расходов: бюджет неизвестен"
+      ]
+    },
+    {
+      "row": 49,
+      "name": "Парк Победы",
+      "key": "2gis:70000001096416032",
+      "place_id": "982e3fce-4ad0-5b57-ac0d-176be2827e09",
+      "action": "would_create",
+      "categories": [
+        "nature",
+        "relax"
+      ],
+      "warnings": [
+        "Дата проверки не указана"
+      ]
+    },
+    {
+      "row": 50,
+      "name": "Парк культуры и отдыха им. Лазо",
+      "key": "2gis:3518965489950625",
+      "place_id": "c910a9a8-f608-5505-8a9c-1a1705b21a6c",
+      "action": "would_create",
+      "categories": [
+        "culture",
+        "nature",
+        "relax"
+      ],
+      "warnings": [
+        "Дата проверки не указана"
+      ]
+    },
+    {
+      "row": 51,
+      "name": "Роял Парк",
+      "key": "2gis:3518965489881424",
+      "place_id": "f2c428f7-06fc-562c-8cc5-703d04a5ab42",
+      "action": "would_create",
+      "categories": [
+        "nature",
+        "relax"
+      ],
+      "warnings": [
+        "Дата проверки не указана",
+        "Нет полного диапазона расходов: бюджет неизвестен"
+      ]
+    },
+    {
+      "row": 52,
+      "name": "Покровский парк",
+      "key": "2gis:70000001092761378",
+      "place_id": "5e65339c-2a83-5843-9ab5-fe7513a64bcc",
+      "action": "would_create",
+      "categories": [
+        "culture",
+        "nature",
+        "relax"
+      ],
+      "warnings": [
+        "Дата проверки не указана"
+      ]
+    },
+    {
+      "row": 53,
+      "name": "Леопардовая набережная",
+      "key": "2gis:3519124446191437",
+      "place_id": "b858bfa2-01d8-5c2b-a9a2-68f1ebd7194a",
+      "action": "would_create",
+      "categories": [
+        "nature",
+        "relax"
+      ],
+      "warnings": [
+        "Дата проверки не указана"
+      ]
+    },
+    {
+      "row": 54,
+      "name": "Набережная Патрокла",
+      "key": "2gis:3519124439390102",
+      "place_id": "0e68fa5a-f650-51f1-9648-f04a7c99fd8d",
+      "action": "would_create",
+      "categories": [
+        "nature",
+        "relax"
+      ],
+      "warnings": [
+        "Дата проверки не указана"
+      ]
+    },
+    {
+      "row": 55,
+      "name": "Смотровой мостик",
+      "key": "2gis:70030077137386938",
+      "place_id": "7bd41f4e-d0a3-5e54-a14e-352b7777da26",
+      "action": "would_create",
+      "categories": [
+        "nature",
+        "relax"
+      ],
+      "warnings": [
+        "Дата проверки не указана",
+        "Источник взят из ссылки в столбце адреса",
+        "Нет полного диапазона расходов: бюджет неизвестен"
+      ]
+    },
+    {
+      "row": 56,
+      "name": "Смотровая площадка с сердцем",
+      "key": "2gis:70030076368520394",
+      "place_id": "cb9f1c7f-ff13-5d9c-a964-67526a079e37",
+      "action": "would_create",
+      "categories": [
+        "hidden-gems",
+        "nature",
+        "relax"
+      ],
+      "warnings": [
+        "Нет полного диапазона расходов: бюджет неизвестен"
+      ]
+    }
+  ]
+}

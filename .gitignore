@@ -1,0 +1,12 @@
+.env
+.venv/
+.idea/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+*.log
+backups/
+data/imports/
+import-report*.json

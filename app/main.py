@@ -1,0 +1,48 @@
+from contextlib import asynccontextmanager
+from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy import text
+from sqlalchemy.exc import SQLAlchemyError
+from app.core.config import get_settings
+from app.db.session import engine
+from app.api.dependencies import DB
+from app.catalog.routes import router as catalog, admin
+from app.profiles.routes import router as profiles
+from app.recommendations.routes import router as recommendations
+
+
+@asynccontextmanager
+async def lifespan(app):
+    yield
+    await engine.dispose()
+
+
+app = FastAPI(
+    title="VDK GID API",
+    version="0.1.0",
+    lifespan=lifespan,
+    description="Городской гид Владивостока. MVP: каталог, подбор, гостевой профиль и реакции. "
+    "Данные seed демонстрационные. Влево → like, вправо → dislike, вверх → neutral.",
+)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=get_settings().cors_origins,
+    allow_methods=["GET", "POST", "PUT", "DELETE"],
+    allow_headers=["Authorization", "Content-Type", "X-Admin-Key"],
+)
+for router in [catalog, admin, profiles, recommendations]:
+    app.include_router(router, prefix="/api/v1")
+
+
+@app.get("/health/live", tags=["Состояние"], summary="Процесс приложения работает")
+async def live():
+    return {"status": "ok"}
+
+
+@app.get("/health/ready", tags=["Состояние"], summary="PostgreSQL и миграции доступны")
+async def ready(db: DB):
+    try:
+        await db.execute(text("SELECT version_num FROM alembic_version"))
+    except SQLAlchemyError:
+        raise HTTPException(503, "База данных не готова") from None
+    return {"status": "ready"}

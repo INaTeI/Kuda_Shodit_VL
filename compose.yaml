@@ -1,0 +1,73 @@
+name: vdk-gid
+services:
+  db:
+    image: postgres:16.9-alpine
+    env_file: .env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+    mem_limit: 512m
+    networks: [backend]
+  migrate:
+    build:
+      context: .
+      target: runtime
+    env_file: .env
+    command: ["alembic", "upgrade", "head"]
+    depends_on:
+      db:
+        condition: service_healthy
+    networks: [backend]
+  api:
+    build:
+      context: .
+      target: runtime
+    env_file: .env
+    ports:
+      - "127.0.0.1:${API_PORT:-8000}:8000"
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    restart: unless-stopped
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    mem_limit: 512m
+    networks: [backend]
+  test-db:
+    image: postgres:16.9-alpine
+    profiles: [test]
+    environment:
+      POSTGRES_DB: vdk_test
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test-local-only
+    tmpfs: [/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U test -d vdk_test"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+    networks: [backend]
+  tests:
+    build:
+      context: .
+      target: test
+    profiles: [test]
+    environment:
+      DATABASE_URL: postgresql+asyncpg://test:test-local-only@test-db:5432/vdk_test
+      ADMIN_API_KEY: test-admin-key
+      PYTHONDONTWRITEBYTECODE: "1"
+      COVERAGE_FILE: /tmp/.coverage
+    depends_on:
+      test-db:
+        condition: service_healthy
+    networks: [backend]
+volumes:
+  postgres_data:
+networks:
+  backend:
+    driver: bridge

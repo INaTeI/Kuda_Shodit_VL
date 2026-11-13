@@ -1,0 +1,17 @@
+{
+  "imported": 54,
+  "source_rows_preserved": 55,
+  "duplicate_rows_merged": 1,
+  "status": "draft",
+  "missing_coordinates": [
+    "Пианино на Русском",
+    "Набережная Ахлёстышева",
+    "Сквер Первой маёвки"
+  ],
+  "missing_date_count": 42,
+  "total_places": 62,
+  "public_places": 8,
+  "source_file_unchanged": true,
+  "source_sha256": "06397053518b7ffe89f55b12fbe67fa80ee43550034c7e9f54b521ed4419e207",
+  "api_verification": "passed"
+}
