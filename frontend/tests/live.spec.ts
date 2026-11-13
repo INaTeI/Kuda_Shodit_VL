@@ -66,7 +66,7 @@ test("live taste swipe, undo and persisted reactions", async ({
           r.request().postDataJSON().event_type === "swipe",
       );
     const firstReply = swipeReply();
-    await page.getByRole("button", { name: "Нравится Вправо →" }).click();
+    await page.getByRole("button", { name: "Нравится — вправо" }).click();
     const first = await firstReply;
     expect(first.ok()).toBe(true);
     const body = first.request().postDataJSON();
@@ -74,7 +74,7 @@ test("live taste swipe, undo and persisted reactions", async ({
     await page.getByRole("button", { name: "↶ Отменить", exact: true }).click();
     await expect(page.getByText(/Карточка 1 из/)).toBeVisible();
     const secondReply = swipeReply();
-    await page.getByRole("button", { name: "Не подходит ← Влево" }).click();
+    await page.getByRole("button", { name: "Не подходит — влево" }).click();
     expect((await secondReply).ok()).toBe(true);
     await expect(page.getByText(/Карточка 2 из/)).toBeVisible();
     const states = await request.get(

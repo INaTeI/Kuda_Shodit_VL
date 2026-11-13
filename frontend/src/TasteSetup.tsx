@@ -15,6 +15,11 @@ import { useGuest } from "./state";
 
 export const TASTE_CARD_LIMIT = 12;
 
+const HEART_PATH =
+  "M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 " +
+  "3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 " +
+  "3.78-3.4 6.86-8.55 11.54L12 21.35z";
+
 export function SwipePreview() {
   return (
     <div className="swipe-preview" aria-hidden="true">
@@ -404,8 +409,8 @@ function TasteDeck() {
         </button>
       </div>
       <p className="taste-subtitle">
-        Вправо — нравится. Влево — не подходит. Новые места подстроятся под твой
-        выбор.
+        Вправо — нравится, влево — не подходит, по центру — пока не знаю. Новые
+        места подстроятся под твой выбор.
       </p>
       {loading ? (
         <Skeleton />
@@ -548,20 +553,43 @@ function TasteDeck() {
               </div>
             </article>
           </div>
-          <div className="taste-controls">
+          <div className="taste-controls" role="group" aria-label="Оценить место">
             <button
               className="taste-no"
               onClick={() => void decide("dislike")}
               disabled={busy || !!retryKind}
+              aria-label="Не подходит — влево"
+              title="Не подходит · влево"
             >
-              <span aria-hidden="true">×</span>Не подходит<small>← Влево</small>
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path className="icon-heart" d={HEART_PATH} />
+                <line className="icon-slash" x1="4.5" y1="3.5" x2="19.5" y2="20.5" />
+              </svg>
+            </button>
+            <button
+              className="taste-skip"
+              onClick={() => void decide("neutral")}
+              disabled={busy || !!retryKind}
+              aria-label="Пока не знаю"
+              title="Пока не знаю"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <circle className="icon-face" cx="12" cy="12" r="9" />
+                <circle className="icon-eye" cx="8.8" cy="10" r="1.1" />
+                <circle className="icon-eye" cx="15.2" cy="10" r="1.1" />
+                <line className="icon-mouth" x1="8.6" y1="15.4" x2="15.4" y2="15.4" />
+              </svg>
             </button>
             <button
               className="taste-yes"
               onClick={() => void decide("like")}
               disabled={busy || !!retryKind}
+              aria-label="Нравится — вправо"
+              title="Нравится · вправо"
             >
-              <span aria-hidden="true">♡</span>Нравится<small>Вправо →</small>
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path className="icon-heart" d={HEART_PATH} />
+              </svg>
             </button>
           </div>
           <div className="taste-secondary">
@@ -570,12 +598,6 @@ function TasteDeck() {
               disabled={busy || !!retryKind || !history.length}
             >
               ↶ Отменить
-            </button>
-            <button
-              onClick={() => void decide("neutral")}
-              disabled={busy || !!retryKind}
-            >
-              Пока не знаю
             </button>
           </div>
           <p role="status" className="taste-saving">

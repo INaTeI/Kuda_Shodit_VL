@@ -1270,40 +1270,92 @@ main:focus-visible {
   animation: taste-neutral 0.23s ease-in forwards;
 }
 .taste-controls {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 34px;
+  width: fit-content;
+  margin-top: -34px;
+  padding: 10px 32px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  box-shadow: 0 16px 32px #16343b21;
 }
 .taste-controls button {
   display: grid;
-  grid-template-columns: 30px 1fr;
-  align-items: center;
-  text-align: left;
-  min-height: 72px;
-  padding: 10px 14px;
+  place-items: center;
+  width: 58px;
+  height: 58px;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  transition:
+    background 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.15s ease;
 }
-.taste-controls button > span {
-  grid-row: span 2;
-  font-size: 32px;
+.taste-controls button:disabled {
+  opacity: 0.4;
 }
-.taste-controls small {
-  font-size: 11px;
-  font-weight: 400;
+.taste-controls svg {
+  width: 34px;
+  height: 34px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.taste-controls .icon-heart {
+  fill: transparent;
+  transition: fill 0.2s ease;
+}
+.taste-controls .icon-slash {
+  transition: stroke 0.2s ease;
+}
+.taste-controls .icon-eye {
+  fill: currentColor;
+  stroke: none;
 }
 .taste-no {
-  background: #f4e9e3;
-  color: #794435;
-  border-color: #cdb4a8;
+  color: #b4513d;
 }
 .taste-yes {
-  background: var(--accent);
-  color: white;
-  border-color: var(--accent);
+  color: var(--accent);
+}
+.taste-skip {
+  width: 52px;
+  height: 52px;
+  color: #5d6f73;
+}
+.taste-skip svg {
+  width: 30px;
+  height: 30px;
+}
+.taste-no:is(:hover, :focus-visible):not(:disabled),
+.taste-yes:is(:hover, :focus-visible):not(:disabled) {
+  transform: translateY(-2px) scale(1.05);
+}
+.taste-no:is(:hover, :focus-visible):not(:disabled) .icon-heart,
+.taste-yes:is(:hover, :focus-visible):not(:disabled) .icon-heart {
+  fill: currentColor;
+}
+.taste-no:is(:hover, :focus-visible):not(:disabled) .icon-slash {
+  stroke: var(--paper);
+}
+.taste-skip:is(:hover, :focus-visible):not(:disabled) {
+  background: #e7efec;
+  box-shadow: 0 0 0 6px #e7efec;
 }
 .taste-secondary {
   display: flex;
-  justify-content: space-between;
-  margin-top: 10px;
+  justify-content: center;
+  margin-top: 14px;
   gap: 8px;
 }
 .taste-secondary button {
@@ -1472,12 +1524,6 @@ main:focus-visible {
   .taste-exit-neutral {
     animation: none;
   }
-}
-.taste-controls .taste-yes:hover {
-  background: #126b78;
-}
-.taste-controls .taste-no:hover {
-  background: #ead8ce;
 }
 @media (max-width: 600px) {
   .taste-arena {
