@@ -3,7 +3,10 @@
 Интерактивный прототип UI/UX. Это **не часть приложения**: файл автономный, к API и БД не подключён.
 Данные хранятся в `localStorage` браузера; фото — демо-иллюстрации с пометкой «ДЕМО».
 
-- Открыть: `design/place-constructor/index.html` двойным кликом (нужен интернет только для шрифтов).
+- Открыть: `design/place-constructor/index.html` двойным кликом (нужен интернет только для шрифтов)
+  или по адресу `/constructor/` на сайте — `vite build` копирует файл в `frontend/dist/constructor/`
+  (плагин в `frontend/vite.config.ts`; в Docker-сборке с контекстом `./frontend` шаг пропускается).
+  Страница помечена `noindex`.
 - Проверить: `node design/place-constructor/qa.mjs` (Playwright из `frontend/node_modules`,
   скриншоты и лог — в `qa-output/`, папка в `.gitignore`).
 
