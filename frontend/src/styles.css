@@ -590,12 +590,81 @@ input[type="checkbox"] {
 }
 .reaction-row {
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+  align-items: center;
+  gap: 14px;
 }
-.reaction-row button {
-  font-size: 12px;
-  padding: 10px 12px;
+.reaction-row .reaction-icon {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  min-height: 0;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: transparent;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.15s ease;
+}
+.reaction-row .reaction-icon svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.reaction-row .icon-heart {
+  fill: transparent;
+  transition: fill 0.2s ease;
+}
+.reaction-row .icon-slash {
+  transition: stroke 0.2s ease;
+}
+.reaction-row .icon-eye {
+  fill: currentColor;
+  stroke: none;
+}
+.reaction-row .reaction-yes {
+  color: var(--accent);
+}
+.reaction-row .reaction-no {
+  color: #b4513d;
+}
+.reaction-row .reaction-skip {
+  color: #5d6f73;
+}
+.reaction-row .reaction-icon:is(:hover, :focus-visible):not(:disabled) {
+  transform: translateY(-1px);
+}
+/* The active reaction is a highlight, not the global dark pressed slab. */
+.reaction-row .reaction-icon[aria-pressed="true"] {
+  background: transparent;
+  color: inherit;
+  border-color: currentColor;
+}
+.reaction-row .reaction-yes[aria-pressed="true"] {
+  color: var(--accent);
+}
+.reaction-row .reaction-no[aria-pressed="true"] {
+  color: #b4513d;
+}
+.reaction-row :is(.reaction-yes, .reaction-no):is(:hover, :focus-visible):not(:disabled)
+  .icon-heart,
+.reaction-row :is(.reaction-yes, .reaction-no)[aria-pressed="true"] .icon-heart {
+  fill: currentColor;
+}
+.reaction-row .reaction-no:is(:hover, :focus-visible):not(:disabled) .icon-slash,
+.reaction-row .reaction-no[aria-pressed="true"] .icon-slash {
+  stroke: var(--paper);
+}
+.reaction-row .reaction-skip:is(:hover, :focus-visible):not(:disabled),
+.reaction-row .reaction-skip[aria-pressed="true"] {
+  background: #e7efec;
+  color: #3c5a55;
 }
 .reaction-box .known {
   font-size: 13px;
@@ -1022,6 +1091,65 @@ main:focus-visible {
   display: block;
   padding-right: 46px;
 }
+.place-map {
+  margin: 16px 0;
+}
+.map-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.map-controls button {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 8px 12px;
+}
+.map-viewport {
+  overflow: hidden;
+  position: relative;
+  background: #eef1eb;
+  border: 1px solid #c4d1ce;
+  border-radius: 16px;
+  cursor: grab;
+  touch-action: none;
+}
+.map-viewport:active {
+  cursor: grabbing;
+}
+.map-viewport:focus-visible {
+  outline: 3px solid #27717a;
+  outline-offset: 3px;
+}
+.map-layer {
+  position: relative;
+  width: 100%;
+  transform-origin: center;
+}
+.map-layer img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1600 / 2192;
+  user-select: none;
+  pointer-events: none;
+}
+.map-marker {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border: 3px solid white;
+  border-radius: 50%;
+  background: #a82d24;
+  box-shadow:
+    0 0 0 2px #7b221c,
+    0 2px 7px #0006;
+  pointer-events: none;
+}
+.map-message {
+  padding: 16px;
+  background: #eef1eb;
+  border-radius: 12px;
+}
+
 
 /* Optional taste setup: gestures share the same actions as accessible buttons. */
 .taste-invitation {
@@ -1614,3 +1742,74 @@ main:focus-visible {
     display: inline;
   }
 }
+
+.weather { display:flex; gap:12px; align-items:center; margin-top:28px; color:#16343b; }
+.weather > span { font-size:28px; color:#167d8d; }
+.weather div { display:flex; flex-direction:column; gap:4px; font-size:12px; }
+.weather div span { color:#5d6f73; line-height:1.5; }
+.weather button { min-height:44px; padding:4px 10px; font-size:12px; margin-left:4px; }
+
+.weather { display: inline-flex; gap: 16px; align-items: center; margin-top: 32px; padding: 14px 22px 14px 14px; border: 1px solid #dfe7e5; border-radius: 18px; background: #fff; }
+.weather .weather-sun { display:grid; place-items:center; flex: 0 0 54px; width:54px; height:54px; border-radius:16px; background:#fbf2e4; color:#aa6d20; font-size:38px; line-height:1; }
+.weather .weather-body { display:flex; flex-direction:column; gap:6px; }
+.weather .weather-city { color:#5d6f73; font-size:10px; font-weight:700; letter-spacing:.12em; }
+.weather .weather-reading { display:flex; flex-direction:row; align-items:center; gap:12px; }
+.weather .weather-reading strong { font-size:28px; line-height:1; letter-spacing:-.04em; font-weight:650; }
+.weather .weather-wind { font-size:12px; color:#365d60; padding-left:12px; border-left:1px solid #dfe7e5; }
+.weather .weather-state { font-size:13px; color:#5d6f73; }
+.weather .weather-state button { border:0; text-decoration:underline; padding:0 6px; min-height:44px; }
+
+/* Persistent, compact weather in the site header. */
+.header { position: sticky; top: 0; z-index: 20; background: #f7f8f5; }
+.header .weather { order: 2; margin: 0 0 0 auto; padding: 5px 10px 5px 6px; gap: 8px; border-radius: 14px; flex-shrink: 0; }
+.header nav { order: 1; }
+.header .header-cta { order: 3; }
+.header .weather .weather-sun { flex-basis: 34px; width: 34px; height: 34px; border-radius: 10px; font-size: 26px; }
+.header .weather .weather-reading strong { font-size: 21px; }
+.header .weather .weather-wind { white-space: nowrap; }
+.header .weather .weather-state { max-width: 145px; }
+@media (max-width: 1050px) { .header .weather { order: 3; } }
+@media (max-width: 600px) { .header { gap: 8px; } .header .header-cta { display: none !important; } .header .weather { margin-left: auto; } .header .weather .weather-wind { font-size: 11px; padding-left: 7px; } .header .weather .weather-reading { gap: 7px; } .header .weather .weather-state { max-width: 155px; font-size: 11px; } }
+
+.header .weather .weather-trigger { min-height: 44px; border: 0; padding: 0 5px; background: transparent; border-radius: 9px; }
+.header .weather:has(.weather-trigger) { padding-top: 0; padding-bottom: 0; }
+.forecast-intro { margin: 0 0 24px; font-size: 14px; }
+.forecast-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 12px; }
+.forecast-period { padding: 18px; border-radius: 16px; background: #f2f7f4; border: 1px solid #dfe7e5; }
+.forecast-period-head { display:flex; flex-wrap:wrap; justify-content:space-between; gap: 6px; font-size:13px; }
+.forecast-period-head span,.forecast-detail { color:#5d6f73; font-size:12px; }
+.forecast-icon { display:block; color:#9f6a24; font-size:38px; margin:20px 0 12px; line-height:1; }
+.forecast-temp { font-size:32px; font-weight:650; letter-spacing:-.04em; }
+.forecast-condition { font-size:13px; min-height:3em; margin:8px 0 14px; color:#16343b; }
+.forecast-detail { margin:4px 0; }
+@media(max-width:480px) { .forecast-grid { grid-template-columns:1fr; } .forecast-period { display:grid; grid-template-columns:1fr auto; align-items:center; gap:4px 12px; } .forecast-icon { grid-column:2; grid-row:1 / span 2; margin:0; } .forecast-temp { font-size:26px; } .forecast-condition { min-height:0; margin:4px 0; } .forecast-detail { grid-column:1 / -1; } }
+
+.header .weather { padding: 0; }
+.header .weather .weather-trigger { display:flex; align-items:center; gap:8px; padding:5px 10px 5px 6px; }
+
+.forecast-icon svg { display:block; }
+.forecast-astro { color:#80601d; font-size:12px; font-weight:600; margin:0 0 10px; }
+.header .weather-wind { max-width:220px; overflow:hidden; text-overflow:ellipsis; }
+@media(max-width:600px) { .header .weather-wind { max-width:110px; } .forecast-astro { grid-column:1 / -1; } }
+@media(max-width:600px){.header .weather-wind{white-space:normal;line-height:1.2;overflow-wrap:anywhere}}
+@media(max-width:600px){.header .logo{font-size:clamp(13px,3.6vw,18px);letter-spacing:-.5px}}
+.selection-count{margin:18px 0 4px;font-size:14px;color:var(--muted)}
+.selection-count strong{color:var(--ink);font-weight:650}
+.taste-finish-auto{font-size:13px;color:var(--muted);margin:0}
+.pagination-steps{display:flex;align-items:center;gap:20px}
+.pagination-refresh{gap:10px}
+.pagination-refresh svg{width:18px;height:18px;display:block;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+@media(max-width:600px){
+.pagination{flex-wrap:nowrap;justify-content:space-between;gap:10px}
+.pagination-steps{flex:1;gap:8px}
+.pagination-steps button{flex:1;padding:12px 8px;white-space:nowrap}
+.pagination-refresh{flex:none;width:48px;height:48px;min-width:48px;padding:0;border-radius:50%;gap:0}
+.pagination-refresh svg{width:20px;height:20px}
+.pagination-refresh-label{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+}
+.logo{display:inline-flex;align-items:center;gap:10px}.logo .brand-mark{display:block;width:44px;height:44px;flex:none}.logo .brand-name:first-of-type{font-size:inherit;color:inherit;vertical-align:baseline;margin:0}.footer .brand-mark{width:36px;height:36px}@media(max-width:600px){.header .logo .brand-mark{width:38px;height:38px}.header .logo{gap:7px}}
+.cookie-notice { margin-block: 16px; padding: 20px; border: 1px solid #c4d1ce; border-radius: 16px; background: #eef1eb; }
+.cookie-notice h2 { font-size: 22px; }
+.cookie-notice p { max-width: 900px; line-height: 1.6; }
+.cookie-notice .actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.cookie-settings { padding-bottom: 100px; }

@@ -196,6 +196,7 @@ function TasteDeck() {
   const [exit, setExit] = useState(""),
     [reload, setReload] = useState(0),
     [details, setDetails] = useState(false);
+  const [autoLeave, setAutoLeave] = useState(true);
   const card = useRef<HTMLElement>(null),
     lock = useRef(false),
     mounted = useRef(true);
@@ -313,6 +314,11 @@ function TasteDeck() {
     resetDrag();
     if (place && index > 0) card.current?.focus({ preventScroll: true });
   }, [place?.id]);
+  useEffect(() => {
+    if (!finished || !autoLeave || busy) return;
+    const timer = window.setTimeout(() => leave(), 2200);
+    return () => window.clearTimeout(timer);
+  }, [finished, autoLeave, busy]);
   function leave() {
     navigate("/recommendations", { replace: true, state: { geo } });
   }
@@ -483,7 +489,8 @@ function TasteDeck() {
         </button>
       </div>
       <p className="taste-subtitle">
-        Вправо — нравится, влево — не подходит, по центру — пока не знаю.
+        Вправо — нравится, влево — не подходит, по центру — пока не знаю. Новые
+        места подстроятся под твой выбор.
       </p>
       {loading ? (
         <Skeleton />
@@ -498,11 +505,17 @@ function TasteDeck() {
             {history.filter((d) => d.reaction === "like").length}. Продолжим
             уточнять твои интересы по мере знакомства с городом.
           </p>
+          {autoLeave && (
+            <p className="taste-finish-auto">Открываем твою подборку…</p>
+          )}
           <button className="primary" onClick={leave} disabled={busy}>
             Посмотреть мою подборку →
           </button>
           <button
-            onClick={() => void undo()}
+            onClick={() => {
+              setAutoLeave(false);
+              void undo();
+            }}
             disabled={busy || !!retryKind || !history.length}
           >
             ↶ Вернуть последнюю карточку

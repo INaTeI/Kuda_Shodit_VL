@@ -1,4 +1,4 @@
-# VDK GID — backend городского гида
+# VDK GID — городской гид
 
 Общий Swagger модели: **http://149.154.70.109/model/docs** — открыть, выбрать
 POST /recommendations → Try it out → Execute. Инструкция: [docs/qwen-server.md](docs/qwen-server.md).
@@ -32,10 +32,14 @@ docker compose ps
 При изменении пароля PostgreSQL в .env обновите также DATABASE_URL. Для существующего
 тома изменение POSTGRES_PASSWORD само по себе пароль базы не меняет.
 
+- Сайт: http://127.0.0.1:8080 (frontend в отдельном образе Nginx)
 - Swagger: http://localhost:8000/docs
 - OpenAPI JSON: http://localhost:8000/openapi.json
 - ReDoc: http://localhost:8000/redoc
 - Проверка готовности БД: http://localhost:8000/health/ready
+
+Frontend входит в `docker compose up -d --build`; Node.js на хосте не требуется.
+Стандартные порты: сайт — 8080, API — 8000. Proxy frontend → API работает внутри Docker.
 
 Миграции выполняются отдельным одноразовым сервисом migrate до старта API.
 Seed запускается явно и повторно не создаёт дубликаты. Он добавляет восемь категорий и
@@ -270,3 +274,13 @@ npm.cmd run dev
 ```
 
 Адрес: http://127.0.0.1:5173. Сборка: `npm.cmd run build`. Проверки: `npm.cmd test`.
+
+## Погода во Владивостоке
+
+Создайте ключ на https://www.weatherapi.com/ и добавьте `WEATHERAPI_KEY=ваш_ключ`
+в корневой `.env` (не в frontend). Пересоздайте API: `docker compose up -d --build api`.
+Температура на главной приходит через `GET /api/v1/weather/current`; данные кэшируются
+в памяти API на 10 минут. Без ключа или при ошибке провайдера отображается сообщение
+о недоступности. Ключ не отправляется браузеру. Данные не влияют на рекомендации.
+
+По нажатию на погоду открывается прогноз на 09:00, 15:00 и 21:00 местного времени Владивостока. `GET /api/v1/weather/forecast` берёт почасовой прогноз у WeatherAPI, хранит ответ в памяти 10 минут и не раскрывает ключ. Прошедшие часы показаны как прогноз на конкретное время, а не как текущие условия.

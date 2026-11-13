@@ -2,6 +2,11 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { api, price, type Category, type Place, type Reaction } from "./api";
 import { useGuest } from "./state";
+
+export const HEART_PATH =
+  "M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 " +
+  "3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 " +
+  "3.78-3.4 6.86-8.55 11.54L12 21.35z";
 export function useLoad<T>(path: string, body?: unknown, token?: string) {
   const [data, setData] = useState<T>(),
     [error, setError] = useState(""),
@@ -125,7 +130,7 @@ export function Artwork({
             />
           </svg>
           <span className="art-caption">
-            ВДК / {hero ? "ГОРОД У МОРЯ" : "ГРАФИЧЕСКИЙ ЭСКИЗ"}
+            КСВЛ / {hero ? "ГОРОД У МОРЯ" : "ГРАФИЧЕСКИЙ ЭСКИЗ"}
           </span>
         </>
       )}
@@ -201,29 +206,52 @@ export function Reactions({
       setBusy(false);
     }
   }
+  function toggle(r: Reaction) {
+    void update(() => guest.react(id, state?.reaction === r ? null : r));
+  }
   return (
     <div className="reaction-box">
-      <div className="reaction-row">
-        {(
-          [
-            ["like", "♡ Нравится"],
-            ["dislike", "× Не подходит"],
-            ["neutral", "— Нейтрально"],
-          ] as [Reaction, string][]
-        ).map(([r, label]) => (
-          <button
-            key={r}
-            aria-pressed={state?.reaction === r}
-            disabled={busy}
-            onClick={() =>
-              void update(() =>
-                guest.react(id, state?.reaction === r ? null : r),
-              )
-            }
-          >
-            {label}
-          </button>
-        ))}
+      <div className="reaction-row" role="group" aria-label="Оценка места">
+        <button
+          className="reaction-icon reaction-yes"
+          aria-pressed={state?.reaction === "like"}
+          aria-label="Нравится"
+          title="Нравится"
+          disabled={busy}
+          onClick={() => toggle("like")}
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path className="icon-heart" d={HEART_PATH} />
+          </svg>
+        </button>
+        <button
+          className="reaction-icon reaction-no"
+          aria-pressed={state?.reaction === "dislike"}
+          aria-label="Не подходит"
+          title="Не подходит"
+          disabled={busy}
+          onClick={() => toggle("dislike")}
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path className="icon-heart" d={HEART_PATH} />
+            <line className="icon-slash" x1="4.5" y1="3.5" x2="19.5" y2="20.5" />
+          </svg>
+        </button>
+        <button
+          className="reaction-icon reaction-skip"
+          aria-pressed={state?.reaction === "neutral"}
+          aria-label="Нейтрально"
+          title="Нейтрально"
+          disabled={busy}
+          onClick={() => toggle("neutral")}
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle className="icon-face" cx="12" cy="12" r="9" />
+            <circle className="icon-eye" cx="8.8" cy="10" r="1.1" />
+            <circle className="icon-eye" cx="15.2" cy="10" r="1.1" />
+            <line className="icon-mouth" x1="8.6" y1="15.4" x2="15.4" y2="15.4" />
+          </svg>
+        </button>
       </div>
       <label className="known">
         <input

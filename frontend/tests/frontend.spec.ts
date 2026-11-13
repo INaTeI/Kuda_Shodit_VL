@@ -24,7 +24,8 @@ test.beforeEach(async ({ page }) => {
   await page.route("**/api/v1/**", async (route) => {
     const path = new URL(route.request().url()).pathname;
     let data: unknown = {};
-    if (path.endsWith("/categories")) data = place.categories;
+    if (path.endsWith("/weather/current")) data = {temperature_c: 9, wind_kph: 8};
+    else if (path.endsWith("/categories")) data = place.categories;
     else if (path.endsWith("/places"))
       data = {
         items: [
@@ -157,7 +158,7 @@ test("failed reaction retains discovery card and keyboard works", async ({
   );
   await page.goto("/discovery");
   await expect(page.getByRole("heading", { name: place.name })).toBeVisible();
-  await page.getByRole("button", { name: "♡ Нравится" }).click();
+  await page.getByRole("button", { name: "Нравится", exact: true }).click();
   await expect(page.getByRole("alert")).toContainText("Тестовая ошибка");
   await expect(page.getByRole("heading", { name: place.name })).toBeVisible();
   const card = page.getByLabel(
