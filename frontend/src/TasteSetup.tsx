@@ -34,6 +34,37 @@ export function SwipePreview() {
   );
 }
 
+function ReactionIcon({ type }: { type: "like" | "dislike" | "neutral" }) {
+  if (type === "neutral")
+    return (
+      <svg
+        className="reaction-icon reaction-icon-neutral"
+        viewBox="0 0 64 64"
+        aria-hidden="true"
+      >
+        <circle cx="32" cy="32" r="24" />
+        <circle className="reaction-eye" cx="24" cy="27" r="2.5" />
+        <circle className="reaction-eye" cx="40" cy="27" r="2.5" />
+        <path d="M23 40h18" />
+      </svg>
+    );
+  return (
+    <svg
+      className={`reaction-icon reaction-icon-${type}`}
+      viewBox="0 0 64 64"
+      aria-hidden="true"
+    >
+      <path
+        className="reaction-heart"
+        d="M32 53 11.5 33.6C-.7 21.8 5.8 8 18.4 8 25.3 8 29.4 12 32 16.1 34.6 12 38.7 8 45.6 8 58.2 8 64.7 21.8 52.5 33.6Z"
+      />
+      {type === "dislike" && (
+        <path className="reaction-slash" d="M11 11 53 53" />
+      )}
+    </svg>
+  );
+}
+
 export function TasteInvitation({
   always = false,
   onStart,
@@ -409,8 +440,7 @@ function TasteDeck() {
         </button>
       </div>
       <p className="taste-subtitle">
-        Вправо — нравится. Влево — не подходит. Новые места подстроятся под твой
-        выбор.
+        Вправо — нравится, влево — не подходит, по центру — пока не знаю.
       </p>
       {loading ? (
         <Skeleton />
@@ -553,22 +583,35 @@ function TasteDeck() {
                 <small>{place.price_note}</small>
               </div>
             </article>
-          </div>
-          <div className="taste-controls">
-            <button
-              className="taste-no"
-              onClick={() => void decide("dislike")}
-              disabled={busy || !!retryKind}
-            >
-              <span aria-hidden="true">×</span>Не подходит<small>← Влево</small>
-            </button>
-            <button
-              className="taste-yes"
-              onClick={() => void decide("like")}
-              disabled={busy || !!retryKind}
-            >
-              <span aria-hidden="true">♡</span>Нравится<small>Вправо →</small>
-            </button>
+            <div className="taste-reaction-dock" aria-label="Оценить место">
+              <button
+                className="taste-reaction taste-reaction-dislike"
+                aria-label="Не нравится — влево"
+                title="Не нравится"
+                onClick={() => void decide("dislike")}
+                disabled={busy || !!retryKind}
+              >
+                <ReactionIcon type="dislike" />
+              </button>
+              <button
+                className="taste-reaction taste-reaction-neutral"
+                aria-label="Пока не знаю"
+                title="Пока не знаю"
+                onClick={() => void decide("neutral")}
+                disabled={busy || !!retryKind}
+              >
+                <ReactionIcon type="neutral" />
+              </button>
+              <button
+                className="taste-reaction taste-reaction-like"
+                aria-label="Нравится — вправо"
+                title="Нравится"
+                onClick={() => void decide("like")}
+                disabled={busy || !!retryKind}
+              >
+                <ReactionIcon type="like" />
+              </button>
+            </div>
           </div>
           <div className="taste-secondary">
             <button
@@ -577,12 +620,6 @@ function TasteDeck() {
               disabled={busy || !!retryKind || !history.length}
             >
               ↶ Отменить
-            </button>
-            <button
-              onClick={() => void decide("neutral")}
-              disabled={busy || !!retryKind}
-            >
-              Пока не знаю
             </button>
           </div>
           <p role="status" className="taste-saving">

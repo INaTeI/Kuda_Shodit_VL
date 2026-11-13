@@ -1178,7 +1178,7 @@ main:focus-visible {
 }
 .taste-arena {
   position: relative;
-  padding: 16px 20px 20px;
+  padding: 16px 20px 52px;
   margin: 0 -20px;
   overflow: clip;
 }
@@ -1209,7 +1209,7 @@ main:focus-visible {
   min-height: 0;
 }
 .taste-card-body {
-  padding: 18px 22px;
+  padding: 18px 22px 50px;
 }
 .taste-card-body h2 {
   font-size: 24px;
@@ -1269,41 +1269,103 @@ main:focus-visible {
 .taste-exit-neutral {
   animation: taste-neutral 0.32s ease-out forwards;
 }
-.taste-controls {
+.taste-reaction-dock {
+  position: relative;
+  z-index: 3;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, 72px);
+  justify-content: center;
   gap: 12px;
+  width: fit-content;
+  margin: -34px auto -38px;
+  padding: 12px 20px;
+  border: 1px solid #e5ebe9;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 14px 34px #16343b24;
 }
-.taste-controls button {
-  display: grid;
-  grid-template-columns: 30px 1fr;
-  align-items: center;
-  text-align: left;
+.taste-reaction {
+  width: 72px;
+  height: 72px;
   min-height: 72px;
-  padding: 10px 14px;
+  padding: 10px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
-.taste-controls button > span {
-  grid-row: span 2;
-  font-size: 32px;
+.taste-reaction:not(:disabled):hover,
+.taste-reaction:not(:disabled):focus-visible {
+  background: #f4f8f7;
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 8px 18px #16343b17;
 }
-.taste-controls small {
-  font-size: 11px;
-  font-weight: 400;
+.reaction-icon {
+  width: 52px;
+  height: 52px;
+  overflow: visible;
+  transition:
+    color 0.2s ease,
+    filter 0.2s ease;
 }
-.taste-no {
-  background: #f4e9e3;
-  color: #794435;
-  border-color: #cdb4a8;
+.reaction-heart {
+  fill: transparent;
+  stroke: currentColor;
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: fill 0.2s ease;
 }
-.taste-yes {
-  background: var(--accent);
-  color: white;
-  border-color: var(--accent);
+.reaction-icon-dislike {
+  color: #c45440;
+}
+.reaction-icon-like {
+  color: var(--accent);
+}
+.reaction-slash {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 4;
+  stroke-linecap: round;
+  transition: stroke 0.2s ease;
+}
+.taste-reaction-dislike:not(:disabled):hover .reaction-heart,
+.taste-reaction-dislike:not(:disabled):focus-visible .reaction-heart,
+.taste-reaction-dislike:not(:disabled):active .reaction-heart,
+.taste-reaction-like:not(:disabled):hover .reaction-heart,
+.taste-reaction-like:not(:disabled):focus-visible .reaction-heart,
+.taste-reaction-like:not(:disabled):active .reaction-heart {
+  fill: currentColor;
+}
+.taste-reaction-dislike:not(:disabled):hover .reaction-slash,
+.taste-reaction-dislike:not(:disabled):focus-visible .reaction-slash,
+.taste-reaction-dislike:not(:disabled):active .reaction-slash {
+  stroke: #fff;
+}
+.reaction-icon-neutral {
+  color: #63777b;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+.reaction-icon-neutral .reaction-eye {
+  fill: currentColor;
+  stroke: none;
+}
+.taste-reaction-neutral:not(:disabled):hover .reaction-icon,
+.taste-reaction-neutral:not(:disabled):focus-visible .reaction-icon,
+.taste-reaction-neutral:not(:disabled):active .reaction-icon {
+  color: var(--accent);
+  filter: drop-shadow(0 0 7px #167d8d66);
 }
 .taste-secondary {
   display: flex;
-  justify-content: space-between;
-  margin-top: 10px;
+  justify-content: center;
+  margin-top: 4px;
   gap: 8px;
 }
 .taste-secondary button {
@@ -1438,7 +1500,7 @@ main:focus-visible {
     height: 145px;
   }
   .taste-card-body {
-    padding: 14px 16px;
+    padding: 14px 16px 46px;
   }
   .taste-card-body h2 {
     font-size: 22px;
@@ -1481,16 +1543,26 @@ main:focus-visible {
     animation: none;
   }
 }
-.taste-controls .taste-yes:hover {
-  background: #126b78;
-}
-.taste-controls .taste-no:hover {
-  background: #ead8ce;
-}
 @media (max-width: 600px) {
   .taste-arena {
     margin-inline: -16px;
-    padding-inline: 16px;
+    padding: 12px 16px 48px;
+  }
+  .taste-reaction-dock {
+    grid-template-columns: repeat(3, 60px);
+    gap: 6px;
+    margin-top: -29px;
+    padding: 9px 14px;
+  }
+  .taste-reaction {
+    width: 60px;
+    height: 60px;
+    min-height: 60px;
+    padding: 8px;
+  }
+  .reaction-icon {
+    width: 44px;
+    height: 44px;
   }
 }
 .mobile-nav.taste-nav-hidden {
@@ -1534,22 +1606,11 @@ main:focus-visible {
   display: none;
 }
 @media (max-width: 600px) {
-  .taste-controls,
   .taste-secondary .taste-undo,
   .taste-desktop-hint {
     display: none;
   }
   .taste-mobile-hint {
     display: inline;
-  }
-}
-
-@media (max-width: 600px) {
-  .taste-secondary {
-    justify-content: center;
-    margin-top: 0;
-  }
-  .taste-secondary button {
-    min-width: 160px;
   }
 }

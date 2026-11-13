@@ -168,7 +168,7 @@ test("keyboard directions, view ordering, undo and completion of 12 cards", asyn
     expected_reaction_revision: 2,
   });
   for (let n = 2; n <= 12; n++) {
-    await page.getByRole("button", { name: "Нравится Вправо →" }).click();
+    await page.getByRole("button", { name: "Нравится — вправо" }).click();
     if (n < 12)
       await expect(page.getByText(`Карточка ${n + 1} из 12`)).toBeVisible();
   }
@@ -184,7 +184,7 @@ test("lost response retries identical event and keeps card", async ({
   const { events } = await mock(page, { count: 3, lostReply: true });
   await page.goto("/taste");
   await page.getByRole("button", { name: "Давай попробуем →" }).click();
-  await page.getByRole("button", { name: "Нравится Вправо →" }).click();
+  await page.getByRole("button", { name: "Нравится — вправо" }).click();
   await expect(page.getByText("Ответ потерян. Повтори запрос.")).toBeVisible();
   await expect(page.getByText("Карточка 1 из 3")).toBeVisible();
   await page.getByRole("button", { name: "Повторить запрос ↻" }).click();
@@ -197,12 +197,12 @@ test("stale reaction refreshes without losing deck", async ({ page }) => {
   await mock(page, { count: 3, conflict: true });
   await page.goto("/taste");
   await page.getByRole("button", { name: "Давай попробуем →" }).click();
-  await page.getByRole("button", { name: "Нравится Вправо →" }).click();
+  await page.getByRole("button", { name: "Нравится — вправо" }).click();
   await expect(
     page.getByText(/Оценка изменилась в другой вкладке/),
   ).toBeVisible();
   await expect(page.getByText("Карточка 1 из 3")).toBeVisible();
-  await page.getByRole("button", { name: "Нравится Вправо →" }).click();
+  await page.getByRole("button", { name: "Нравится — вправо" }).click();
   await expect(page.getByText("Карточка 2 из 3")).toBeVisible();
 });
 for (const width of [360, 390, 768, 1280])
@@ -241,7 +241,7 @@ for (const width of [360, 390, 768, 1280])
       "dislike",
     );
     if (width <= 600) {
-      await expect(page.locator(".taste-controls")).toBeHidden();
+      await expect(page.locator(".taste-reaction-dock")).toBeVisible();
       await expect(page.locator(".taste-secondary .taste-undo")).toBeHidden();
       await expect(
         page.getByRole("button", { name: "Пока не знаю" }),
@@ -249,7 +249,7 @@ for (const width of [360, 390, 768, 1280])
       await card.focus();
       await page.keyboard.press("ArrowRight");
     } else {
-      await expect(page.locator(".taste-controls")).toBeVisible();
+      await expect(page.locator(".taste-reaction-dock")).toBeVisible();
       await page.getByRole("button", { name: "Пока не знаю" }).click();
     }
     await expect(page.getByText("Карточка 3 из 3")).toBeVisible();
@@ -364,7 +364,7 @@ test("swipe IDs work when randomUUID is unavailable on HTTP", async ({
   );
   await page.goto("/taste");
   await page.getByRole("button", { name: "Давай попробуем →" }).click();
-  await page.getByRole("button", { name: "Нравится Вправо →" }).click();
+  await page.getByRole("button", { name: "Нравится — вправо" }).click();
   await expect(page.getByText("Карточка 2 из 3")).toBeVisible();
 });
 
@@ -417,5 +417,36 @@ test("mobile unsure button saves neutral and advances the card", async ({
   await page.getByRole("button", { name: "Пока не знаю" }).click();
   await expect(page.getByText("Карточка 2 из 3")).toBeVisible();
   expect(events.find((e) => e.event_type === "swipe").reaction).toBe("neutral");
-  await expect(page.locator(".taste-controls")).toBeHidden();
+  await expect(page.locator(".taste-reaction-dock")).toBeVisible();
+});
+
+test("reaction dock keeps outlined icons and shows hover states", async ({
+  page,
+}) => {
+  await mock(page, { count: 3 });
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/taste");
+  await page.getByRole("button", { name: "Давай попробуем →" }).click();
+
+  const dislike = page.getByRole("button", { name: "Не нравится — влево" });
+  const neutral = page.getByRole("button", { name: "Пока не знаю" });
+  const like = page.getByRole("button", { name: "Нравится — вправо" });
+  await expect(dislike).toBeVisible();
+  await expect(neutral).toBeVisible();
+  await expect(like).toBeVisible();
+
+  const likeHeart = like.locator(".reaction-heart");
+  await expect(likeHeart).toHaveCSS("fill", "rgba(0, 0, 0, 0)");
+  await like.hover();
+  await expect(likeHeart).toHaveCSS("fill", "rgb(22, 125, 141)");
+
+  const dislikeHeart = dislike.locator(".reaction-heart");
+  await expect(dislikeHeart).toHaveCSS("fill", "rgba(0, 0, 0, 0)");
+  await dislike.hover();
+  await expect(dislikeHeart).toHaveCSS("fill", "rgb(196, 84, 64)");
+
+  const neutralIcon = neutral.locator(".reaction-icon");
+  await expect(neutralIcon).toHaveCSS("color", "rgb(99, 119, 123)");
+  await neutral.hover();
+  await expect(neutralIcon).toHaveCSS("color", "rgb(22, 125, 141)");
 });
