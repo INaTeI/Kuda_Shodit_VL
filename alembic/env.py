@@ -6,6 +6,7 @@ from app.core.config import get_settings
 from app.db.session import Base
 from app.db import models  # noqa: F401
 from app.importing import models as importing_models  # noqa: F401
+from app.analytics import models as analytics_models  # noqa: F401
 
 
 def migrate(connection):

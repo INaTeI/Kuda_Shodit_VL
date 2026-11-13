@@ -1,0 +1,170 @@
+{
+  "health": {
+    "status": "ready",
+    "model": "qwen",
+    "device": "cpu",
+    "places_count": 188,
+    "query_adapter_enabled": true
+  },
+  "walk": {
+    "model": "qwen",
+    "device": "cpu",
+    "candidates_count": 46,
+    "filters": {
+      "category": "прогулка",
+      "required_features": [],
+      "excluded_categories": [],
+      "warnings": [],
+      "excluded_counts": {
+        "category": 142,
+        "menu_unconfirmed": 0,
+        "budget_unknown": 0,
+        "budget_exceeded": 0,
+        "location_unknown": 0,
+        "too_far": 0
+      },
+      "budget": null,
+      "radius_km": null,
+      "ranking_method": "qwen-query-adapter-experimental"
+    },
+    "places": [
+      {
+        "place_id": "place_4b87d4b9fd27148337af",
+        "name": "Сквер путешественников",
+        "description": "Городской сквер в центральной части Владивостока.",
+        "address": "https://2gis.ru/vladivostok/geo/70030076448892250",
+        "similarity": 0.7347160577774048,
+        "distance_km": null,
+        "spending_min": 0.0,
+        "spending_max": 0.0,
+        "source_row": 172
+      },
+      {
+        "place_id": "place_ddea4a27c8b89eb2e9cb",
+        "name": "Курсантский сквер",
+        "description": "Благоустроенный сквер с пешеходными дорожками.",
+        "address": "https://2gis.ru/vladivostok/geo/3519124403650589",
+        "similarity": 0.7080674767494202,
+        "distance_km": null,
+        "spending_min": null,
+        "spending_max": null,
+        "source_row": 163
+      },
+      {
+        "place_id": "place_8bdf1a9659ebe0692b65",
+        "name": "Некрасовский сквер",
+        "description": "Городской сквер с детской площадкой.",
+        "address": "https://2gis.ru/vladivostok/geo/3519124403651539",
+        "similarity": 0.7080068588256836,
+        "distance_km": null,
+        "spending_min": 0.0,
+        "spending_max": 0.0,
+        "source_row": 138
+      },
+      {
+        "place_id": "place_4810c311dbaf360b19ed",
+        "name": "Сквер Надибаидзе",
+        "description": "Благоустроенный сквер с детской зоной.",
+        "address": "https://2gis.ru/vladivostok/geo/3519124403651541",
+        "similarity": 0.7068086266517639,
+        "distance_km": null,
+        "spending_min": 0.0,
+        "spending_max": 0.0,
+        "source_row": 137
+      },
+      {
+        "place_id": "place_58ff708e1d0fee5fc02e",
+        "name": "Сквер на Окатовой",
+        "description": "Квартальный сквер с детской и спортивной зонами.",
+        "address": "https://2gis.ru/vladivostok/geo/70030076477023803",
+        "similarity": 0.6973736882209778,
+        "distance_km": null,
+        "spending_min": null,
+        "spending_max": null,
+        "source_row": 171
+      }
+    ]
+  },
+  "similar": {
+    "model": "qwen",
+    "device": "cpu",
+    "candidates_count": 6,
+    "filters": {
+      "category": null,
+      "required_features": [],
+      "excluded_categories": [],
+      "warnings": [],
+      "excluded_counts": {
+        "category": 0,
+        "menu_unconfirmed": 0,
+        "budget_unknown": 0,
+        "budget_exceeded": 0,
+        "location_unknown": 0,
+        "too_far": 0
+      },
+      "budget": null,
+      "radius_km": null,
+      "same_type": true,
+      "source_primary_type": "кофейня",
+      "distance_origin": null
+    },
+    "places": [
+      {
+        "place_id": "place_aa74bca3dafeaafe55fc",
+        "name": "Coffee Point на 100-летия",
+        "description": "Небольшая кофейня с классическими и авторскими напитками.",
+        "address": "Владивосток, проспект 100-летия Владивостока, 42А, 1 этаж",
+        "similarity": 0.7255646586418152,
+        "distance_km": null,
+        "spending_min": 100.0,
+        "spending_max": 200.0,
+        "source_row": 72
+      },
+      {
+        "place_id": "place_215e33ec43cb1fa7ac67",
+        "name": "Вспышка",
+        "description": "Кондитерская с эклерами, выпечкой, кофе и авторским чаем.",
+        "address": "Владивосток, ул. Светланская, 33, стр. 2",
+        "similarity": 0.6679404973983765,
+        "distance_km": null,
+        "spending_min": 1000.0,
+        "spending_max": 1000.0,
+        "source_row": 70
+      },
+      {
+        "place_id": "place_87dd76f448771eebf20c",
+        "name": "Кофемолка (Coffeemolka)",
+        "description": "Кафе и кофейня с завтраками, супами, поке, морепродуктами и десертами.",
+        "address": "Владивосток, ул. Светланская, 108Д",
+        "similarity": 0.6449273824691772,
+        "distance_km": null,
+        "spending_min": 1200.0,
+        "spending_max": 1700.0,
+        "source_row": 35
+      },
+      {
+        "place_id": "place_d25a9a5c9251c28ffa0d",
+        "name": "Сплетни",
+        "description": "Кафе, кофейня и пекарня: завтраки, кофе, выпечка и горячие блюда.",
+        "address": "Владивосток, Океанский проспект, 28",
+        "similarity": 0.6103531718254089,
+        "distance_km": null,
+        "spending_min": null,
+        "spending_max": null,
+        "source_row": 14
+      },
+      {
+        "place_id": "place_9f599bf1a1dd9b0441d0",
+        "name": "Kafema (Кафема)",
+        "description": "Кофейня и чайная на втором этаже: кофе, чай, десерты, круассаны.",
+        "address": "Владивосток, ул. Светланская, 17, 2 этаж",
+        "similarity": 0.6018736958503723,
+        "distance_km": null,
+        "spending_min": null,
+        "spending_max": null,
+        "source_row": 13
+      }
+    ],
+    "source_place_id": "place_7746eaf8860c9d4874bf"
+  }
+}

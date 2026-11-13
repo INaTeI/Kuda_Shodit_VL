@@ -5,7 +5,7 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y --no-install-recommends libgomp1 && rm -rf /var/lib/apt/lists/*
 COPY requirements.txt .
 RUN python -m pip install --no-cache-dir torch==2.11.0 --index-url ${TORCH_INDEX} && python -m pip install --no-cache-dir -r requirements.txt
-COPY app.py search_rules.py ./
+COPY app.py search_rules.py query_adapter.py model_identity.py ./
 COPY data ./data
 EXPOSE 8000
 CMD ["python","-m","uvicorn","app:app","--host","0.0.0.0","--port","8000","--workers","1"]

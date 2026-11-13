@@ -1,0 +1,9 @@
+{
+  "provenance": "Regression cases from the audit. These are known failures, not an independent quality test or user feedback.",
+  "examples": [
+    {"query": "Хочу покататься на сапе", "label": {"field": "type_any", "value": ["прокат sup-досок", "водный отдых"]}},
+    {"query": "Хочу поплавать в бассейне", "label": {"field": "type", "value": "бассейн"}},
+    {"query": "Хочу увидеть животных", "label": {"field": "type_any", "value": ["зоопарк", "конный клуб", "океанариум"]}},
+    {"query": "Хочу послушать живую музыку", "label": {"field": "tag", "value": "живая музыка"}}
+  ]
+}

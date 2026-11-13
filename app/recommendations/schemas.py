@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from uuid import UUID
 from app.catalog.schemas import SearchFilters, PlaceOut
 
 
@@ -15,6 +16,7 @@ class RecommendationItem(BaseModel):
 
 
 class RecommendationPage(BaseModel):
+    recommendation_id: UUID
     items: list[RecommendationItem]
     total: int
     algorithm_version: str = "rules-v1"

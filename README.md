@@ -1,5 +1,9 @@
 # VDK GID — backend городского гида
 
+Сбор статистики карточек: [docs/analytics.md](docs/analytics.md). Подборки получают
+`recommendation_id`; `/api/v1/me/events` принимает показы, открытия, свайпы и отмены.
+Сводка редактора: `/api/v1/admin/analytics/summary`. Требуется миграция `0004`.
+
 Отдельный сервис для проверки модели Qwen и каталога из 188 мест находится
 в [recommender/README.md](recommender/README.md). Он запускается независимо на порту
 8001, без PostgreSQL и без подключения к основному API.
@@ -83,6 +87,8 @@ Seed запускается явно и повторно не создаёт д�
 | PUT | /me/known-places/{id} | Знакомство с местом | Bearer |
 | POST | /recommendations | Ранжированная подборка | Bearer |
 | POST | /discovery | Случайные ещё не оценённые места | Bearer |
+| POST | /me/events | Показ, открытие, свайп или отмена с историей | Bearer |
+| GET | /admin/analytics/summary | Сводка показов и действий за период | X-Admin-Key |
 | GET / POST | /admin/places | Каталог редактора / создание | X-Admin-Key |
 | PUT / DELETE | /admin/places/{id} | Полная замена / архивирование | X-Admin-Key |
 

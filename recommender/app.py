@@ -1,11 +1,9 @@
 """Internal recommendation HTTP service. One process loads one selected model."""
-import hashlib
 import json
 import os
 import threading
 from contextlib import asynccontextmanager
 from pathlib import Path
-from typing import Literal
 
 import numpy as np
 import torch
@@ -13,6 +11,9 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 from sentence_transformers import SentenceTransformer
 from search_rules import CATEGORIES, candidates
+from query_adapter import QueryAdapter
+from model_identity import content_signature
+from search_rules import normalize_name, rank_indices, explicit_text_budget
 
 ROOT = Path(__file__).resolve().parent
 
@@ -20,7 +21,9 @@ ROOT = Path(__file__).resolve().parent
 class SearchFilters(BaseModel):
     model_config = ConfigDict(extra='forbid', allow_inf_nan=False)
     category: str | None = None
-    budget: float | None = Field(default=None, ge=0)
+    budget: float | None = Field(default=None, ge=0, description=(
+        'Рубли на человека. В подборе явное поле имеет приоритет; если оно отсутствует, '
+        'распознаётся одна явная сумма «до N рублей» в query. null снимает ограничение.'))
     latitude: float | None = Field(default=None, ge=-90, le=90)
     longitude: float | None = Field(default=None, ge=-180, le=180)
     radius_km: float | None = Field(default=None, gt=0)
@@ -108,10 +111,9 @@ class Recommender:
         by_row={p['source_row']:p['document'] for p in corpus['places']}
         texts=[by_row[p['row']] for p in self.catalog]
         self.query_prompt=f'Instruct: {corpus["query_task"]}\nQuery: '
-        # Include model files in the cache identity so replacing local weights invalidates it.
-        model_signature=[(str(p.relative_to(model_path)),p.stat().st_size,p.stat().st_mtime_ns)
-                         for p in sorted(model_path.rglob('*')) if p.is_file()]
-        key=hashlib.sha256(json.dumps([self.model_id,model_signature,texts,str(self.model.dtype)],ensure_ascii=False).encode()).hexdigest()
+        key = content_signature(model_path, self.catalog, texts, self.query_prompt,
+                                self.model.max_seq_length, self.model.dtype)
+        self.embedding_signature = key
         cache=Path(os.getenv('CACHE_DIR',str(ROOT/'cache')))
         cache.mkdir(parents=True,exist_ok=True)
         target=cache/(key+'.npz')
@@ -130,24 +132,54 @@ class Recommender:
             np.savez_compressed(temp,vectors=self.vectors)
             temp.replace(target)
         self.lock=threading.Lock()
+        self.query_adapter = None
+        self.adapter_mode = os.getenv('QUERY_ADAPTER_MODE', 'base')
+        if self.adapter_mode not in {'base', 'experimental'}:
+            raise ValueError('QUERY_ADAPTER_MODE must be base or experimental')
+        adapter_path = os.getenv('QUERY_ADAPTER_PATH')
+        if self.adapter_mode == 'experimental':
+            if not adapter_path:
+                raise ValueError('Experimental mode requires an approved QUERY_ADAPTER_PATH')
+            self.query_adapter = QueryAdapter.load(
+                adapter_path, self.embedding_signature, self.vectors.shape[1]
+            )
 
     def recommend(self,request):
-        indices,meta,distances,costs=candidates(self.catalog,request.query,request.category,
-            request.budget,request.latitude,request.longitude,request.radius_km)
+        named_place = any(normalize_name(place['values'][0]) == normalize_name(request.query)
+                          for place in self.catalog)
+        budget = request.budget
+        budget_source = 'request' if 'budget' in request.model_fields_set else None
+        if 'budget' not in request.model_fields_set and not named_place:
+            budget = explicit_text_budget(request.query)
+            if budget is not None:
+                budget_source = 'query'
+        # A venue name containing e.g. 'Quest' is not a request for a strict quest category.
+        indices,meta,distances,costs=candidates(self.catalog,'' if named_place else request.query,request.category,
+            budget,request.latitude,request.longitude,request.radius_km)
+        meta['budget_source'] = budget_source
+        if named_place and not request.category:
+            meta['warnings'] = []
         excluded=set(request.exclude_place_ids)
         indices=[i for i in indices if self.catalog[i]['place_id'] not in excluded]
         top=[]
+        exact_name = False
         if indices:
             with self.lock:
                 q=self.model.encode([request.query],prompt=self.query_prompt,normalize_embeddings=True,show_progress_bar=False)
+            exact_name = any(normalize_name(self.catalog[i]['values'][0]) == normalize_name(request.query)
+                             for i in indices)
+            if self.query_adapter is not None and not exact_name:
+                q = self.query_adapter.transform(q)
             scores=(q@self.vectors.T)[0]
-            top=sorted(indices,key=lambda i:float(scores[i]),reverse=True)[:request.limit]
+            top=rank_indices(self.catalog, request.query, indices, scores)[:request.limit]
         results=[]
         for i in top:
             p=self.catalog[i];v=p['values'];cost=costs.get(i,{})
             results.append(PlaceResult(place_id=p['place_id'],name=v[0],description=v[1],address=v[3],
                 similarity=float(scores[i]),distance_km=distances.get(i),spending_min=cost.get('min'),
                 spending_max=cost.get('max'),source_row=p['row']))
+        meta['ranking_method'] = ('exact-name' if top and exact_name else
+                                  'qwen-query-adapter-experimental' if self.query_adapter else 'qwen-base')
         return RecommendationResponse(model=self.kind,device=self.device,candidates_count=len(indices),filters=meta,places=results)
 
     def similar(self,place_id,request):
@@ -198,7 +230,9 @@ app=FastAPI(title='Vladivostok place recommender',version='1.1.0',lifespan=lifes
 @app.get('/health')
 def health():
     engine=app.state.recommender
-    return {'status':'ready','model':engine.kind,'device':engine.device,'places_count':len(engine.catalog)}
+    return {'status':'ready','model':engine.kind,'device':engine.device,'places_count':len(engine.catalog),
+            'query_adapter_enabled': engine.query_adapter is not None,
+            'adapter_mode': engine.adapter_mode}
 
 
 @app.get('/categories')

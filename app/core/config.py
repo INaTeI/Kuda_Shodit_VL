@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     database_url: str = "postgresql+asyncpg://vdk:local-development-change-me@localhost:5432/vdk_gid"
     admin_api_key: str = Field(min_length=12)
     cors_origins: list[str] = ["http://localhost:5173", "http://localhost:3000"]
+    analytics_retention_days: int = Field(default=90, ge=1, le=365)
 
 
 @lru_cache

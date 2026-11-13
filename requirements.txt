@@ -1,6 +1,6 @@
 fastapi==0.115.12
 uvicorn==0.34.2
-SQLAlchemy==2.0.40
+SQLAlchemy[asyncio]==2.0.40
 asyncpg==0.30.0
 alembic==1.15.2
 pydantic-settings==2.9.1

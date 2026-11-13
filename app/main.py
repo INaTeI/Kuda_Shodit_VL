@@ -11,6 +11,7 @@ from app.profiles.routes import router as profiles
 from app.importing.routes import router as imports
 from app.importing.middleware import ImportBodyLimitMiddleware
 from app.recommendations.routes import router as recommendations
+from app.analytics.routes import router as analytics
 
 
 @asynccontextmanager
@@ -33,7 +34,7 @@ app.add_middleware(
     allow_methods=["GET", "POST", "PUT", "DELETE"],
     allow_headers=["Authorization", "Content-Type", "X-Admin-Key"],
 )
-for router in [catalog, admin, profiles, recommendations, imports]:
+for router in [catalog, admin, profiles, recommendations, imports, analytics]:
     app.include_router(router, prefix="/api/v1")
 
 

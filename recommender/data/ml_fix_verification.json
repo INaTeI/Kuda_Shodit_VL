@@ -1,0 +1,1367 @@
+{
+  "exact_names": [
+    {
+      "name": "Supra",
+      "passed": true
+    },
+    {
+      "name": "Studio",
+      "passed": true
+    },
+    {
+      "name": "Дело в мясе (Delo V Myase)",
+      "passed": true
+    },
+    {
+      "name": "Миллионка",
+      "passed": true
+    },
+    {
+      "name": "Токио (Tokio), сеть ресторанов японской кухни",
+      "passed": true
+    },
+    {
+      "name": "Акватория (Aquatoria)",
+      "passed": true
+    },
+    {
+      "name": "Gusto gastrobar",
+      "passed": true
+    },
+    {
+      "name": "Бармузей «Вася Ложкин» (Vasya Lozhkin Barmuseum)",
+      "passed": true
+    },
+    {
+      "name": "Pizza Prosto (Пицца Просто)",
+      "passed": true
+    },
+    {
+      "name": "Sicilian (Сицилиан)",
+      "passed": true
+    },
+    {
+      "name": "More (Море)",
+      "passed": true
+    },
+    {
+      "name": "Kafema (Кафема)",
+      "passed": true
+    },
+    {
+      "name": "Сплетни",
+      "passed": true
+    },
+    {
+      "name": "Iz Brasserie",
+      "passed": true
+    },
+    {
+      "name": "Jimmy Jimmy",
+      "passed": true
+    },
+    {
+      "name": "Tbilissimo (Тбилиссимо)",
+      "passed": true
+    },
+    {
+      "name": "Огонёк (Ogonek)",
+      "passed": true
+    },
+    {
+      "name": "Токио (Tokio) на Острякова",
+      "passed": true
+    },
+    {
+      "name": "Супра Романи (Supra Romani)",
+      "passed": true
+    },
+    {
+      "name": "Trinity Irish Pub",
+      "passed": true
+    },
+    {
+      "name": "HookahPlace (ХукаПлейс)",
+      "passed": true
+    },
+    {
+      "name": "Кавказская пленница",
+      "passed": true
+    },
+    {
+      "name": "Чача дом",
+      "passed": true
+    },
+    {
+      "name": "Chill Zone (Чилл Зон)",
+      "passed": true
+    },
+    {
+      "name": "Umami ramen club (Умами рамен клаб)",
+      "passed": true
+    },
+    {
+      "name": "Ozzy Bar (Оззи бар)",
+      "passed": true
+    },
+    {
+      "name": "Sky Love (Скай Лав)",
+      "passed": true
+    },
+    {
+      "name": "Brugge (Брюгге)",
+      "passed": true
+    },
+    {
+      "name": "Сыроварня",
+      "passed": true
+    },
+    {
+      "name": "Dakara (Дакара)",
+      "passed": true
+    },
+    {
+      "name": "Добрыня и Аня",
+      "passed": true
+    },
+    {
+      "name": "Восточная Жемчужина",
+      "passed": true
+    },
+    {
+      "name": "Золотой век (Zolotoy vek)",
+      "passed": true
+    },
+    {
+      "name": "Кофемолка (Coffeemolka)",
+      "passed": true
+    },
+    {
+      "name": "Пекинская утка",
+      "passed": true
+    },
+    {
+      "name": "Zuma (Зума)",
+      "passed": true
+    },
+    {
+      "name": "Мирине (Mirine)",
+      "passed": true
+    },
+    {
+      "name": "Billy's Pub (Биллис Паб)",
+      "passed": true
+    },
+    {
+      "name": "Камбей (Kambey)",
+      "passed": true
+    },
+    {
+      "name": "Диди Супра (Didi Supra)",
+      "passed": true
+    },
+    {
+      "name": "Hinkali (Хинкали)",
+      "passed": true
+    },
+    {
+      "name": "ЛаоБан (LaoBan)",
+      "passed": true
+    },
+    {
+      "name": "Севан (Sevan)",
+      "passed": true
+    },
+    {
+      "name": "Лесная заимка",
+      "passed": true
+    },
+    {
+      "name": "Limoncello (Лимончелло)",
+      "passed": true
+    },
+    {
+      "name": "Fabrika Bowling (Фабрика Боулинг) на Светланской",
+      "passed": true
+    },
+    {
+      "name": "Fabrika (Фабрика) на 100-летия Владивостока",
+      "passed": true
+    },
+    {
+      "name": "Hunter (Охотник)",
+      "passed": true
+    },
+    {
+      "name": "Sektor (Сектор), компьютерный клуб",
+      "passed": true
+    },
+    {
+      "name": "Играй (Igray), компьютерный клуб",
+      "passed": true
+    },
+    {
+      "name": "Fame (Фейм), компьютерный клуб",
+      "passed": true
+    },
+    {
+      "name": "Cybermg (Cybergym), компьютерный клуб",
+      "passed": true
+    },
+    {
+      "name": "VR-Lab (ВР-Лаб), клуб виртуальной реальности",
+      "passed": true
+    },
+    {
+      "name": "TiAMA (Тиама)",
+      "passed": true
+    },
+    {
+      "name": "Vinil (Винил)",
+      "passed": true
+    },
+    {
+      "name": "Cabinet (Кабинет)",
+      "passed": true
+    },
+    {
+      "name": "Зажигалка",
+      "passed": true
+    },
+    {
+      "name": "Философия",
+      "passed": true
+    },
+    {
+      "name": "Клуб Москва",
+      "passed": true
+    },
+    {
+      "name": "Пазл групп",
+      "passed": true
+    },
+    {
+      "name": "Ku2 (Ку2)",
+      "passed": true
+    },
+    {
+      "name": "Sibumi (Сибуми)",
+      "passed": true
+    },
+    {
+      "name": "Tigerpizza (Тайгерпицца)",
+      "passed": true
+    },
+    {
+      "name": "Rakushka (Ракушка)",
+      "passed": true
+    },
+    {
+      "name": "Пятый океан",
+      "passed": true
+    },
+    {
+      "name": "Не рыдай!",
+      "passed": true
+    },
+    {
+      "name": "Бурный",
+      "passed": true
+    },
+    {
+      "name": "Gangnam (Гангнам)",
+      "passed": true
+    },
+    {
+      "name": "Вспышка",
+      "passed": true
+    },
+    {
+      "name": "Марков на Спортивной",
+      "passed": true
+    },
+    {
+      "name": "Coffee Point на 100-летия",
+      "passed": true
+    },
+    {
+      "name": "Пекарня Мишеля в ГУМе",
+      "passed": true
+    },
+    {
+      "name": "Порто-Франко",
+      "passed": true
+    },
+    {
+      "name": "Молоко и Мёд",
+      "passed": true
+    },
+    {
+      "name": "Высота",
+      "passed": true
+    },
+    {
+      "name": "CRUST Pizza & Wine",
+      "passed": true
+    },
+    {
+      "name": "Кондитория",
+      "passed": true
+    },
+    {
+      "name": "Лима",
+      "passed": true
+    },
+    {
+      "name": "Lotus Room",
+      "passed": true
+    },
+    {
+      "name": "MIYAKO (Мияко)",
+      "passed": true
+    },
+    {
+      "name": "Dumpling Republic (Дамплинг Репаблик)",
+      "passed": true
+    },
+    {
+      "name": "САГРА (Sagra)",
+      "passed": true
+    },
+    {
+      "name": "Да, Шеф!!!",
+      "passed": true
+    },
+    {
+      "name": "Holy Hop",
+      "passed": true
+    },
+    {
+      "name": "Redneck Pub",
+      "passed": true
+    },
+    {
+      "name": "BURO (Бюро)",
+      "passed": true
+    },
+    {
+      "name": "Девочки не плачут",
+      "passed": true
+    },
+    {
+      "name": "Икра и водки",
+      "passed": true
+    },
+    {
+      "name": "Что-то с чем-то",
+      "passed": true
+    },
+    {
+      "name": "Это Бар",
+      "passed": true
+    },
+    {
+      "name": "Жуклевичъ",
+      "passed": true
+    },
+    {
+      "name": "Chinoaru (Чиноару)",
+      "passed": true
+    },
+    {
+      "name": "Контрабанда (Contrabanda. Club)",
+      "passed": true
+    },
+    {
+      "name": "Бункер 28",
+      "passed": true
+    },
+    {
+      "name": "RISE",
+      "passed": true
+    },
+    {
+      "name": "True Gamers на Русской",
+      "passed": true
+    },
+    {
+      "name": "COLIZEUM на Сельской",
+      "passed": true
+    },
+    {
+      "name": "COLIZEUM на Достоевского",
+      "passed": true
+    },
+    {
+      "name": "Шторм (Storm)",
+      "passed": true
+    },
+    {
+      "name": "PlayGround",
+      "passed": true
+    },
+    {
+      "name": "Cyber Lab (Кибер Лаб)",
+      "passed": true
+    },
+    {
+      "name": "Cybermg (Cybergym) на Русской",
+      "passed": true
+    },
+    {
+      "name": "SEKTOR на Баляева",
+      "passed": true
+    },
+    {
+      "name": "SEKTOR в ТЦ «Первомай»",
+      "passed": true
+    },
+    {
+      "name": "SEKTOR на Металлургической",
+      "passed": true
+    },
+    {
+      "name": "Боулинг на Тунгусской (Bouling1)",
+      "passed": true
+    },
+    {
+      "name": "Chester (Честер)",
+      "passed": true
+    },
+    {
+      "name": "Картинг на Калинина (KartKlub)",
+      "passed": true
+    },
+    {
+      "name": "WARPOINT",
+      "passed": true
+    },
+    {
+      "name": "Pandoroom на Нижнепортовой",
+      "passed": true
+    },
+    {
+      "name": "Pixel Quest (Пиксель Квест)",
+      "passed": true
+    },
+    {
+      "name": "Квесты «Иллюзион» в ТЦ «Черёмушки»",
+      "passed": true
+    },
+    {
+      "name": "Нёрф Арена",
+      "passed": true
+    },
+    {
+      "name": "Кинотеатр «Океан»",
+      "passed": true
+    },
+    {
+      "name": "Кинотеатр «Уссури»",
+      "passed": true
+    },
+    {
+      "name": "Кинотеатр «Иллюзион»",
+      "passed": true
+    },
+    {
+      "name": "Кинотеатр «Черёмушки» — Иллюзион Парк",
+      "passed": true
+    },
+    {
+      "name": "Киномакс-Сапфир",
+      "passed": true
+    },
+    {
+      "name": "Кинотеатр «Владивосток»",
+      "passed": true
+    },
+    {
+      "name": "Зоопарк «Садгород»",
+      "passed": true
+    },
+    {
+      "name": "Приморский океанариум",
+      "passed": true
+    },
+    {
+      "name": "Скалодром «Типография»",
+      "passed": true
+    },
+    {
+      "name": "Jump Town",
+      "passed": true
+    },
+    {
+      "name": "Квесткафе",
+      "passed": true
+    },
+    {
+      "name": "Пейнтбольный клуб «Аскольд»",
+      "passed": true
+    },
+    {
+      "name": "LaserWar25 / ЛазерВор25",
+      "passed": true
+    },
+    {
+      "name": "Gogi Korean BBQ",
+      "passed": true
+    },
+    {
+      "name": "ЭН",
+      "passed": true
+    },
+    {
+      "name": "Palau Fish",
+      "passed": true
+    },
+    {
+      "name": "Шибер",
+      "passed": true
+    },
+    {
+      "name": "Парк аттракционов «Карусель»",
+      "passed": true
+    },
+    {
+      "name": "Molokai — прокат SUP-досок",
+      "passed": true
+    },
+    {
+      "name": "Sup Up — прокат на Русском острове",
+      "passed": true
+    },
+    {
+      "name": "Поэма вкуса",
+      "passed": true
+    },
+    {
+      "name": "Набережная Цесаревича",
+      "passed": true
+    },
+    {
+      "name": "Сквер Надибаидзе",
+      "passed": true
+    },
+    {
+      "name": "Некрасовский сквер",
+      "passed": true
+    },
+    {
+      "name": "Сквер Депутатская аллея",
+      "passed": true
+    },
+    {
+      "name": "Корабельная набережная",
+      "passed": true
+    },
+    {
+      "name": "Парк Минного городка",
+      "passed": true
+    },
+    {
+      "name": "Сквер Анны Щетининой",
+      "passed": true
+    },
+    {
+      "name": "Университетская набережная",
+      "passed": true
+    },
+    {
+      "name": "Озеро на ул. Сафонова",
+      "passed": true
+    },
+    {
+      "name": "Сквер Первой маёвки",
+      "passed": true
+    },
+    {
+      "name": "Набережная Ахлёстышева",
+      "passed": true
+    },
+    {
+      "name": "Озеро Чан",
+      "passed": true
+    },
+    {
+      "name": "Стадион МГУ",
+      "passed": true
+    },
+    {
+      "name": "Бухта Фёдорова",
+      "passed": true
+    },
+    {
+      "name": "Кунгасный парк, пляж",
+      "passed": true
+    },
+    {
+      "name": "Набережная им. Арсеньева",
+      "passed": true
+    },
+    {
+      "name": "Набережная на Татарской",
+      "passed": true
+    },
+    {
+      "name": "Пианино на Русском",
+      "passed": true
+    },
+    {
+      "name": "Владивостокская крепость, форт №7",
+      "passed": true
+    },
+    {
+      "name": "Маяк Токаревского",
+      "passed": true
+    },
+    {
+      "name": "Сопка Бурачка",
+      "passed": true
+    },
+    {
+      "name": "Береговая батарея Уссурийская",
+      "passed": true
+    },
+    {
+      "name": "Пляж мыса Поспелова",
+      "passed": true
+    },
+    {
+      "name": "Новосильцевская береговая батарея",
+      "passed": true
+    },
+    {
+      "name": "Мыс Тихий",
+      "passed": true
+    },
+    {
+      "name": "Агатовый сквер",
+      "passed": true
+    },
+    {
+      "name": "Царские конюшни",
+      "passed": true
+    },
+    {
+      "name": "Курсантский сквер",
+      "passed": true
+    },
+    {
+      "name": "Три пещеры",
+      "passed": true
+    },
+    {
+      "name": "Сквер им. Суханова",
+      "passed": true
+    },
+    {
+      "name": "Аллея на Кирова",
+      "passed": true
+    },
+    {
+      "name": "Парк на Кирова",
+      "passed": true
+    },
+    {
+      "name": "Сосновая тропа",
+      "passed": true
+    },
+    {
+      "name": "Парк Снеговая падь",
+      "passed": true
+    },
+    {
+      "name": "Парк Орлиное гнездо",
+      "passed": true
+    },
+    {
+      "name": "Сквер на Окатовой",
+      "passed": true
+    },
+    {
+      "name": "Сквер путешественников",
+      "passed": true
+    },
+    {
+      "name": "Сквер Героев-Даманцев",
+      "passed": true
+    },
+    {
+      "name": "Дендропарк ВВГУ",
+      "passed": true
+    },
+    {
+      "name": "Сквер им. Пушкина",
+      "passed": true
+    },
+    {
+      "name": "Сквер им. Ленина",
+      "passed": true
+    },
+    {
+      "name": "Театральный сквер",
+      "passed": true
+    },
+    {
+      "name": "Сквер им. Муравьёва-Амурского",
+      "passed": true
+    },
+    {
+      "name": "Сквер им. Игнатьева",
+      "passed": true
+    },
+    {
+      "name": "Парк на торфяном озере",
+      "passed": true
+    },
+    {
+      "name": "Седанка парк",
+      "passed": true
+    },
+    {
+      "name": "Парк Победы",
+      "passed": true
+    },
+    {
+      "name": "Парк культуры и отдыха им. Лазо",
+      "passed": true
+    },
+    {
+      "name": "Роял Парк",
+      "passed": true
+    },
+    {
+      "name": "Покровский парк",
+      "passed": true
+    },
+    {
+      "name": "Леопардовая набережная",
+      "passed": true
+    },
+    {
+      "name": "Набережная Патрокла",
+      "passed": true
+    },
+    {
+      "name": "Смотровой мостик",
+      "passed": true
+    },
+    {
+      "name": "Смотровая площадка с сердцем",
+      "passed": true
+    }
+  ],
+  "probes": [
+    {
+      "query": "Хочу покататься на сапе",
+      "model": "qwen",
+      "device": "cpu",
+      "candidates_count": 2,
+      "filters": {
+        "category": "sup",
+        "required_features": [],
+        "excluded_categories": [],
+        "warnings": [],
+        "excluded_counts": {
+          "category": 186,
+          "menu_unconfirmed": 0,
+          "budget_unknown": 0,
+          "budget_exceeded": 0,
+          "location_unknown": 0,
+          "too_far": 0
+        },
+        "budget": null,
+        "radius_km": null,
+        "budget_source": null,
+        "ranking_method": "qwen-base"
+      },
+      "places": [
+        {
+          "place_id": "place_5b84b04a2eff6492eeb4",
+          "name": "Sup Up — прокат на Русском острове",
+          "description": "Прокат сап-досок и прогулки на воде на острове Русском по предварительной записи.",
+          "address": "Владивостокский городской округ, посёлок Русский, ул. Доронина, 131",
+          "similarity": 0.47338804602622986,
+          "distance_km": null,
+          "spending_min": null,
+          "spending_max": null,
+          "source_row": 134
+        },
+        {
+          "place_id": "place_9b57fad7821cd084f050",
+          "name": "Molokai — прокат SUP-досок",
+          "description": "Прокат сап-досок для самостоятельного отдыха на воде; получение снаряжения в магазине.",
+          "address": "Владивосток, ул. Дальняя, 2",
+          "similarity": 0.45999106764793396,
+          "distance_km": null,
+          "spending_min": null,
+          "spending_max": null,
+          "source_row": 133
+        }
+      ]
+    },
+    {
+      "query": "Хочу поплавать в бассейне",
+      "model": "qwen",
+      "device": "cpu",
+      "candidates_count": 1,
+      "filters": {
+        "category": "бассейн",
+        "required_features": [],
+        "excluded_categories": [],
+        "warnings": [],
+        "excluded_counts": {
+          "category": 187,
+          "menu_unconfirmed": 0,
+          "budget_unknown": 0,
+          "budget_exceeded": 0,
+          "location_unknown": 0,
+          "too_far": 0
+        },
+        "budget": null,
+        "radius_km": null,
+        "budget_source": null,
+        "ranking_method": "qwen-base"
+      },
+      "places": [
+        {
+          "place_id": "place_d91ff6d28cc80ca2b08c",
+          "name": "Акватория (Aquatoria)",
+          "description": "Водный комплекс со спа: бассейн, релакс-комнаты, лаундж, массаж и спа-ритуалы.",
+          "address": "Владивосток, ул. Светланская, 90",
+          "similarity": 0.5628492832183838,
+          "distance_km": null,
+          "spending_min": null,
+          "spending_max": null,
+          "source_row": 7
+        }
+      ]
+    },
+    {
+      "query": "Хочу недорого поесть до 500 рублей",
+      "model": "qwen",
+      "device": "cpu",
+      "candidates_count": 3,
+      "filters": {
+        "category": "еда",
+        "required_features": [],
+        "excluded_categories": [],
+        "warnings": [],
+        "excluded_counts": {
+          "category": 112,
+          "menu_unconfirmed": 0,
+          "budget_unknown": 33,
+          "budget_exceeded": 40,
+          "location_unknown": 0,
+          "too_far": 0
+        },
+        "budget": 500.0,
+        "radius_km": null,
+        "budget_source": "query",
+        "ranking_method": "qwen-base"
+      },
+      "places": [
+        {
+          "place_id": "place_c7920413ae2dfdd2da50",
+          "name": "Мирине (Mirine)",
+          "description": "Ресторан и фастфуд корейской кухни: супы, лапша, пулькоги, пибимпап, манту.",
+          "address": "Владивосток, ул. Некрасовская, 49, 5 этаж",
+          "similarity": 0.4736073613166809,
+          "distance_km": null,
+          "spending_min": 500.0,
+          "spending_max": 500.0,
+          "source_row": 38
+        },
+        {
+          "place_id": "place_04ad6d978dc15b1d465a",
+          "name": "Не рыдай!",
+          "description": "Столовая русской кухни в здании гостиницы «Версаль».",
+          "address": "Владивосток, ул. Светланская, 10",
+          "similarity": 0.37791264057159424,
+          "distance_km": null,
+          "spending_min": 500.0,
+          "spending_max": 500.0,
+          "source_row": 67
+        },
+        {
+          "place_id": "place_aa74bca3dafeaafe55fc",
+          "name": "Coffee Point на 100-летия",
+          "description": "Небольшая кофейня с классическими и авторскими напитками.",
+          "address": "Владивосток, проспект 100-летия Владивостока, 42А, 1 этаж",
+          "similarity": 0.3114018440246582,
+          "distance_km": null,
+          "spending_min": 100.0,
+          "spending_max": 200.0,
+          "source_row": 72
+        }
+      ]
+    },
+    {
+      "query": "хочу сходить погулять",
+      "model": "qwen",
+      "device": "cpu",
+      "candidates_count": 46,
+      "filters": {
+        "category": "прогулка",
+        "required_features": [],
+        "excluded_categories": [],
+        "warnings": [],
+        "excluded_counts": {
+          "category": 142,
+          "menu_unconfirmed": 0,
+          "budget_unknown": 0,
+          "budget_exceeded": 0,
+          "location_unknown": 0,
+          "too_far": 0
+        },
+        "budget": null,
+        "radius_km": null,
+        "budget_source": null,
+        "ranking_method": "qwen-base"
+      },
+      "places": [
+        {
+          "place_id": "place_f88b7ee057405f7935c5",
+          "name": "Покровский парк",
+          "description": "Один из старейших парков в центре Владивостока с Покровским собором.",
+          "address": "https://2gis.ru/vladivostok/firm/70000001092761378",
+          "similarity": 0.5433416366577148,
+          "distance_km": null,
+          "spending_min": 0.0,
+          "spending_max": 0.0,
+          "source_row": 185
+        },
+        {
+          "place_id": "place_4b87d4b9fd27148337af",
+          "name": "Сквер путешественников",
+          "description": "Городской сквер в центральной части Владивостока.",
+          "address": "https://2gis.ru/vladivostok/geo/70030076448892250",
+          "similarity": 0.5379229187965393,
+          "distance_km": null,
+          "spending_min": 0.0,
+          "spending_max": 0.0,
+          "source_row": 172
+        },
+        {
+          "place_id": "place_ab552babfefd9cec531a",
+          "name": "Агатовый сквер",
+          "description": "Городской сквер во Владивостоке.",
+          "address": "https://2gis.ru/vladivostok/geo/70030077135101601",
+          "similarity": 0.4920629858970642,
+          "distance_km": null,
+          "spending_min": null,
+          "spending_max": null,
+          "source_row": 161
+        },
+        {
+          "place_id": "place_5fe7da6e51b7740c183b",
+          "name": "Смотровая площадка с сердцем",
+          "description": "Смотровая площадка в Первореченском районе Владивостока.",
+          "address": "https://2gis.ru/vladivostok/search/смотровая%20площадка/geo/70030076368520394?m=131.933397%2C43.131091%2F14.12",
+          "similarity": 0.4894247055053711,
+          "distance_km": null,
+          "spending_min": null,
+          "spending_max": null,
+          "source_row": 189
+        },
+        {
+          "place_id": "place_3330ca9ba8a659144cff",
+          "name": "Дендропарк ВВГУ",
+          "description": "Озеленённая территория Владивостокского государственного университета с японским садом камней (ул. Гоголя, 41).",
+          "address": "https://2gis.ru/vladivostok/geo/70030076217202728",
+          "similarity": 0.4771966338157654,
+          "distance_km": null,
+          "spending_min": null,
+          "spending_max": null,
+          "source_row": 174
+        }
+      ]
+    }
+  ],
+  "similar": [
+    {
+      "place_id": "place_aa74bca3dafeaafe55fc",
+      "name": "Coffee Point на 100-летия",
+      "description": "Небольшая кофейня с классическими и авторскими напитками.",
+      "address": "Владивосток, проспект 100-летия Владивостока, 42А, 1 этаж",
+      "similarity": 0.7255646586418152,
+      "distance_km": null,
+      "spending_min": 100.0,
+      "spending_max": 200.0,
+      "source_row": 72
+    },
+    {
+      "place_id": "place_215e33ec43cb1fa7ac67",
+      "name": "Вспышка",
+      "description": "Кондитерская с эклерами, выпечкой, кофе и авторским чаем.",
+      "address": "Владивосток, ул. Светланская, 33, стр. 2",
+      "similarity": 0.6679404973983765,
+      "distance_km": null,
+      "spending_min": 1000.0,
+      "spending_max": 1000.0,
+      "source_row": 70
+    },
+    {
+      "place_id": "place_87dd76f448771eebf20c",
+      "name": "Кофемолка (Coffeemolka)",
+      "description": "Кафе и кофейня с завтраками, супами, поке, морепродуктами и десертами.",
+      "address": "Владивосток, ул. Светланская, 108Д",
+      "similarity": 0.6449273824691772,
+      "distance_km": null,
+      "spending_min": 1200.0,
+      "spending_max": 1700.0,
+      "source_row": 35
+    },
+    {
+      "place_id": "place_d25a9a5c9251c28ffa0d",
+      "name": "Сплетни",
+      "description": "Кафе, кофейня и пекарня: завтраки, кофе, выпечка и горячие блюда.",
+      "address": "Владивосток, Океанский проспект, 28",
+      "similarity": 0.6103531718254089,
+      "distance_km": null,
+      "spending_min": null,
+      "spending_max": null,
+      "source_row": 14
+    },
+    {
+      "place_id": "place_9f599bf1a1dd9b0441d0",
+      "name": "Kafema (Кафема)",
+      "description": "Кофейня и чайная на втором этаже: кофе, чай, десерты, круассаны.",
+      "address": "Владивосток, ул. Светланская, 17, 2 этаж",
+      "similarity": 0.6018736958503723,
+      "distance_km": null,
+      "spending_min": null,
+      "spending_max": null,
+      "source_row": 13
+    }
+  ],
+  "rejected_candidate_cannot_load": true,
+  "base_mode_ignores_legacy_adapter": true,
+  "live_health": {
+    "status": "ready",
+    "model": "qwen",
+    "device": "cpu",
+    "places_count": 188,
+    "query_adapter_enabled": false,
+    "adapter_mode": "base"
+  },
+  "live_probes": [
+    {
+      "query": "Хочу покататься на сапе",
+      "response": {
+        "model": "qwen",
+        "device": "cpu",
+        "candidates_count": 2,
+        "filters": {
+          "category": "sup",
+          "required_features": [],
+          "excluded_categories": [],
+          "warnings": [],
+          "excluded_counts": {
+            "category": 186,
+            "menu_unconfirmed": 0,
+            "budget_unknown": 0,
+            "budget_exceeded": 0,
+            "location_unknown": 0,
+            "too_far": 0
+          },
+          "budget": null,
+          "radius_km": null,
+          "budget_source": null,
+          "ranking_method": "qwen-base"
+        },
+        "places": [
+          {
+            "place_id": "place_5b84b04a2eff6492eeb4",
+            "name": "Sup Up — прокат на Русском острове",
+            "description": "Прокат сап-досок и прогулки на воде на острове Русском по предварительной записи.",
+            "address": "Владивостокский городской округ, посёлок Русский, ул. Доронина, 131",
+            "similarity": 0.47338804602622986,
+            "distance_km": null,
+            "spending_min": null,
+            "spending_max": null,
+            "source_row": 134
+          },
+          {
+            "place_id": "place_9b57fad7821cd084f050",
+            "name": "Molokai — прокат SUP-досок",
+            "description": "Прокат сап-досок для самостоятельного отдыха на воде; получение снаряжения в магазине.",
+            "address": "Владивосток, ул. Дальняя, 2",
+            "similarity": 0.45999106764793396,
+            "distance_km": null,
+            "spending_min": null,
+            "spending_max": null,
+            "source_row": 133
+          }
+        ]
+      }
+    },
+    {
+      "query": "Хочу поплавать в бассейне",
+      "response": {
+        "model": "qwen",
+        "device": "cpu",
+        "candidates_count": 1,
+        "filters": {
+          "category": "бассейн",
+          "required_features": [],
+          "excluded_categories": [],
+          "warnings": [],
+          "excluded_counts": {
+            "category": 187,
+            "menu_unconfirmed": 0,
+            "budget_unknown": 0,
+            "budget_exceeded": 0,
+            "location_unknown": 0,
+            "too_far": 0
+          },
+          "budget": null,
+          "radius_km": null,
+          "budget_source": null,
+          "ranking_method": "qwen-base"
+        },
+        "places": [
+          {
+            "place_id": "place_d91ff6d28cc80ca2b08c",
+            "name": "Акватория (Aquatoria)",
+            "description": "Водный комплекс со спа: бассейн, релакс-комнаты, лаундж, массаж и спа-ритуалы.",
+            "address": "Владивосток, ул. Светланская, 90",
+            "similarity": 0.5628492832183838,
+            "distance_km": null,
+            "spending_min": null,
+            "spending_max": null,
+            "source_row": 7
+          }
+        ]
+      }
+    },
+    {
+      "query": "Хочу недорого поесть до 500 рублей",
+      "response": {
+        "model": "qwen",
+        "device": "cpu",
+        "candidates_count": 3,
+        "filters": {
+          "category": "еда",
+          "required_features": [],
+          "excluded_categories": [],
+          "warnings": [],
+          "excluded_counts": {
+            "category": 112,
+            "menu_unconfirmed": 0,
+            "budget_unknown": 33,
+            "budget_exceeded": 40,
+            "location_unknown": 0,
+            "too_far": 0
+          },
+          "budget": 500.0,
+          "radius_km": null,
+          "budget_source": "query",
+          "ranking_method": "qwen-base"
+        },
+        "places": [
+          {
+            "place_id": "place_c7920413ae2dfdd2da50",
+            "name": "Мирине (Mirine)",
+            "description": "Ресторан и фастфуд корейской кухни: супы, лапша, пулькоги, пибимпап, манту.",
+            "address": "Владивосток, ул. Некрасовская, 49, 5 этаж",
+            "similarity": 0.4736073613166809,
+            "distance_km": null,
+            "spending_min": 500.0,
+            "spending_max": 500.0,
+            "source_row": 38
+          },
+          {
+            "place_id": "place_04ad6d978dc15b1d465a",
+            "name": "Не рыдай!",
+            "description": "Столовая русской кухни в здании гостиницы «Версаль».",
+            "address": "Владивосток, ул. Светланская, 10",
+            "similarity": 0.37791264057159424,
+            "distance_km": null,
+            "spending_min": 500.0,
+            "spending_max": 500.0,
+            "source_row": 67
+          },
+          {
+            "place_id": "place_aa74bca3dafeaafe55fc",
+            "name": "Coffee Point на 100-летия",
+            "description": "Небольшая кофейня с классическими и авторскими напитками.",
+            "address": "Владивосток, проспект 100-летия Владивостока, 42А, 1 этаж",
+            "similarity": 0.3114018440246582,
+            "distance_km": null,
+            "spending_min": 100.0,
+            "spending_max": 200.0,
+            "source_row": 72
+          }
+        ]
+      }
+    },
+    {
+      "query": "хочу сходить погулять",
+      "response": {
+        "model": "qwen",
+        "device": "cpu",
+        "candidates_count": 46,
+        "filters": {
+          "category": "прогулка",
+          "required_features": [],
+          "excluded_categories": [],
+          "warnings": [],
+          "excluded_counts": {
+            "category": 142,
+            "menu_unconfirmed": 0,
+            "budget_unknown": 0,
+            "budget_exceeded": 0,
+            "location_unknown": 0,
+            "too_far": 0
+          },
+          "budget": null,
+          "radius_km": null,
+          "budget_source": null,
+          "ranking_method": "qwen-base"
+        },
+        "places": [
+          {
+            "place_id": "place_f88b7ee057405f7935c5",
+            "name": "Покровский парк",
+            "description": "Один из старейших парков в центре Владивостока с Покровским собором.",
+            "address": "https://2gis.ru/vladivostok/firm/70000001092761378",
+            "similarity": 0.5433416366577148,
+            "distance_km": null,
+            "spending_min": 0.0,
+            "spending_max": 0.0,
+            "source_row": 185
+          },
+          {
+            "place_id": "place_4b87d4b9fd27148337af",
+            "name": "Сквер путешественников",
+            "description": "Городской сквер в центральной части Владивостока.",
+            "address": "https://2gis.ru/vladivostok/geo/70030076448892250",
+            "similarity": 0.5379229187965393,
+            "distance_km": null,
+            "spending_min": 0.0,
+            "spending_max": 0.0,
+            "source_row": 172
+          },
+          {
+            "place_id": "place_ab552babfefd9cec531a",
+            "name": "Агатовый сквер",
+            "description": "Городской сквер во Владивостоке.",
+            "address": "https://2gis.ru/vladivostok/geo/70030077135101601",
+            "similarity": 0.4920629858970642,
+            "distance_km": null,
+            "spending_min": null,
+            "spending_max": null,
+            "source_row": 161
+          },
+          {
+            "place_id": "place_5fe7da6e51b7740c183b",
+            "name": "Смотровая площадка с сердцем",
+            "description": "Смотровая площадка в Первореченском районе Владивостока.",
+            "address": "https://2gis.ru/vladivostok/search/смотровая%20площадка/geo/70030076368520394?m=131.933397%2C43.131091%2F14.12",
+            "similarity": 0.4894247055053711,
+            "distance_km": null,
+            "spending_min": null,
+            "spending_max": null,
+            "source_row": 189
+          },
+          {
+            "place_id": "place_3330ca9ba8a659144cff",
+            "name": "Дендропарк ВВГУ",
+            "description": "Озеленённая территория Владивостокского государственного университета с японским садом камней (ул. Гоголя, 41).",
+            "address": "https://2gis.ru/vladivostok/geo/70030076217202728",
+            "similarity": 0.4771966338157654,
+            "distance_km": null,
+            "spending_min": null,
+            "spending_max": null,
+            "source_row": 174
+          }
+        ]
+      }
+    }
+  ],
+  "live_similar": {
+    "model": "qwen",
+    "device": "cpu",
+    "candidates_count": 6,
+    "filters": {
+      "category": null,
+      "required_features": [],
+      "excluded_categories": [],
+      "warnings": [],
+      "excluded_counts": {
+        "category": 0,
+        "menu_unconfirmed": 0,
+        "budget_unknown": 0,
+        "budget_exceeded": 0,
+        "location_unknown": 0,
+        "too_far": 0
+      },
+      "budget": null,
+      "radius_km": null,
+      "same_type": true,
+      "source_primary_type": "кофейня",
+      "distance_origin": null
+    },
+    "places": [
+      {
+        "place_id": "place_aa74bca3dafeaafe55fc",
+        "name": "Coffee Point на 100-летия",
+        "description": "Небольшая кофейня с классическими и авторскими напитками.",
+        "address": "Владивосток, проспект 100-летия Владивостока, 42А, 1 этаж",
+        "similarity": 0.7255646586418152,
+        "distance_km": null,
+        "spending_min": 100.0,
+        "spending_max": 200.0,
+        "source_row": 72
+      },
+      {
+        "place_id": "place_215e33ec43cb1fa7ac67",
+        "name": "Вспышка",
+        "description": "Кондитерская с эклерами, выпечкой, кофе и авторским чаем.",
+        "address": "Владивосток, ул. Светланская, 33, стр. 2",
+        "similarity": 0.6679404973983765,
+        "distance_km": null,
+        "spending_min": 1000.0,
+        "spending_max": 1000.0,
+        "source_row": 70
+      },
+      {
+        "place_id": "place_87dd76f448771eebf20c",
+        "name": "Кофемолка (Coffeemolka)",
+        "description": "Кафе и кофейня с завтраками, супами, поке, морепродуктами и десертами.",
+        "address": "Владивосток, ул. Светланская, 108Д",
+        "similarity": 0.6449273824691772,
+        "distance_km": null,
+        "spending_min": 1200.0,
+        "spending_max": 1700.0,
+        "source_row": 35
+      },
+      {
+        "place_id": "place_d25a9a5c9251c28ffa0d",
+        "name": "Сплетни",
+        "description": "Кафе, кофейня и пекарня: завтраки, кофе, выпечка и горячие блюда.",
+        "address": "Владивосток, Океанский проспект, 28",
+        "similarity": 0.6103531718254089,
+        "distance_km": null,
+        "spending_min": null,
+        "spending_max": null,
+        "source_row": 14
+      },
+      {
+        "place_id": "place_9f599bf1a1dd9b0441d0",
+        "name": "Kafema (Кафема)",
+        "description": "Кофейня и чайная на втором этаже: кофе, чай, десерты, круассаны.",
+        "address": "Владивосток, ул. Светланская, 17, 2 этаж",
+        "similarity": 0.6018736958503723,
+        "distance_km": null,
+        "spending_min": null,
+        "spending_max": null,
+        "source_row": 13
+      }
+    ],
+    "source_place_id": "place_7746eaf8860c9d4874bf"
+  }
+}

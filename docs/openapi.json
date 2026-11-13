@@ -948,6 +948,102 @@
         }
       }
     },
+    "/api/v1/me/events": {
+      "post": {
+        "tags": [
+          "Статистика"
+        ],
+        "summary": "Записать показ, открытие или свайп",
+        "operationId": "event_api_v1_me_events_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/admin/analytics/summary": {
+      "get": {
+        "tags": [
+          "Статистика"
+        ],
+        "summary": "Сводная статистика действий",
+        "operationId": "analytics_summary_api_v1_admin_analytics_summary_get",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "days",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 365,
+              "minimum": 1,
+              "default": 7,
+              "title": "Days"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnalyticsSummary"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/health/live": {
       "get": {
         "tags": [
@@ -1235,6 +1331,74 @@
         ],
         "title": "AdminPlacePage"
       },
+      "AnalyticsSummary": {
+        "properties": {
+          "days": {
+            "type": "integer",
+            "title": "Days"
+          },
+          "runs": {
+            "type": "integer",
+            "title": "Runs"
+          },
+          "empty_runs": {
+            "type": "integer",
+            "title": "Empty Runs"
+          },
+          "issued_cards": {
+            "type": "integer",
+            "title": "Issued Cards"
+          },
+          "card_views": {
+            "type": "integer",
+            "title": "Card Views"
+          },
+          "viewed_cards": {
+            "type": "integer",
+            "title": "Viewed Cards"
+          },
+          "place_opens": {
+            "type": "integer",
+            "title": "Place Opens"
+          },
+          "swipes": {
+            "type": "integer",
+            "title": "Swipes"
+          },
+          "likes": {
+            "type": "integer",
+            "title": "Likes"
+          },
+          "dislikes": {
+            "type": "integer",
+            "title": "Dislikes"
+          },
+          "neutrals": {
+            "type": "integer",
+            "title": "Neutrals"
+          },
+          "swipe_undos": {
+            "type": "integer",
+            "title": "Swipe Undos"
+          }
+        },
+        "type": "object",
+        "required": [
+          "days",
+          "runs",
+          "empty_runs",
+          "issued_cards",
+          "card_views",
+          "viewed_cards",
+          "place_opens",
+          "swipes",
+          "likes",
+          "dislikes",
+          "neutrals",
+          "swipe_undos"
+        ],
+        "title": "AnalyticsSummary"
+      },
       "Body_preview_api_v1_admin_imports_preview_post": {
         "properties": {
           "file": {
@@ -1295,6 +1459,146 @@
           "key"
         ],
         "title": "DuplicateRow"
+      },
+      "EventIn": {
+        "properties": {
+          "event_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Event Id"
+          },
+          "recommendation_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Recommendation Id"
+          },
+          "place_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Place Id"
+          },
+          "event_type": {
+            "type": "string",
+            "enum": [
+              "card_view",
+              "place_open",
+              "swipe",
+              "swipe_undo"
+            ],
+            "title": "Event Type"
+          },
+          "reaction": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "like",
+                  "dislike",
+                  "neutral"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reaction"
+          },
+          "expected_reaction_revision": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expected Reaction Revision"
+          },
+          "undo_event_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Undo Event Id"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "event_id",
+          "recommendation_id",
+          "place_id",
+          "event_type"
+        ],
+        "title": "EventIn",
+        "examples": [
+          {
+            "event_id": "a0000000-0000-4000-8000-000000000001",
+            "event_type": "card_view",
+            "place_id": "c0000000-0000-4000-8000-000000000001",
+            "recommendation_id": "b0000000-0000-4000-8000-000000000001"
+          }
+        ]
+      },
+      "EventOut": {
+        "properties": {
+          "event_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Event Id"
+          },
+          "event_type": {
+            "type": "string",
+            "title": "Event Type"
+          },
+          "received_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Received At"
+          },
+          "duplicate": {
+            "type": "boolean",
+            "title": "Duplicate"
+          },
+          "reaction": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reaction"
+          },
+          "reaction_revision": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reaction Revision"
+          }
+        },
+        "type": "object",
+        "required": [
+          "event_id",
+          "event_type",
+          "received_at",
+          "duplicate",
+          "reaction",
+          "reaction_revision"
+        ],
+        "title": "EventOut"
       },
       "HTTPValidationError": {
         "properties": {
@@ -2051,6 +2355,11 @@
       },
       "RecommendationPage": {
         "properties": {
+          "recommendation_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Recommendation Id"
+          },
           "items": {
             "items": {
               "$ref": "#/components/schemas/RecommendationItem"
@@ -2070,6 +2379,7 @@
         },
         "type": "object",
         "required": [
+          "recommendation_id",
           "items",
           "total"
         ],
@@ -2204,13 +2514,18 @@
           "is_known": {
             "type": "boolean",
             "title": "Is Known"
+          },
+          "reaction_revision": {
+            "type": "integer",
+            "title": "Reaction Revision"
           }
         },
         "type": "object",
         "required": [
           "place_id",
           "reaction",
-          "is_known"
+          "is_known",
+          "reaction_revision"
         ],
         "title": "StateOut"
       },

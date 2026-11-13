@@ -90,6 +90,7 @@ class PlaceState(Base):
             "reaction IS NULL OR reaction IN ('like','dislike','neutral')",
             name="ck_reaction",
         ),
+        CheckConstraint("reaction_revision >= 0", name="ck_reaction_revision"),
     )
     profile_id: Mapped[UUID] = mapped_column(
         ForeignKey("profiles.id", ondelete="CASCADE"), primary_key=True
@@ -99,3 +100,4 @@ class PlaceState(Base):
     )
     reaction: Mapped[str | None] = mapped_column(String(10))
     is_known: Mapped[bool] = mapped_column(Boolean, default=False)
+    reaction_revision: Mapped[int] = mapped_column(Integer, default=0, server_default="0")

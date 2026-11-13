@@ -29,7 +29,8 @@ async def client():
     async with factory() as session:
         await session.execute(
             text(
-                "TRUNCATE import_batches, place_states, profiles, place_categories, places, categories CASCADE"
+                "TRUNCATE interaction_events, recommendation_items, recommendation_runs, "
+                "import_batches, place_states, profiles, place_categories, places, categories CASCADE"
             )
         )
         await session.commit()
@@ -51,6 +52,16 @@ async def client():
 @pytest.fixture
 def admin():
     return {"X-Admin-Key": os.environ["ADMIN_API_KEY"]}
+
+
+@pytest_asyncio.fixture
+async def db_session():
+    engine = create_async_engine(os.environ["DATABASE_URL"])
+    try:
+        async with async_sessionmaker(engine, expire_on_commit=False)() as session:
+            yield session
+    finally:
+        await engine.dispose()
 
 
 @pytest.fixture

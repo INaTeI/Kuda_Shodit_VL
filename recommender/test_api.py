@@ -20,6 +20,49 @@ class ApiIntegrationTest(unittest.TestCase):
         self.assertEqual(r.json()['places_count'],188)
         self.assertEqual(r.json()['model'],'qwen')
 
+    def test_sup_and_pool_only_return_matching_places(self):
+        for query, category, needle in [('Хочу покататься на сапе', 'sup', 'sup'),
+                                         ('Хочу поплавать в бассейне', 'бассейн', 'бассейн')]:
+            response = self.client.post('/recommendations', json={'query': query}).json()
+            self.assertEqual(response['filters']['category'], category)
+            self.assertTrue(response['places'])
+            engine = self.client.app.state.recommender
+            for item in response['places']:
+                place = engine.catalog[engine.by_id[item['place_id']]]
+                self.assertIn(needle, place['values'][6].casefold())
+
+    def test_exact_name_is_first_and_exclusions_still_apply(self):
+        engine = self.client.app.state.recommender
+        for name in ('Высота', 'PlayGround', 'Pixel Quest (Пиксель Квест)'):
+            place = next(p for p in engine.catalog if p['values'][0] == name)
+            result = self.client.post('/recommendations', json={'query': name}).json()
+            self.assertEqual(result['places'][0]['place_id'], place['place_id'])
+            excluded = self.client.post('/recommendations', json={
+                'query': name, 'exclude_place_ids': [place['place_id']]}).json()
+            self.assertNotIn(place['place_id'], [p['place_id'] for p in excluded['places']])
+
+    def test_walking_excludes_indoor_entertainment(self):
+        for query in ('хочу сходить погулять', 'Хочу прогуляться', 'Где гулять?'):
+            with self.subTest(query=query):
+                response = self.client.post('/recommendations', json={'query': query})
+                self.assertEqual(response.status_code, 200)
+                data = response.json()
+                self.assertEqual(data['filters']['category'], 'прогулка')
+                self.assertTrue(data['places'])
+                allowed = {'парк', 'сквер', 'набережная', 'аллея', 'тропа', 'дендропарк',
+                           'пляж', 'бухта', 'мыс', 'сопка', 'маяк', 'озеро'}
+                engine = self.client.app.state.recommender
+                for place in data['places']:
+                    original = engine.catalog[engine.by_id[place['place_id']]]
+                    types = {t.strip().casefold() for t in original['values'][6].split(';')}
+                    self.assertTrue(types & allowed, place['name'])
+
+    def test_negated_walk_and_alternative_are_not_forced_to_walk(self):
+        for query in ('Не хочу гулять, хочу в кино', 'Погулять или сходить в кино'):
+            response = self.client.post('/recommendations', json={'query': query})
+            self.assertEqual(response.status_code, 200)
+            self.assertNotEqual(response.json()['filters']['category'], 'прогулка')
+
     def test_bowling_and_exclusions(self):
         payload={'query':'Хочу поиграть в боулинг','category':'боулинг','limit':10}
         r=self.client.post('/recommendations',json=payload)
@@ -33,6 +76,22 @@ class ApiIntegrationTest(unittest.TestCase):
         r=self.client.post('/recommendations',json={'query':'кино','category':'кино','budget':0})
         self.assertEqual(r.status_code,200,r.text)
         self.assertEqual(r.json()['places'],[])
+
+    def test_budget_in_query_and_explicit_override(self):
+        response = self.client.post('/recommendations', json={
+            'query': 'Хочу недорого поесть до 500 рублей'}).json()
+        self.assertEqual(response['filters']['budget'], 500)
+        self.assertEqual(response['filters']['budget_source'], 'query')
+        self.assertEqual(response['filters']['category'], 'еда')
+        for place in response['places']:
+            self.assertIsNotNone(place['spending_max'])
+            self.assertLessEqual(place['spending_max'], 500)
+            self.assertNotIn('Сквер', place['name'])
+        for budget in (0, None, 1000):
+            response = self.client.post('/recommendations', json={
+                'query': 'Хочу поесть до 500 рублей', 'budget': budget}).json()
+            self.assertEqual(response['filters']['budget'], budget)
+            self.assertEqual(response['filters']['budget_source'], 'request')
 
     def test_invalid_input(self):
         for body in [{'query':'   '},{'query':'кино','budget':-1},

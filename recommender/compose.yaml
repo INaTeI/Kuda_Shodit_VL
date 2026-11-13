@@ -4,6 +4,8 @@ services:
     build: .
     environment:
       DEVICE: ${DEVICE:-cpu}
+      QUERY_ADAPTER_PATH: ${QUERY_ADAPTER_PATH:-}
+      QUERY_ADAPTER_MODE: ${QUERY_ADAPTER_MODE:-base}
     ports:
       - "127.0.0.1:8001:8000"
     volumes:

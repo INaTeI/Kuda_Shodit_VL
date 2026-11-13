@@ -1,0 +1,2624 @@
+{
+  "provenance": "Agent-authored synthetic queries; relevance inferred from catalog types/tags. Not user feedback or human quality judgements.",
+  "method": "Frozen Qwen + learned ridge query projection",
+  "dataset_sha256": "ae816d7acc4e49854ef93e3546a11d90f8bf434d37a8a571b3a6c41a41166502",
+  "embedding_signature": "4cb63d4a9a8bbd5438642f08a25ae59c205b1e4b3badbfe04d5493cc92a391d2",
+  "split_sizes": {
+    "train": 64,
+    "validation": 16,
+    "test": 16
+  },
+  "settings": {
+    "regularization": 0.01,
+    "alpha": 1.0
+  },
+  "eligible_for_experiment": true,
+  "baseline_validation": {
+    "ndcg_at_5": 0.5811807900816418,
+    "queries": [
+      {
+        "query": "Куда сходить компанией покидать тяжёлые шары по дорожке?",
+        "ndcg_at_5": 0.24630238874073,
+        "relevant_count": 4,
+        "places": [
+          {
+            "name": "Картинг на Калинина (KartKlub)",
+            "relevant": false
+          },
+          {
+            "name": "Fabrika (Фабрика) на 100-летия Владивостока",
+            "relevant": true
+          },
+          {
+            "name": "Парк на Кирова",
+            "relevant": false
+          },
+          {
+            "name": "Сквер путешественников",
+            "relevant": false
+          },
+          {
+            "name": "Царские конюшни",
+            "relevant": false
+          }
+        ]
+      },
+      {
+        "query": "Хочу попкорн и вечерний сеанс перед большим экраном",
+        "ndcg_at_5": 0.5531464700081437,
+        "relevant_count": 6,
+        "places": [
+          {
+            "name": "Кинотеатр «Океан»",
+            "relevant": true
+          },
+          {
+            "name": "Кинотеатр «Владивосток»",
+            "relevant": true
+          },
+          {
+            "name": "Vinil (Винил)",
+            "relevant": false
+          },
+          {
+            "name": "Sky Love (Скай Лав)",
+            "relevant": false
+          },
+          {
+            "name": "Supra",
+            "relevant": false
+          }
+        ]
+      },
+      {
+        "query": "Где посидеть за чашечкой эспрессо?",
+        "ndcg_at_5": 0.27727342735504823,
+        "relevant_count": 7,
+        "places": [
+          {
+            "name": "Redneck Pub",
+            "relevant": false
+          },
+          {
+            "name": "Чача дом",
+            "relevant": false
+          },
+          {
+            "name": "Studio",
+            "relevant": false
+          },
+          {
+            "name": "Вспышка",
+            "relevant": true
+          },
+          {
+            "name": "Coffee Point на 100-летия",
+            "relevant": true
+          }
+        ]
+      },
+      {
+        "query": "Нужны игровые ПК, чтобы устроить матч с друзьями",
+        "ndcg_at_5": 1.0,
+        "relevant_count": 16,
+        "places": [
+          {
+            "name": "PlayGround",
+            "relevant": true
+          },
+          {
+            "name": "COLIZEUM на Достоевского",
+            "relevant": true
+          },
+          {
+            "name": "Fame (Фейм), компьютерный клуб",
+            "relevant": true
+          },
+          {
+            "name": "True Gamers на Русской",
+            "relevant": true
+          },
+          {
+            "name": "Sektor (Сектор), компьютерный клуб",
+            "relevant": true
+          }
+        ]
+      },
+      {
+        "query": "Где можно погрузиться в цифровой мир в специальном шлеме?",
+        "ndcg_at_5": 0.8854598815714874,
+        "relevant_count": 3,
+        "places": [
+          {
+            "name": "VR-Lab (ВР-Лаб), клуб виртуальной реальности",
+            "relevant": true
+          },
+          {
+            "name": "COLIZEUM на Достоевского",
+            "relevant": false
+          },
+          {
+            "name": "Квесткафе",
+            "relevant": true
+          },
+          {
+            "name": "Sektor (Сектор), компьютерный клуб",
+            "relevant": false
+          },
+          {
+            "name": "WARPOINT",
+            "relevant": true
+          }
+        ]
+      },
+      {
+        "query": "Хочу итальянскую лепёшку с сыром и начинкой",
+        "ndcg_at_5": 0.8539316501572937,
+        "relevant_count": 9,
+        "places": [
+          {
+            "name": "Сыроварня",
+            "relevant": true
+          },
+          {
+            "name": "Limoncello (Лимончелло)",
+            "relevant": true
+          },
+          {
+            "name": "Sicilian (Сицилиан)",
+            "relevant": true
+          },
+          {
+            "name": "TiAMA (Тиама)",
+            "relevant": false
+          },
+          {
+            "name": "CRUST Pizza & Wine",
+            "relevant": true
+          }
+        ]
+      },
+      {
+        "query": "Где готовят лодочку с сыром и яйцом и сочные хинкали?",
+        "ndcg_at_5": 0.830419897363192,
+        "relevant_count": 6,
+        "places": [
+          {
+            "name": "Hinkali (Хинкали)",
+            "relevant": true
+          },
+          {
+            "name": "Supra",
+            "relevant": true
+          },
+          {
+            "name": "Огонёк (Ogonek)",
+            "relevant": false
+          },
+          {
+            "name": "Tbilissimo (Тбилиссимо)",
+            "relevant": true
+          },
+          {
+            "name": "Супра Романи (Supra Romani)",
+            "relevant": true
+          }
+        ]
+      },
+      {
+        "query": "Где поужинать уткой по-пекински?",
+        "ndcg_at_5": 0.4703652827859579,
+        "relevant_count": 7,
+        "places": [
+          {
+            "name": "Пекинская утка",
+            "relevant": true
+          },
+          {
+            "name": "Токио (Tokio), сеть ресторанов японской кухни",
+            "relevant": false
+          },
+          {
+            "name": "Токио (Tokio) на Острякова",
+            "relevant": false
+          },
+          {
+            "name": "MIYAKO (Мияко)",
+            "relevant": false
+          },
+          {
+            "name": "Добрыня и Аня",
+            "relevant": true
+          }
+        ]
+      },
+      {
+        "query": "Хочу поесть блюда страны восходящего солнца",
+        "ndcg_at_5": 0.14606834984270645,
+        "relevant_count": 6,
+        "places": [
+          {
+            "name": "Supra",
+            "relevant": false
+          },
+          {
+            "name": "Бурный",
+            "relevant": false
+          },
+          {
+            "name": "Высота",
+            "relevant": false
+          },
+          {
+            "name": "Токио (Tokio), сеть ресторанов японской кухни",
+            "relevant": true
+          },
+          {
+            "name": "Восточная Жемчужина",
+            "relevant": false
+          }
+        ]
+      },
+      {
+        "query": "Хочется попробовать морские деликатесы",
+        "ndcg_at_5": 1.0,
+        "relevant_count": 21,
+        "places": [
+          {
+            "name": "More (Море)",
+            "relevant": true
+          },
+          {
+            "name": "Rakushka (Ракушка)",
+            "relevant": true
+          },
+          {
+            "name": "Бурный",
+            "relevant": true
+          },
+          {
+            "name": "Пятый океан",
+            "relevant": true
+          },
+          {
+            "name": "Высота",
+            "relevant": true
+          }
+        ]
+      },
+      {
+        "query": "Хочу пройтись по обустроенному берегу и посмотреть на воду",
+        "ndcg_at_5": 0.639945385422766,
+        "relevant_count": 8,
+        "places": [
+          {
+            "name": "Леопардовая набережная",
+            "relevant": true
+          },
+          {
+            "name": "Кунгасный парк, пляж",
+            "relevant": false
+          },
+          {
+            "name": "Университетская набережная",
+            "relevant": true
+          },
+          {
+            "name": "Бухта Фёдорова",
+            "relevant": false
+          },
+          {
+            "name": "Корабельная набережная",
+            "relevant": true
+          }
+        ]
+      },
+      {
+        "query": "Хочу неспешно походить по зелёным дорожкам среди деревьев",
+        "ndcg_at_5": 0.8687949224876582,
+        "relevant_count": 29,
+        "places": [
+          {
+            "name": "Парк на Кирова",
+            "relevant": true
+          },
+          {
+            "name": "Парк Победы",
+            "relevant": true
+          },
+          {
+            "name": "Дендропарк ВВГУ",
+            "relevant": true
+          },
+          {
+            "name": "Сквер Депутатская аллея",
+            "relevant": true
+          },
+          {
+            "name": "Сосновая тропа",
+            "relevant": false
+          }
+        ]
+      },
+      {
+        "query": "Где полюбоваться городом сверху?",
+        "ndcg_at_5": 0.13120507751234178,
+        "relevant_count": 6,
+        "places": [
+          {
+            "name": "Supra",
+            "relevant": false
+          },
+          {
+            "name": "Сквер путешественников",
+            "relevant": false
+          },
+          {
+            "name": "Высота",
+            "relevant": false
+          },
+          {
+            "name": "Sky Love (Скай Лав)",
+            "relevant": false
+          },
+          {
+            "name": "Смотровой мостик",
+            "relevant": true
+          }
+        ]
+      },
+      {
+        "query": "Хочу посидеть у прибоя на песке или гальке",
+        "ndcg_at_5": 0.8503449055347546,
+        "relevant_count": 2,
+        "places": [
+          {
+            "name": "Кунгасный парк, пляж",
+            "relevant": true
+          },
+          {
+            "name": "Смотровой мостик",
+            "relevant": false
+          },
+          {
+            "name": "Набережная Ахлёстышева",
+            "relevant": false
+          },
+          {
+            "name": "Университетская набережная",
+            "relevant": false
+          },
+          {
+            "name": "Пляж мыса Поспелова",
+            "relevant": true
+          }
+        ]
+      },
+      {
+        "query": "Куда сходить ради культурного наследия Владивостока?",
+        "ndcg_at_5": 0.13120507751234178,
+        "relevant_count": 8,
+        "places": [
+          {
+            "name": "Покровский парк",
+            "relevant": false
+          },
+          {
+            "name": "Fabrika (Фабрика) на 100-летия Владивостока",
+            "relevant": false
+          },
+          {
+            "name": "Царские конюшни",
+            "relevant": false
+          },
+          {
+            "name": "Сквер путешественников",
+            "relevant": false
+          },
+          {
+            "name": "Владивостокская крепость, форт №7",
+            "relevant": true
+          }
+        ]
+      },
+      {
+        "query": "Куда отвести малыша поиграть на свежем воздухе?",
+        "ndcg_at_5": 0.4144299250118475,
+        "relevant_count": 4,
+        "places": [
+          {
+            "name": "Зоопарк «Садгород»",
+            "relevant": false
+          },
+          {
+            "name": "Сквер на Окатовой",
+            "relevant": true
+          },
+          {
+            "name": "Парк на Кирова",
+            "relevant": false
+          },
+          {
+            "name": "Сквер Надибаидзе",
+            "relevant": true
+          },
+          {
+            "name": "Кунгасный парк, пляж",
+            "relevant": false
+          }
+        ]
+      }
+    ]
+  },
+  "adapted_validation": {
+    "ndcg_at_5": 0.8491082293241328,
+    "queries": [
+      {
+        "query": "Куда сходить компанией покидать тяжёлые шары по дорожке?",
+        "ndcg_at_5": 1.0,
+        "relevant_count": 4,
+        "places": [
+          {
+            "name": "Fabrika Bowling (Фабрика Боулинг) на Светланской",
+            "relevant": true
+          },
+          {
+            "name": "Fabrika (Фабрика) на 100-летия Владивостока",
+            "relevant": true
+          },
+          {
+            "name": "Боулинг на Тунгусской (Bouling1)",
+            "relevant": true
+          },
+          {
+            "name": "Hunter (Охотник)",
+            "relevant": true
+          },
+          {
+            "name": "Скалодром «Типография»",
+            "relevant": false
+          }
+        ]
+      },
+      {
+        "query": "Хочу попкорн и вечерний сеанс перед большим экраном",
+        "ndcg_at_5": 0.8687949224876582,
+        "relevant_count": 6,
+        "places": [
+          {
+            "name": "Кинотеатр «Иллюзион»",
+            "relevant": true
+          },
+          {
+            "name": "Кинотеатр «Уссури»",
+            "relevant": true
+          },
+          {
+            "name": "Кинотеатр «Океан»",
+            "relevant": true
+          },
+          {
+            "name": "Кинотеатр «Владивосток»",
+            "relevant": true
+          },
+          {
+            "name": "Клуб Москва",
+            "relevant": false
+          }
+        ]
+      },
+      {
+        "query": "Где посидеть за чашечкой эспрессо?",
+        "ndcg_at_5": 1.0,
+        "relevant_count": 7,
+        "places": [
+          {
+            "name": "Вспышка",
+            "relevant": true
+          },
+          {
+            "name": "Поэма вкуса",
+            "relevant": true
+          },
+          {
+            "name": "Coffee Point на 100-летия",
+            "relevant": true
+          },
+          {
+            "name": "Кофемолка (Coffeemolka)",
+            "relevant": true
+          },
+          {
+            "name": "Сплетни",
+            "relevant": true
+          }
+        ]
+      },
+      {
+        "query": "Нужны игровые ПК, чтобы устроить матч с друзьями",
+        "ndcg_at_5": 1.0,
+        "relevant_count": 16,
+        "places": [
+          {
+            "name": "PlayGround",
+            "relevant": true
+          },
+          {
+            "name": "True Gamers на Русской",
+            "relevant": true
+          },
+          {
+            "name": "RISE",
+            "relevant": true
+          },
+          {
+            "name": "Fame (Фейм), компьютерный клуб",
+            "relevant": true
+          },
+          {
+            "name": "Бункер 28",
+            "relevant": true
+          }
+        ]
+      },
+      {
+        "query": "Где можно погрузиться в цифровой мир в специальном шлеме?",
+        "ndcg_at_5": 0.7653606369886217,
+        "relevant_count": 3,
+        "places": [
+          {
+            "name": "Квесткафе",
+            "relevant": true
+          },
+          {
+            "name": "VR-Lab (ВР-Лаб), клуб виртуальной реальности",
+            "relevant": true
+          },
+          {
+            "name": "PlayGround",
+            "relevant": false
+          },
+          {
+            "name": "Cyber Lab (Кибер Лаб)",
+            "relevant": false
+          },
+          {
+            "name": "COLIZEUM на Достоевского",
+            "relevant": false
+          }
+        ]
+      },
+      {
+        "query": "Хочу итальянскую лепёшку с сыром и начинкой",
+        "ndcg_at_5": 0.6992148198508501,
+        "relevant_count": 9,
+        "places": [
+          {
+            "name": "Сыроварня",
+            "relevant": true
+          },
+          {
+            "name": "Limoncello (Лимончелло)",
+            "relevant": true
+          },
+          {
+            "name": "TiAMA (Тиама)",
+            "relevant": false
+          },
+          {
+            "name": "Sicilian (Сицилиан)",
+            "relevant": true
+          },
+          {
+            "name": "Кофемолка (Coffeemolka)",
+            "relevant": false
+          }
+        ]
+      },
+      {
+        "query": "Где готовят лодочку с сыром и яйцом и сочные хинкали?",
+        "ndcg_at_5": 1.0,
+        "relevant_count": 6,
+        "places": [
+          {
+            "name": "Supra",
+            "relevant": true
+          },
+          {
+            "name": "Hinkali (Хинкали)",
+            "relevant": true
+          },
+          {
+            "name": "Супра Романи (Supra Romani)",
+            "relevant": true
+          },
+          {
+            "name": "Tbilissimo (Тбилиссимо)",
+            "relevant": true
+          },
+          {
+            "name": "Диди Супра (Didi Supra)",
+            "relevant": true
+          }
+        ]
+      },
+      {
+        "query": "Где поужинать уткой по-пекински?",
+        "ndcg_at_5": 0.639945385422766,
+        "relevant_count": 7,
+        "places": [
+          {
+            "name": "Пекинская утка",
+            "relevant": true
+          },
+          {
+            "name": "Токио (Tokio), сеть ресторанов японской кухни",
+            "relevant": false
+          },
+          {
+            "name": "Добрыня и Аня",
+            "relevant": true
+          },
+          {
+            "name": "MIYAKO (Мияко)",
+            "relevant": false
+          },
+          {
+            "name": "ЛаоБан (LaoBan)",
+            "relevant": true
+          }
+        ]
+      },
+      {
+        "query": "Хочу поесть блюда страны восходящего солнца",
+        "ndcg_at_5": 0.6992148198508501,
+        "relevant_count": 6,
+        "places": [
+          {
+            "name": "Токио (Tokio), сеть ресторанов японской кухни",
+            "relevant": true
+          },
+          {
+            "name": "Sibumi (Сибуми)",
+            "relevant": true
+          },
+          {
+            "name": "Высота",
+            "relevant": false
+          },
+          {
+            "name": "MIYAKO (Мияко)",
+            "relevant": true
+          },
+          {
+            "name": "Supra",
+            "relevant": false
+          }
+        ]
+      },
+      {
+        "query": "Хочется попробовать морские деликатесы",
+        "ndcg_at_5": 1.0,
+        "relevant_count": 21,
+        "places": [
+          {
+            "name": "Бурный",
+            "relevant": true
+          },
+          {
+            "name": "Rakushka (Ракушка)",
+            "relevant": true
+          },
+          {
+            "name": "More (Море)",
+            "relevant": true
+          },
+          {
+            "name": "Миллионка",
+            "relevant": true
+          },
+          {
+            "name": "Токио (Tokio), сеть ресторанов японской кухни",
+            "relevant": true
+          }
+        ]
+      },
+      {
+        "query": "Хочу пройтись по обустроенному берегу и посмотреть на воду",
+        "ndcg_at_5": 0.6608397947263839,
+        "relevant_count": 8,
+        "places": [
+          {
+            "name": "Кунгасный парк, пляж",
+            "relevant": false
+          },
+          {
+            "name": "Набережная Цесаревича",
+            "relevant": true
+          },
+          {
+            "name": "Леопардовая набережная",
+            "relevant": true
+          },
+          {
+            "name": "Корабельная набережная",
+            "relevant": true
+          },
+          {
+            "name": "Университетская набережная",
+            "relevant": true
+          }
+        ]
+      },
+      {
+        "query": "Хочу неспешно походить по зелёным дорожкам среди деревьев",
+        "ndcg_at_5": 1.0,
+        "relevant_count": 29,
+        "places": [
+          {
+            "name": "Сквер на Окатовой",
+            "relevant": true
+          },
+          {
+            "name": "Сквер путешественников",
+            "relevant": true
+          },
+          {
+            "name": "Сквер им. Игнатьева",
+            "relevant": true
+          },
+          {
+            "name": "Некрасовский сквер",
+            "relevant": true
+          },
+          {
+            "name": "Курсантский сквер",
+            "relevant": true
+          }
+        ]
+      },
+      {
+        "query": "Где полюбоваться городом сверху?",
+        "ndcg_at_5": 0.8687949224876582,
+        "relevant_count": 6,
+        "places": [
+          {
+            "name": "Смотровой мостик",
+            "relevant": true
+          },
+          {
+            "name": "Смотровая площадка с сердцем",
+            "relevant": true
+          },
+          {
+            "name": "Парк Орлиное гнездо",
+            "relevant": true
+          },
+          {
+            "name": "Сопка Бурачка",
+            "relevant": true
+          },
+          {
+            "name": "Сквер путешественников",
+            "relevant": false
+          }
+        ]
+      },
+      {
+        "query": "Хочу посидеть у прибоя на песке или гальке",
+        "ndcg_at_5": 1.0,
+        "relevant_count": 2,
+        "places": [
+          {
+            "name": "Кунгасный парк, пляж",
+            "relevant": true
+          },
+          {
+            "name": "Пляж мыса Поспелова",
+            "relevant": true
+          },
+          {
+            "name": "Набережная Цесаревича",
+            "relevant": false
+          },
+          {
+            "name": "Набережная Ахлёстышева",
+            "relevant": false
+          },
+          {
+            "name": "Fabrika Bowling (Фабрика Боулинг) на Светланской",
+            "relevant": false
+          }
+        ]
+      },
+      {
+        "query": "Куда сходить ради культурного наследия Владивостока?",
+        "ndcg_at_5": 0.38356636737133565,
+        "relevant_count": 8,
+        "places": [
+          {
+            "name": "Сквер путешественников",
+            "relevant": false
+          },
+          {
+            "name": "Театральный сквер",
+            "relevant": true
+          },
+          {
+            "name": "Сквер им. Пушкина",
+            "relevant": true
+          },
+          {
+            "name": "Сквер Надибаидзе",
+            "relevant": false
+          },
+          {
+            "name": "Курсантский сквер",
+            "relevant": false
+          }
+        ]
+      },
+      {
+        "query": "Куда отвести малыша поиграть на свежем воздухе?",
+        "ndcg_at_5": 1.0,
+        "relevant_count": 4,
+        "places": [
+          {
+            "name": "Сквер на Окатовой",
+            "relevant": true
+          },
+          {
+            "name": "Сквер им. Игнатьева",
+            "relevant": true
+          },
+          {
+            "name": "Некрасовский сквер",
+            "relevant": true
+          },
+          {
+            "name": "Сквер Надибаидзе",
+            "relevant": true
+          },
+          {
+            "name": "Сквер путешественников",
+            "relevant": false
+          }
+        ]
+      }
+    ]
+  },
+  "baseline_test": {
+    "ndcg_at_5": 0.6373195180382241,
+    "queries": [
+      {
+        "query": "Где можно посоревноваться с друзьями в сбивании кеглей?",
+        "ndcg_at_5": 0.3903800499921017,
+        "relevant_count": 4,
+        "places": [
+          {
+            "name": "Fabrika (Фабрика) на 100-летия Владивостока",
+            "relevant": true
+          },
+          {
+            "name": "Девочки не плачут",
+            "relevant": false
+          },
+          {
+            "name": "Redneck Pub",
+            "relevant": false
+          },
+          {
+            "name": "Шибер",
+            "relevant": false
+          },
+          {
+            "name": "SEKTOR на Баляева",
+            "relevant": false
+          }
+        ]
+      },
+      {
+        "query": "Где посмотреть свежую премьеру в зрительном зале?",
+        "ndcg_at_5": 1.0,
+        "relevant_count": 6,
+        "places": [
+          {
+            "name": "Кинотеатр «Океан»",
+            "relevant": true
+          },
+          {
+            "name": "Кинотеатр «Владивосток»",
+            "relevant": true
+          },
+          {
+            "name": "Кинотеатр «Уссури»",
+            "relevant": true
+          },
+          {
+            "name": "Кинотеатр «Черёмушки» — Иллюзион Парк",
+            "relevant": true
+          },
+          {
+            "name": "Кинотеатр «Иллюзион»",
+            "relevant": true
+          }
+        ]
+      },
+      {
+        "query": "Хочу зайти за латте и поболтать с другом",
+        "ndcg_at_5": 0.0,
+        "relevant_count": 7,
+        "places": [
+          {
+            "name": "Redneck Pub",
+            "relevant": false
+          },
+          {
+            "name": "Это Бар",
+            "relevant": false
+          },
+          {
+            "name": "Лима",
+            "relevant": false
+          },
+          {
+            "name": "Девочки не плачут",
+            "relevant": false
+          },
+          {
+            "name": "ЛаоБан (LaoBan)",
+            "relevant": false
+          }
+        ]
+      },
+      {
+        "query": "Где собраться командой и поиграть в сетевые игры на компьютерах?",
+        "ndcg_at_5": 1.0,
+        "relevant_count": 16,
+        "places": [
+          {
+            "name": "PlayGround",
+            "relevant": true
+          },
+          {
+            "name": "Sektor (Сектор), компьютерный клуб",
+            "relevant": true
+          },
+          {
+            "name": "True Gamers на Русской",
+            "relevant": true
+          },
+          {
+            "name": "COLIZEUM на Достоевского",
+            "relevant": true
+          },
+          {
+            "name": "Cyber Lab (Кибер Лаб)",
+            "relevant": true
+          }
+        ]
+      },
+      {
+        "query": "Ищу игры с полным погружением и очками виртуальной реальности",
+        "ndcg_at_5": 1.0,
+        "relevant_count": 3,
+        "places": [
+          {
+            "name": "Квесткафе",
+            "relevant": true
+          },
+          {
+            "name": "VR-Lab (ВР-Лаб), клуб виртуальной реальности",
+            "relevant": true
+          },
+          {
+            "name": "WARPOINT",
+            "relevant": true
+          }
+        ]
+      },
+      {
+        "query": "Где можно съесть маргариту или пепперони?",
+        "ndcg_at_5": 0.0,
+        "relevant_count": 9,
+        "places": [
+          {
+            "name": "Марков на Спортивной",
+            "relevant": false
+          },
+          {
+            "name": "Supra",
+            "relevant": false
+          },
+          {
+            "name": "Бурный",
+            "relevant": false
+          },
+          {
+            "name": "Мирине (Mirine)",
+            "relevant": false
+          },
+          {
+            "name": "Токио (Tokio), сеть ресторанов японской кухни",
+            "relevant": false
+          }
+        ]
+      },
+      {
+        "query": "Хочется хачапури по-аджарски и кавказского ужина",
+        "ndcg_at_5": 0.6608397947263839,
+        "relevant_count": 6,
+        "places": [
+          {
+            "name": "Чача дом",
+            "relevant": false
+          },
+          {
+            "name": "Supra",
+            "relevant": true
+          },
+          {
+            "name": "Tbilissimo (Тбилиссимо)",
+            "relevant": true
+          },
+          {
+            "name": "Dakara (Дакара)",
+            "relevant": true
+          },
+          {
+            "name": "Hinkali (Хинкали)",
+            "relevant": true
+          }
+        ]
+      },
+      {
+        "query": "Хочется попробовать традиционные блюда Китая",
+        "ndcg_at_5": 0.5296347172140421,
+        "relevant_count": 7,
+        "places": [
+          {
+            "name": "Chinoaru (Чиноару)",
+            "relevant": false
+          },
+          {
+            "name": "Пекинская утка",
+            "relevant": true
+          },
+          {
+            "name": "Восточная Жемчужина",
+            "relevant": true
+          },
+          {
+            "name": "Lotus Room",
+            "relevant": true
+          },
+          {
+            "name": "Токио (Tokio), сеть ресторанов японской кухни",
+            "relevant": false
+          }
+        ]
+      },
+      {
+        "query": "Где подают японскую еду для ужина вдвоём?",
+        "ndcg_at_5": 0.8687949224876582,
+        "relevant_count": 6,
+        "places": [
+          {
+            "name": "Токио (Tokio), сеть ресторанов японской кухни",
+            "relevant": true
+          },
+          {
+            "name": "Токио (Tokio) на Острякова",
+            "relevant": true
+          },
+          {
+            "name": "MIYAKO (Мияко)",
+            "relevant": true
+          },
+          {
+            "name": "Umami ramen club (Умами рамен клаб)",
+            "relevant": true
+          },
+          {
+            "name": "Пятый океан",
+            "relevant": false
+          }
+        ]
+      },
+      {
+        "query": "Где поужинать дарами моря во Владивостоке?",
+        "ndcg_at_5": 0.8687949224876582,
+        "relevant_count": 21,
+        "places": [
+          {
+            "name": "Пятый океан",
+            "relevant": true
+          },
+          {
+            "name": "Supra",
+            "relevant": true
+          },
+          {
+            "name": "Rakushka (Ракушка)",
+            "relevant": true
+          },
+          {
+            "name": "Бурный",
+            "relevant": true
+          },
+          {
+            "name": "Dakara (Дакара)",
+            "relevant": false
+          }
+        ]
+      },
+      {
+        "query": "Где прогуляться вдоль моря по городской береговой линии?",
+        "ndcg_at_5": 0.4703652827859579,
+        "relevant_count": 8,
+        "places": [
+          {
+            "name": "Леопардовая набережная",
+            "relevant": true
+          },
+          {
+            "name": "Смотровой мостик",
+            "relevant": false
+          },
+          {
+            "name": "Кунгасный парк, пляж",
+            "relevant": false
+          },
+          {
+            "name": "Бухта Фёдорова",
+            "relevant": false
+          },
+          {
+            "name": "Университетская набережная",
+            "relevant": true
+          }
+        ]
+      },
+      {
+        "query": "Где в городе подышать воздухом и пройтись по зелёной территории?",
+        "ndcg_at_5": 0.8687949224876582,
+        "relevant_count": 29,
+        "places": [
+          {
+            "name": "Парк на Кирова",
+            "relevant": true
+          },
+          {
+            "name": "Парк Победы",
+            "relevant": true
+          },
+          {
+            "name": "Сквер Депутатская аллея",
+            "relevant": true
+          },
+          {
+            "name": "Дендропарк ВВГУ",
+            "relevant": true
+          },
+          {
+            "name": "Зоопарк «Садгород»",
+            "relevant": false
+          }
+        ]
+      },
+      {
+        "query": "Хочу увидеть городскую панораму с высокой точки",
+        "ndcg_at_5": 0.5147714448836774,
+        "relevant_count": 6,
+        "places": [
+          {
+            "name": "Высота",
+            "relevant": false
+          },
+          {
+            "name": "Парк Орлиное гнездо",
+            "relevant": true
+          },
+          {
+            "name": "Смотровой мостик",
+            "relevant": true
+          },
+          {
+            "name": "Sky Love (Скай Лав)",
+            "relevant": false
+          },
+          {
+            "name": "Смотровая площадка с сердцем",
+            "relevant": true
+          }
+        ]
+      },
+      {
+        "query": "Куда отправиться позагорать на морском берегу?",
+        "ndcg_at_5": 0.8772153153380493,
+        "relevant_count": 2,
+        "places": [
+          {
+            "name": "Кунгасный парк, пляж",
+            "relevant": true
+          },
+          {
+            "name": "Бурный",
+            "relevant": false
+          },
+          {
+            "name": "Смотровой мостик",
+            "relevant": false
+          },
+          {
+            "name": "Пляж мыса Поспелова",
+            "relevant": true
+          },
+          {
+            "name": "Бухта Фёдорова",
+            "relevant": false
+          }
+        ]
+      },
+      {
+        "query": "Где узнать о прошлом города через его памятные места?",
+        "ndcg_at_5": 0.3156484524795145,
+        "relevant_count": 8,
+        "places": [
+          {
+            "name": "Сквер путешественников",
+            "relevant": false
+          },
+          {
+            "name": "Покровский парк",
+            "relevant": false
+          },
+          {
+            "name": "Владивостокская крепость, форт №7",
+            "relevant": true
+          },
+          {
+            "name": "Береговая батарея Уссурийская",
+            "relevant": true
+          },
+          {
+            "name": "Агатовый сквер",
+            "relevant": false
+          }
+        ]
+      },
+      {
+        "query": "Где ребёнок сможет поиграть на оборудованной уличной площадке?",
+        "ndcg_at_5": 0.8318724637288826,
+        "relevant_count": 4,
+        "places": [
+          {
+            "name": "Сквер на Окатовой",
+            "relevant": true
+          },
+          {
+            "name": "Некрасовский сквер",
+            "relevant": true
+          },
+          {
+            "name": "Сквер Надибаидзе",
+            "relevant": true
+          },
+          {
+            "name": "Смотровая площадка с сердцем",
+            "relevant": false
+          },
+          {
+            "name": "Jump Town",
+            "relevant": false
+          }
+        ]
+      }
+    ]
+  },
+  "adapted_test": {
+    "ndcg_at_5": 0.8948773567722907,
+    "queries": [
+      {
+        "query": "Где можно посоревноваться с друзьями в сбивании кеглей?",
+        "ndcg_at_5": 1.0,
+        "relevant_count": 4,
+        "places": [
+          {
+            "name": "Fabrika Bowling (Фабрика Боулинг) на Светланской",
+            "relevant": true
+          },
+          {
+            "name": "Fabrika (Фабрика) на 100-летия Владивостока",
+            "relevant": true
+          },
+          {
+            "name": "Hunter (Охотник)",
+            "relevant": true
+          },
+          {
+            "name": "Боулинг на Тунгусской (Bouling1)",
+            "relevant": true
+          },
+          {
+            "name": "Chill Zone (Чилл Зон)",
+            "relevant": false
+          }
+        ]
+      },
+      {
+        "query": "Где посмотреть свежую премьеру в зрительном зале?",
+        "ndcg_at_5": 1.0,
+        "relevant_count": 6,
+        "places": [
+          {
+            "name": "Кинотеатр «Иллюзион»",
+            "relevant": true
+          },
+          {
+            "name": "Кинотеатр «Уссури»",
+            "relevant": true
+          },
+          {
+            "name": "Кинотеатр «Черёмушки» — Иллюзион Парк",
+            "relevant": true
+          },
+          {
+            "name": "Кинотеатр «Океан»",
+            "relevant": true
+          },
+          {
+            "name": "Кинотеатр «Владивосток»",
+            "relevant": true
+          }
+        ]
+      },
+      {
+        "query": "Хочу зайти за латте и поболтать с другом",
+        "ndcg_at_5": 0.7860137352654724,
+        "relevant_count": 7,
+        "places": [
+          {
+            "name": "Поэма вкуса",
+            "relevant": true
+          },
+          {
+            "name": "Это Бар",
+            "relevant": false
+          },
+          {
+            "name": "Coffee Point на 100-летия",
+            "relevant": true
+          },
+          {
+            "name": "Кофемолка (Coffeemolka)",
+            "relevant": true
+          },
+          {
+            "name": "Вспышка",
+            "relevant": true
+          }
+        ]
+      },
+      {
+        "query": "Где собраться командой и поиграть в сетевые игры на компьютерах?",
+        "ndcg_at_5": 1.0,
+        "relevant_count": 16,
+        "places": [
+          {
+            "name": "PlayGround",
+            "relevant": true
+          },
+          {
+            "name": "Cyber Lab (Кибер Лаб)",
+            "relevant": true
+          },
+          {
+            "name": "SEKTOR на Металлургической",
+            "relevant": true
+          },
+          {
+            "name": "Sektor (Сектор), компьютерный клуб",
+            "relevant": true
+          },
+          {
+            "name": "RISE",
+            "relevant": true
+          }
+        ]
+      },
+      {
+        "query": "Ищу игры с полным погружением и очками виртуальной реальности",
+        "ndcg_at_5": 1.0,
+        "relevant_count": 3,
+        "places": [
+          {
+            "name": "Квесткафе",
+            "relevant": true
+          },
+          {
+            "name": "VR-Lab (ВР-Лаб), клуб виртуальной реальности",
+            "relevant": true
+          },
+          {
+            "name": "WARPOINT",
+            "relevant": true
+          }
+        ]
+      },
+      {
+        "query": "Где можно съесть маргариту или пепперони?",
+        "ndcg_at_5": 0.3391602052736161,
+        "relevant_count": 9,
+        "places": [
+          {
+            "name": "Сыроварня",
+            "relevant": true
+          },
+          {
+            "name": "Бурный",
+            "relevant": false
+          },
+          {
+            "name": "Супра Романи (Supra Romani)",
+            "relevant": false
+          },
+          {
+            "name": "Supra",
+            "relevant": false
+          },
+          {
+            "name": "Токио (Tokio), сеть ресторанов японской кухни",
+            "relevant": false
+          }
+        ]
+      },
+      {
+        "query": "Хочется хачапури по-аджарски и кавказского ужина",
+        "ndcg_at_5": 0.830419897363192,
+        "relevant_count": 6,
+        "places": [
+          {
+            "name": "Supra",
+            "relevant": true
+          },
+          {
+            "name": "Dakara (Дакара)",
+            "relevant": true
+          },
+          {
+            "name": "Чача дом",
+            "relevant": false
+          },
+          {
+            "name": "Tbilissimo (Тбилиссимо)",
+            "relevant": true
+          },
+          {
+            "name": "Супра Романи (Supra Romani)",
+            "relevant": true
+          }
+        ]
+      },
+      {
+        "query": "Хочется попробовать традиционные блюда Китая",
+        "ndcg_at_5": 1.0,
+        "relevant_count": 7,
+        "places": [
+          {
+            "name": "Пекинская утка",
+            "relevant": true
+          },
+          {
+            "name": "Добрыня и Аня",
+            "relevant": true
+          },
+          {
+            "name": "Золотой век (Zolotoy vek)",
+            "relevant": true
+          },
+          {
+            "name": "Восточная Жемчужина",
+            "relevant": true
+          },
+          {
+            "name": "Камбей (Kambey)",
+            "relevant": true
+          }
+        ]
+      },
+      {
+        "query": "Где подают японскую еду для ужина вдвоём?",
+        "ndcg_at_5": 1.0,
+        "relevant_count": 6,
+        "places": [
+          {
+            "name": "Токио (Tokio), сеть ресторанов японской кухни",
+            "relevant": true
+          },
+          {
+            "name": "Токио (Tokio) на Острякова",
+            "relevant": true
+          },
+          {
+            "name": "Sibumi (Сибуми)",
+            "relevant": true
+          },
+          {
+            "name": "Umami ramen club (Умами рамен клаб)",
+            "relevant": true
+          },
+          {
+            "name": "Zuma (Зума)",
+            "relevant": true
+          }
+        ]
+      },
+      {
+        "query": "Где поужинать дарами моря во Владивостоке?",
+        "ndcg_at_5": 1.0,
+        "relevant_count": 21,
+        "places": [
+          {
+            "name": "Бурный",
+            "relevant": true
+          },
+          {
+            "name": "Токио (Tokio), сеть ресторанов японской кухни",
+            "relevant": true
+          },
+          {
+            "name": "Rakushka (Ракушка)",
+            "relevant": true
+          },
+          {
+            "name": "Supra",
+            "relevant": true
+          },
+          {
+            "name": "Пятый океан",
+            "relevant": true
+          }
+        ]
+      },
+      {
+        "query": "Где прогуляться вдоль моря по городской береговой линии?",
+        "ndcg_at_5": 0.6164336326286644,
+        "relevant_count": 8,
+        "places": [
+          {
+            "name": "Набережная Цесаревича",
+            "relevant": true
+          },
+          {
+            "name": "Кунгасный парк, пляж",
+            "relevant": false
+          },
+          {
+            "name": "Смотровой мостик",
+            "relevant": false
+          },
+          {
+            "name": "Леопардовая набережная",
+            "relevant": true
+          },
+          {
+            "name": "Набережная Патрокла",
+            "relevant": true
+          }
+        ]
+      },
+      {
+        "query": "Где в городе подышать воздухом и пройтись по зелёной территории?",
+        "ndcg_at_5": 1.0,
+        "relevant_count": 29,
+        "places": [
+          {
+            "name": "Сквер на Окатовой",
+            "relevant": true
+          },
+          {
+            "name": "Некрасовский сквер",
+            "relevant": true
+          },
+          {
+            "name": "Смотровая площадка с сердцем",
+            "relevant": true
+          },
+          {
+            "name": "Сквер им. Игнатьева",
+            "relevant": true
+          },
+          {
+            "name": "Сквер Надибаидзе",
+            "relevant": true
+          }
+        ]
+      },
+      {
+        "query": "Хочу увидеть городскую панораму с высокой точки",
+        "ndcg_at_5": 1.0,
+        "relevant_count": 6,
+        "places": [
+          {
+            "name": "Смотровой мостик",
+            "relevant": true
+          },
+          {
+            "name": "Парк Орлиное гнездо",
+            "relevant": true
+          },
+          {
+            "name": "Смотровая площадка с сердцем",
+            "relevant": true
+          },
+          {
+            "name": "Сквер Первой маёвки",
+            "relevant": true
+          },
+          {
+            "name": "Парк Снеговая падь",
+            "relevant": true
+          }
+        ]
+      },
+      {
+        "query": "Куда отправиться позагорать на морском берегу?",
+        "ndcg_at_5": 0.8772153153380493,
+        "relevant_count": 2,
+        "places": [
+          {
+            "name": "Кунгасный парк, пляж",
+            "relevant": true
+          },
+          {
+            "name": "Бурный",
+            "relevant": false
+          },
+          {
+            "name": "Смотровой мостик",
+            "relevant": false
+          },
+          {
+            "name": "Пляж мыса Поспелова",
+            "relevant": true
+          },
+          {
+            "name": "Набережная Цесаревича",
+            "relevant": false
+          }
+        ]
+      },
+      {
+        "query": "Где узнать о прошлом города через его памятные места?",
+        "ndcg_at_5": 0.8687949224876582,
+        "relevant_count": 8,
+        "places": [
+          {
+            "name": "Сквер им. Пушкина",
+            "relevant": true
+          },
+          {
+            "name": "Сквер Героев-Даманцев",
+            "relevant": true
+          },
+          {
+            "name": "Береговая батарея Уссурийская",
+            "relevant": true
+          },
+          {
+            "name": "Театральный сквер",
+            "relevant": true
+          },
+          {
+            "name": "Сквер путешественников",
+            "relevant": false
+          }
+        ]
+      },
+      {
+        "query": "Где ребёнок сможет поиграть на оборудованной уличной площадке?",
+        "ndcg_at_5": 1.0,
+        "relevant_count": 4,
+        "places": [
+          {
+            "name": "Сквер на Окатовой",
+            "relevant": true
+          },
+          {
+            "name": "Сквер им. Игнатьева",
+            "relevant": true
+          },
+          {
+            "name": "Некрасовский сквер",
+            "relevant": true
+          },
+          {
+            "name": "Сквер Надибаидзе",
+            "relevant": true
+          },
+          {
+            "name": "Курсантский сквер",
+            "relevant": false
+          }
+        ]
+      }
+    ]
+  },
+  "unfiltered_baseline_test": {
+    "ndcg_at_5": 0.6373195180382241,
+    "queries": [
+      {
+        "query": "Где можно посоревноваться с друзьями в сбивании кеглей?",
+        "ndcg_at_5": 0.3903800499921017,
+        "relevant_count": 4,
+        "places": [
+          {
+            "name": "Fabrika (Фабрика) на 100-летия Владивостока",
+            "relevant": true
+          },
+          {
+            "name": "Девочки не плачут",
+            "relevant": false
+          },
+          {
+            "name": "Redneck Pub",
+            "relevant": false
+          },
+          {
+            "name": "Шибер",
+            "relevant": false
+          },
+          {
+            "name": "SEKTOR на Баляева",
+            "relevant": false
+          }
+        ]
+      },
+      {
+        "query": "Где посмотреть свежую премьеру в зрительном зале?",
+        "ndcg_at_5": 1.0,
+        "relevant_count": 6,
+        "places": [
+          {
+            "name": "Кинотеатр «Океан»",
+            "relevant": true
+          },
+          {
+            "name": "Кинотеатр «Владивосток»",
+            "relevant": true
+          },
+          {
+            "name": "Кинотеатр «Уссури»",
+            "relevant": true
+          },
+          {
+            "name": "Кинотеатр «Черёмушки» — Иллюзион Парк",
+            "relevant": true
+          },
+          {
+            "name": "Кинотеатр «Иллюзион»",
+            "relevant": true
+          }
+        ]
+      },
+      {
+        "query": "Хочу зайти за латте и поболтать с другом",
+        "ndcg_at_5": 0.0,
+        "relevant_count": 7,
+        "places": [
+          {
+            "name": "Redneck Pub",
+            "relevant": false
+          },
+          {
+            "name": "Это Бар",
+            "relevant": false
+          },
+          {
+            "name": "Лима",
+            "relevant": false
+          },
+          {
+            "name": "Девочки не плачут",
+            "relevant": false
+          },
+          {
+            "name": "ЛаоБан (LaoBan)",
+            "relevant": false
+          }
+        ]
+      },
+      {
+        "query": "Где собраться командой и поиграть в сетевые игры на компьютерах?",
+        "ndcg_at_5": 1.0,
+        "relevant_count": 16,
+        "places": [
+          {
+            "name": "PlayGround",
+            "relevant": true
+          },
+          {
+            "name": "Sektor (Сектор), компьютерный клуб",
+            "relevant": true
+          },
+          {
+            "name": "True Gamers на Русской",
+            "relevant": true
+          },
+          {
+            "name": "COLIZEUM на Достоевского",
+            "relevant": true
+          },
+          {
+            "name": "Cyber Lab (Кибер Лаб)",
+            "relevant": true
+          }
+        ]
+      },
+      {
+        "query": "Ищу игры с полным погружением и очками виртуальной реальности",
+        "ndcg_at_5": 1.0,
+        "relevant_count": 3,
+        "places": [
+          {
+            "name": "Квесткафе",
+            "relevant": true
+          },
+          {
+            "name": "VR-Lab (ВР-Лаб), клуб виртуальной реальности",
+            "relevant": true
+          },
+          {
+            "name": "WARPOINT",
+            "relevant": true
+          },
+          {
+            "name": "True Gamers на Русской",
+            "relevant": false
+          },
+          {
+            "name": "COLIZEUM на Достоевского",
+            "relevant": false
+          }
+        ]
+      },
+      {
+        "query": "Где можно съесть маргариту или пепперони?",
+        "ndcg_at_5": 0.0,
+        "relevant_count": 9,
+        "places": [
+          {
+            "name": "Марков на Спортивной",
+            "relevant": false
+          },
+          {
+            "name": "Supra",
+            "relevant": false
+          },
+          {
+            "name": "Бурный",
+            "relevant": false
+          },
+          {
+            "name": "Мирине (Mirine)",
+            "relevant": false
+          },
+          {
+            "name": "Токио (Tokio), сеть ресторанов японской кухни",
+            "relevant": false
+          }
+        ]
+      },
+      {
+        "query": "Хочется хачапури по-аджарски и кавказского ужина",
+        "ndcg_at_5": 0.6608397947263839,
+        "relevant_count": 6,
+        "places": [
+          {
+            "name": "Чача дом",
+            "relevant": false
+          },
+          {
+            "name": "Supra",
+            "relevant": true
+          },
+          {
+            "name": "Tbilissimo (Тбилиссимо)",
+            "relevant": true
+          },
+          {
+            "name": "Dakara (Дакара)",
+            "relevant": true
+          },
+          {
+            "name": "Hinkali (Хинкали)",
+            "relevant": true
+          }
+        ]
+      },
+      {
+        "query": "Хочется попробовать традиционные блюда Китая",
+        "ndcg_at_5": 0.5296347172140421,
+        "relevant_count": 7,
+        "places": [
+          {
+            "name": "Chinoaru (Чиноару)",
+            "relevant": false
+          },
+          {
+            "name": "Пекинская утка",
+            "relevant": true
+          },
+          {
+            "name": "Восточная Жемчужина",
+            "relevant": true
+          },
+          {
+            "name": "Lotus Room",
+            "relevant": true
+          },
+          {
+            "name": "Токио (Tokio), сеть ресторанов японской кухни",
+            "relevant": false
+          }
+        ]
+      },
+      {
+        "query": "Где подают японскую еду для ужина вдвоём?",
+        "ndcg_at_5": 0.8687949224876582,
+        "relevant_count": 6,
+        "places": [
+          {
+            "name": "Токио (Tokio), сеть ресторанов японской кухни",
+            "relevant": true
+          },
+          {
+            "name": "Токио (Tokio) на Острякова",
+            "relevant": true
+          },
+          {
+            "name": "MIYAKO (Мияко)",
+            "relevant": true
+          },
+          {
+            "name": "Umami ramen club (Умами рамен клаб)",
+            "relevant": true
+          },
+          {
+            "name": "Пятый океан",
+            "relevant": false
+          }
+        ]
+      },
+      {
+        "query": "Где поужинать дарами моря во Владивостоке?",
+        "ndcg_at_5": 0.8687949224876582,
+        "relevant_count": 21,
+        "places": [
+          {
+            "name": "Пятый океан",
+            "relevant": true
+          },
+          {
+            "name": "Supra",
+            "relevant": true
+          },
+          {
+            "name": "Rakushka (Ракушка)",
+            "relevant": true
+          },
+          {
+            "name": "Бурный",
+            "relevant": true
+          },
+          {
+            "name": "Dakara (Дакара)",
+            "relevant": false
+          }
+        ]
+      },
+      {
+        "query": "Где прогуляться вдоль моря по городской береговой линии?",
+        "ndcg_at_5": 0.4703652827859579,
+        "relevant_count": 8,
+        "places": [
+          {
+            "name": "Леопардовая набережная",
+            "relevant": true
+          },
+          {
+            "name": "Смотровой мостик",
+            "relevant": false
+          },
+          {
+            "name": "Кунгасный парк, пляж",
+            "relevant": false
+          },
+          {
+            "name": "Бухта Фёдорова",
+            "relevant": false
+          },
+          {
+            "name": "Университетская набережная",
+            "relevant": true
+          }
+        ]
+      },
+      {
+        "query": "Где в городе подышать воздухом и пройтись по зелёной территории?",
+        "ndcg_at_5": 0.8687949224876582,
+        "relevant_count": 29,
+        "places": [
+          {
+            "name": "Парк на Кирова",
+            "relevant": true
+          },
+          {
+            "name": "Парк Победы",
+            "relevant": true
+          },
+          {
+            "name": "Сквер Депутатская аллея",
+            "relevant": true
+          },
+          {
+            "name": "Дендропарк ВВГУ",
+            "relevant": true
+          },
+          {
+            "name": "Зоопарк «Садгород»",
+            "relevant": false
+          }
+        ]
+      },
+      {
+        "query": "Хочу увидеть городскую панораму с высокой точки",
+        "ndcg_at_5": 0.5147714448836774,
+        "relevant_count": 6,
+        "places": [
+          {
+            "name": "Высота",
+            "relevant": false
+          },
+          {
+            "name": "Парк Орлиное гнездо",
+            "relevant": true
+          },
+          {
+            "name": "Смотровой мостик",
+            "relevant": true
+          },
+          {
+            "name": "Sky Love (Скай Лав)",
+            "relevant": false
+          },
+          {
+            "name": "Смотровая площадка с сердцем",
+            "relevant": true
+          }
+        ]
+      },
+      {
+        "query": "Куда отправиться позагорать на морском берегу?",
+        "ndcg_at_5": 0.8772153153380493,
+        "relevant_count": 2,
+        "places": [
+          {
+            "name": "Кунгасный парк, пляж",
+            "relevant": true
+          },
+          {
+            "name": "Бурный",
+            "relevant": false
+          },
+          {
+            "name": "Смотровой мостик",
+            "relevant": false
+          },
+          {
+            "name": "Пляж мыса Поспелова",
+            "relevant": true
+          },
+          {
+            "name": "Бухта Фёдорова",
+            "relevant": false
+          }
+        ]
+      },
+      {
+        "query": "Где узнать о прошлом города через его памятные места?",
+        "ndcg_at_5": 0.3156484524795145,
+        "relevant_count": 8,
+        "places": [
+          {
+            "name": "Сквер путешественников",
+            "relevant": false
+          },
+          {
+            "name": "Покровский парк",
+            "relevant": false
+          },
+          {
+            "name": "Владивостокская крепость, форт №7",
+            "relevant": true
+          },
+          {
+            "name": "Береговая батарея Уссурийская",
+            "relevant": true
+          },
+          {
+            "name": "Агатовый сквер",
+            "relevant": false
+          }
+        ]
+      },
+      {
+        "query": "Где ребёнок сможет поиграть на оборудованной уличной площадке?",
+        "ndcg_at_5": 0.8318724637288826,
+        "relevant_count": 4,
+        "places": [
+          {
+            "name": "Сквер на Окатовой",
+            "relevant": true
+          },
+          {
+            "name": "Некрасовский сквер",
+            "relevant": true
+          },
+          {
+            "name": "Сквер Надибаидзе",
+            "relevant": true
+          },
+          {
+            "name": "Смотровая площадка с сердцем",
+            "relevant": false
+          },
+          {
+            "name": "Jump Town",
+            "relevant": false
+          }
+        ]
+      }
+    ]
+  },
+  "unfiltered_adapted_test": {
+    "ndcg_at_5": 0.8948773567722907,
+    "queries": [
+      {
+        "query": "Где можно посоревноваться с друзьями в сбивании кеглей?",
+        "ndcg_at_5": 1.0,
+        "relevant_count": 4,
+        "places": [
+          {
+            "name": "Fabrika Bowling (Фабрика Боулинг) на Светланской",
+            "relevant": true
+          },
+          {
+            "name": "Fabrika (Фабрика) на 100-летия Владивостока",
+            "relevant": true
+          },
+          {
+            "name": "Hunter (Охотник)",
+            "relevant": true
+          },
+          {
+            "name": "Боулинг на Тунгусской (Bouling1)",
+            "relevant": true
+          },
+          {
+            "name": "Chill Zone (Чилл Зон)",
+            "relevant": false
+          }
+        ]
+      },
+      {
+        "query": "Где посмотреть свежую премьеру в зрительном зале?",
+        "ndcg_at_5": 1.0,
+        "relevant_count": 6,
+        "places": [
+          {
+            "name": "Кинотеатр «Иллюзион»",
+            "relevant": true
+          },
+          {
+            "name": "Кинотеатр «Уссури»",
+            "relevant": true
+          },
+          {
+            "name": "Кинотеатр «Черёмушки» — Иллюзион Парк",
+            "relevant": true
+          },
+          {
+            "name": "Кинотеатр «Океан»",
+            "relevant": true
+          },
+          {
+            "name": "Кинотеатр «Владивосток»",
+            "relevant": true
+          }
+        ]
+      },
+      {
+        "query": "Хочу зайти за латте и поболтать с другом",
+        "ndcg_at_5": 0.7860137352654724,
+        "relevant_count": 7,
+        "places": [
+          {
+            "name": "Поэма вкуса",
+            "relevant": true
+          },
+          {
+            "name": "Это Бар",
+            "relevant": false
+          },
+          {
+            "name": "Coffee Point на 100-летия",
+            "relevant": true
+          },
+          {
+            "name": "Кофемолка (Coffeemolka)",
+            "relevant": true
+          },
+          {
+            "name": "Вспышка",
+            "relevant": true
+          }
+        ]
+      },
+      {
+        "query": "Где собраться командой и поиграть в сетевые игры на компьютерах?",
+        "ndcg_at_5": 1.0,
+        "relevant_count": 16,
+        "places": [
+          {
+            "name": "PlayGround",
+            "relevant": true
+          },
+          {
+            "name": "Cyber Lab (Кибер Лаб)",
+            "relevant": true
+          },
+          {
+            "name": "SEKTOR на Металлургической",
+            "relevant": true
+          },
+          {
+            "name": "Sektor (Сектор), компьютерный клуб",
+            "relevant": true
+          },
+          {
+            "name": "RISE",
+            "relevant": true
+          }
+        ]
+      },
+      {
+        "query": "Ищу игры с полным погружением и очками виртуальной реальности",
+        "ndcg_at_5": 1.0,
+        "relevant_count": 3,
+        "places": [
+          {
+            "name": "Квесткафе",
+            "relevant": true
+          },
+          {
+            "name": "VR-Lab (ВР-Лаб), клуб виртуальной реальности",
+            "relevant": true
+          },
+          {
+            "name": "WARPOINT",
+            "relevant": true
+          },
+          {
+            "name": "PlayGround",
+            "relevant": false
+          },
+          {
+            "name": "True Gamers на Русской",
+            "relevant": false
+          }
+        ]
+      },
+      {
+        "query": "Где можно съесть маргариту или пепперони?",
+        "ndcg_at_5": 0.3391602052736161,
+        "relevant_count": 9,
+        "places": [
+          {
+            "name": "Сыроварня",
+            "relevant": true
+          },
+          {
+            "name": "Бурный",
+            "relevant": false
+          },
+          {
+            "name": "Супра Романи (Supra Romani)",
+            "relevant": false
+          },
+          {
+            "name": "Supra",
+            "relevant": false
+          },
+          {
+            "name": "Токио (Tokio), сеть ресторанов японской кухни",
+            "relevant": false
+          }
+        ]
+      },
+      {
+        "query": "Хочется хачапури по-аджарски и кавказского ужина",
+        "ndcg_at_5": 0.830419897363192,
+        "relevant_count": 6,
+        "places": [
+          {
+            "name": "Supra",
+            "relevant": true
+          },
+          {
+            "name": "Dakara (Дакара)",
+            "relevant": true
+          },
+          {
+            "name": "Чача дом",
+            "relevant": false
+          },
+          {
+            "name": "Tbilissimo (Тбилиссимо)",
+            "relevant": true
+          },
+          {
+            "name": "Супра Романи (Supra Romani)",
+            "relevant": true
+          }
+        ]
+      },
+      {
+        "query": "Хочется попробовать традиционные блюда Китая",
+        "ndcg_at_5": 1.0,
+        "relevant_count": 7,
+        "places": [
+          {
+            "name": "Пекинская утка",
+            "relevant": true
+          },
+          {
+            "name": "Добрыня и Аня",
+            "relevant": true
+          },
+          {
+            "name": "Золотой век (Zolotoy vek)",
+            "relevant": true
+          },
+          {
+            "name": "Восточная Жемчужина",
+            "relevant": true
+          },
+          {
+            "name": "Камбей (Kambey)",
+            "relevant": true
+          }
+        ]
+      },
+      {
+        "query": "Где подают японскую еду для ужина вдвоём?",
+        "ndcg_at_5": 1.0,
+        "relevant_count": 6,
+        "places": [
+          {
+            "name": "Токио (Tokio), сеть ресторанов японской кухни",
+            "relevant": true
+          },
+          {
+            "name": "Токио (Tokio) на Острякова",
+            "relevant": true
+          },
+          {
+            "name": "Sibumi (Сибуми)",
+            "relevant": true
+          },
+          {
+            "name": "Umami ramen club (Умами рамен клаб)",
+            "relevant": true
+          },
+          {
+            "name": "Zuma (Зума)",
+            "relevant": true
+          }
+        ]
+      },
+      {
+        "query": "Где поужинать дарами моря во Владивостоке?",
+        "ndcg_at_5": 1.0,
+        "relevant_count": 21,
+        "places": [
+          {
+            "name": "Бурный",
+            "relevant": true
+          },
+          {
+            "name": "Токио (Tokio), сеть ресторанов японской кухни",
+            "relevant": true
+          },
+          {
+            "name": "Rakushka (Ракушка)",
+            "relevant": true
+          },
+          {
+            "name": "Supra",
+            "relevant": true
+          },
+          {
+            "name": "Пятый океан",
+            "relevant": true
+          }
+        ]
+      },
+      {
+        "query": "Где прогуляться вдоль моря по городской береговой линии?",
+        "ndcg_at_5": 0.6164336326286644,
+        "relevant_count": 8,
+        "places": [
+          {
+            "name": "Набережная Цесаревича",
+            "relevant": true
+          },
+          {
+            "name": "Кунгасный парк, пляж",
+            "relevant": false
+          },
+          {
+            "name": "Смотровой мостик",
+            "relevant": false
+          },
+          {
+            "name": "Леопардовая набережная",
+            "relevant": true
+          },
+          {
+            "name": "Набережная Патрокла",
+            "relevant": true
+          }
+        ]
+      },
+      {
+        "query": "Где в городе подышать воздухом и пройтись по зелёной территории?",
+        "ndcg_at_5": 1.0,
+        "relevant_count": 29,
+        "places": [
+          {
+            "name": "Сквер на Окатовой",
+            "relevant": true
+          },
+          {
+            "name": "Некрасовский сквер",
+            "relevant": true
+          },
+          {
+            "name": "Смотровая площадка с сердцем",
+            "relevant": true
+          },
+          {
+            "name": "Сквер им. Игнатьева",
+            "relevant": true
+          },
+          {
+            "name": "Сквер Надибаидзе",
+            "relevant": true
+          }
+        ]
+      },
+      {
+        "query": "Хочу увидеть городскую панораму с высокой точки",
+        "ndcg_at_5": 1.0,
+        "relevant_count": 6,
+        "places": [
+          {
+            "name": "Смотровой мостик",
+            "relevant": true
+          },
+          {
+            "name": "Парк Орлиное гнездо",
+            "relevant": true
+          },
+          {
+            "name": "Смотровая площадка с сердцем",
+            "relevant": true
+          },
+          {
+            "name": "Сквер Первой маёвки",
+            "relevant": true
+          },
+          {
+            "name": "Парк Снеговая падь",
+            "relevant": true
+          }
+        ]
+      },
+      {
+        "query": "Куда отправиться позагорать на морском берегу?",
+        "ndcg_at_5": 0.8772153153380493,
+        "relevant_count": 2,
+        "places": [
+          {
+            "name": "Кунгасный парк, пляж",
+            "relevant": true
+          },
+          {
+            "name": "Бурный",
+            "relevant": false
+          },
+          {
+            "name": "Смотровой мостик",
+            "relevant": false
+          },
+          {
+            "name": "Пляж мыса Поспелова",
+            "relevant": true
+          },
+          {
+            "name": "Набережная Цесаревича",
+            "relevant": false
+          }
+        ]
+      },
+      {
+        "query": "Где узнать о прошлом города через его памятные места?",
+        "ndcg_at_5": 0.8687949224876582,
+        "relevant_count": 8,
+        "places": [
+          {
+            "name": "Сквер им. Пушкина",
+            "relevant": true
+          },
+          {
+            "name": "Сквер Героев-Даманцев",
+            "relevant": true
+          },
+          {
+            "name": "Береговая батарея Уссурийская",
+            "relevant": true
+          },
+          {
+            "name": "Театральный сквер",
+            "relevant": true
+          },
+          {
+            "name": "Сквер путешественников",
+            "relevant": false
+          }
+        ]
+      },
+      {
+        "query": "Где ребёнок сможет поиграть на оборудованной уличной площадке?",
+        "ndcg_at_5": 1.0,
+        "relevant_count": 4,
+        "places": [
+          {
+            "name": "Сквер на Окатовой",
+            "relevant": true
+          },
+          {
+            "name": "Сквер им. Игнатьева",
+            "relevant": true
+          },
+          {
+            "name": "Некрасовский сквер",
+            "relevant": true
+          },
+          {
+            "name": "Сквер Надибаидзе",
+            "relevant": true
+          },
+          {
+            "name": "Курсантский сквер",
+            "relevant": false
+          }
+        ]
+      }
+    ]
+  },
+  "limitation": "Synthetic metadata labels, same fixed catalog; not evidence of user satisfaction or generalization to new places.",
+  "adapter_file": "models/query_adapter.npz"
+}

@@ -1,9 +1,18 @@
 """Deterministic candidate filters, separate from semantic ranking."""
 import math
 import re
+import unicodedata
 
 # Supported explicit requests. Arbitrary prose still needs a category selector in the web UI.
 CATEGORIES = {
+    'еда': (r'\b(?:поесть|покушать|пообедать|поужинать|позавтракать|еда|еду)\b',
+            ('ресторан', 'кафе', 'столовая', 'пиццерия', 'бистро', 'кофейня',
+             'кондитерская', 'фастфуд', 'пекарня')),
+    'sup': (r'\b(?:sup|сап(?:е|ах|ом|ы|ов)?)\b', ('sup', 'сап')),
+    'бассейн': (r'\bбассейн\w*\b', ('бассейн',)),
+    'прогулка': (r'\b(?:погуля\w*|гуля\w*|прогуля\w*|прогул\w*)\b',
+                 ('парк', 'сквер', 'набережная', 'аллея', 'тропа', 'дендропарк',
+                  'пляж', 'бухта', 'мыс', 'сопка', 'маяк', 'озеро')),
     'кино': (r'\b(?:кинотеатр\w*|кино|фильм\w*)\b', ('кинотеатр',)),
     'боулинг': (r'\bбоулинг\w*\b', ('боулинг',)),
     'vr': (r'\bvr\b|виртуальн\w*\s+реальност\w*', ('vr-клуб', 'виртуальной реальности')),
@@ -23,12 +32,37 @@ CATEGORIES = {
 }
 
 
+def normalize_name(value):
+    return ' '.join(unicodedata.normalize('NFKC', value).casefold().replace('ё', 'е').split())
+
+
+def rank_indices(catalog, query, indices, scores):
+    name = normalize_name(query)
+    return sorted(indices, key=lambda i: (normalize_name(catalog[i]['values'][0]) != name,
+                                         -float(scores[i]), catalog[i]['place_id']))
+
+
+def explicit_text_budget(query):
+    """Only a single explicit upper bound in rubles; never guess 'cheap'."""
+    pattern = r'\bдо\s+(\d{1,9}(?:[ \u00a0]\d{3})*(?:[.,]\d{1,2})?)\s*(?:₽|руб(?:лей|ля|ль|\.)?|р\.)(?!\w)'
+    values = set()
+    for match in re.finditer(pattern, query.casefold()):
+        if re.search(r'\bне\s*$', query[:match.start()].casefold()):
+            continue
+        value = float(match[1].replace(' ', '').replace('\u00a0', '').replace(',', '.'))
+        if math.isfinite(value):
+            values.add(value)
+    return next(iter(values)) if len(values) == 1 else None
+
+
 def matches_category(place, category):
     values = place['values']
     types = str(values[6] or '').lower().replace('ё', 'е')
     # Tags may explicitly attest an activity, but never use names or general descriptions.
     tags = {s.strip().lower() for s in str(values[7] or '').split(';')}
     needles = CATEGORIES[category][1]
+    if category == 'прогулка':
+        return bool({part.strip() for part in types.split(';')} & set(needles))
     if category == 'бар':
         return bool(re.search(r'\b(?:бар|паб|гриль-бар|суши-бар)\b', types))
     return any(n in types or n in tags for n in needles)
@@ -89,6 +123,8 @@ def has_sweets_and_drink(place):
 
 def candidates(catalog, query, category=None, budget=None, lat=None, lon=None, radius=None):
     positive, negative = detect_categories(query)
+    if 'еда' in positive and any(value in positive for value in ('ресторан', 'кофейня')):
+        positive.remove('еда')
     # Multiple activities may describe alternatives or a route: don't silently guess AND/OR.
     selected = category or (positive[0] if len(positive) == 1 else None)
     sweet_drink = wants_sweets_and_drink(query)

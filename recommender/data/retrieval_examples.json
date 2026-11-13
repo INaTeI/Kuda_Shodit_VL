@@ -1,0 +1,917 @@
+{
+  "provenance": "Agent-authored synthetic queries; relevance inferred from catalog types/tags. Not user feedback or human quality judgements.",
+  "examples": [
+    {
+      "intent": "bowling",
+      "split": "train",
+      "query": "Хочу поиграть в боулинг",
+      "label": {
+        "field": "type",
+        "value": "боулинг"
+      }
+    },
+    {
+      "intent": "bowling",
+      "split": "train",
+      "query": "Где покатать шары с друзьями",
+      "label": {
+        "field": "type",
+        "value": "боулинг"
+      }
+    },
+    {
+      "intent": "bowling",
+      "split": "train",
+      "query": "Нужна дорожка для боулинга",
+      "label": {
+        "field": "type",
+        "value": "боулинг"
+      }
+    },
+    {
+      "intent": "bowling",
+      "split": "train",
+      "query": "Хочу сбивать кегли",
+      "label": {
+        "field": "type",
+        "value": "боулинг"
+      }
+    },
+    {
+      "intent": "bowling",
+      "split": "validation",
+      "query": "Куда сходить компанией покидать тяжёлые шары по дорожке?",
+      "label": {
+        "field": "type",
+        "value": "боулинг"
+      }
+    },
+    {
+      "intent": "bowling",
+      "split": "test",
+      "query": "Где можно посоревноваться с друзьями в сбивании кеглей?",
+      "label": {
+        "field": "type",
+        "value": "боулинг"
+      }
+    },
+    {
+      "intent": "cinema",
+      "split": "train",
+      "query": "Хочу посмотреть фильм на большом экране",
+      "label": {
+        "field": "type",
+        "value": "кинотеатр"
+      }
+    },
+    {
+      "intent": "cinema",
+      "split": "train",
+      "query": "Куда сходить в кино",
+      "label": {
+        "field": "type",
+        "value": "кинотеатр"
+      }
+    },
+    {
+      "intent": "cinema",
+      "split": "train",
+      "query": "Посмотреть новинку кинопроката",
+      "label": {
+        "field": "type",
+        "value": "кинотеатр"
+      }
+    },
+    {
+      "intent": "cinema",
+      "split": "train",
+      "query": "Нужен кинотеатр для вечернего сеанса",
+      "label": {
+        "field": "type",
+        "value": "кинотеатр"
+      }
+    },
+    {
+      "intent": "cinema",
+      "split": "validation",
+      "query": "Хочу попкорн и вечерний сеанс перед большим экраном",
+      "label": {
+        "field": "type",
+        "value": "кинотеатр"
+      }
+    },
+    {
+      "intent": "cinema",
+      "split": "test",
+      "query": "Где посмотреть свежую премьеру в зрительном зале?",
+      "label": {
+        "field": "type",
+        "value": "кинотеатр"
+      }
+    },
+    {
+      "intent": "coffee",
+      "split": "train",
+      "query": "Хочу выпить хороший кофе",
+      "label": {
+        "field": "type",
+        "value": "кофейня"
+      }
+    },
+    {
+      "intent": "coffee",
+      "split": "train",
+      "query": "Посидеть в кофейне за чашкой латте",
+      "label": {
+        "field": "type",
+        "value": "кофейня"
+      }
+    },
+    {
+      "intent": "coffee",
+      "split": "train",
+      "query": "Ищу заведение с капучино",
+      "label": {
+        "field": "type",
+        "value": "кофейня"
+      }
+    },
+    {
+      "intent": "coffee",
+      "split": "train",
+      "query": "Где встретиться за кофе",
+      "label": {
+        "field": "type",
+        "value": "кофейня"
+      }
+    },
+    {
+      "intent": "coffee",
+      "split": "validation",
+      "query": "Где посидеть за чашечкой эспрессо?",
+      "label": {
+        "field": "type",
+        "value": "кофейня"
+      }
+    },
+    {
+      "intent": "coffee",
+      "split": "test",
+      "query": "Хочу зайти за латте и поболтать с другом",
+      "label": {
+        "field": "type",
+        "value": "кофейня"
+      }
+    },
+    {
+      "intent": "gaming",
+      "split": "train",
+      "query": "Хочу поиграть на мощном компьютере",
+      "label": {
+        "field": "type",
+        "value": "компьютерный клуб"
+      }
+    },
+    {
+      "intent": "gaming",
+      "split": "train",
+      "query": "Ищу компьютерный клуб",
+      "label": {
+        "field": "type",
+        "value": "компьютерный клуб"
+      }
+    },
+    {
+      "intent": "gaming",
+      "split": "train",
+      "query": "Киберспортивный клуб для компании",
+      "label": {
+        "field": "type",
+        "value": "компьютерный клуб"
+      }
+    },
+    {
+      "intent": "gaming",
+      "split": "train",
+      "query": "Где играть в компьютерные игры",
+      "label": {
+        "field": "type",
+        "value": "компьютерный клуб"
+      }
+    },
+    {
+      "intent": "gaming",
+      "split": "validation",
+      "query": "Нужны игровые ПК, чтобы устроить матч с друзьями",
+      "label": {
+        "field": "type",
+        "value": "компьютерный клуб"
+      }
+    },
+    {
+      "intent": "gaming",
+      "split": "test",
+      "query": "Где собраться командой и поиграть в сетевые игры на компьютерах?",
+      "label": {
+        "field": "type",
+        "value": "компьютерный клуб"
+      }
+    },
+    {
+      "intent": "vr",
+      "split": "train",
+      "query": "Хочу попробовать виртуальную реальность",
+      "label": {
+        "field": "type_any",
+        "value": [
+          "vr-клуб",
+          "виртуальной реальности"
+        ]
+      }
+    },
+    {
+      "intent": "vr",
+      "split": "train",
+      "query": "Поиграть в VR с друзьями",
+      "label": {
+        "field": "type_any",
+        "value": [
+          "vr-клуб",
+          "виртуальной реальности"
+        ]
+      }
+    },
+    {
+      "intent": "vr",
+      "split": "train",
+      "query": "Ищу клуб виртуальной реальности",
+      "label": {
+        "field": "type_any",
+        "value": [
+          "vr-клуб",
+          "виртуальной реальности"
+        ]
+      }
+    },
+    {
+      "intent": "vr",
+      "split": "train",
+      "query": "Где надеть VR шлем",
+      "label": {
+        "field": "type_any",
+        "value": [
+          "vr-клуб",
+          "виртуальной реальности"
+        ]
+      }
+    },
+    {
+      "intent": "vr",
+      "split": "validation",
+      "query": "Где можно погрузиться в цифровой мир в специальном шлеме?",
+      "label": {
+        "field": "type_any",
+        "value": [
+          "vr-клуб",
+          "виртуальной реальности"
+        ]
+      }
+    },
+    {
+      "intent": "vr",
+      "split": "test",
+      "query": "Ищу игры с полным погружением и очками виртуальной реальности",
+      "label": {
+        "field": "type_any",
+        "value": [
+          "vr-клуб",
+          "виртуальной реальности"
+        ]
+      }
+    },
+    {
+      "intent": "pizza",
+      "split": "train",
+      "query": "Хочу поесть пиццу",
+      "label": {
+        "field": "tag",
+        "value": "пицца"
+      }
+    },
+    {
+      "intent": "pizza",
+      "split": "train",
+      "query": "Где заказать пиццу",
+      "label": {
+        "field": "tag",
+        "value": "пицца"
+      }
+    },
+    {
+      "intent": "pizza",
+      "split": "train",
+      "query": "Ищу заведение с пиццей",
+      "label": {
+        "field": "tag",
+        "value": "пицца"
+      }
+    },
+    {
+      "intent": "pizza",
+      "split": "train",
+      "query": "Куда сходить за пиццей",
+      "label": {
+        "field": "tag",
+        "value": "пицца"
+      }
+    },
+    {
+      "intent": "pizza",
+      "split": "validation",
+      "query": "Хочу итальянскую лепёшку с сыром и начинкой",
+      "label": {
+        "field": "tag",
+        "value": "пицца"
+      }
+    },
+    {
+      "intent": "pizza",
+      "split": "test",
+      "query": "Где можно съесть маргариту или пепперони?",
+      "label": {
+        "field": "tag",
+        "value": "пицца"
+      }
+    },
+    {
+      "intent": "georgian",
+      "split": "train",
+      "query": "Хочу грузинскую кухню",
+      "label": {
+        "field": "tag",
+        "value": "грузинская кухня"
+      }
+    },
+    {
+      "intent": "georgian",
+      "split": "train",
+      "query": "Где поесть хинкали и хачапури",
+      "label": {
+        "field": "tag",
+        "value": "грузинская кухня"
+      }
+    },
+    {
+      "intent": "georgian",
+      "split": "train",
+      "query": "Ищу грузинский ресторан",
+      "label": {
+        "field": "tag",
+        "value": "грузинская кухня"
+      }
+    },
+    {
+      "intent": "georgian",
+      "split": "train",
+      "query": "Поужинать блюдами Грузии",
+      "label": {
+        "field": "tag",
+        "value": "грузинская кухня"
+      }
+    },
+    {
+      "intent": "georgian",
+      "split": "validation",
+      "query": "Где готовят лодочку с сыром и яйцом и сочные хинкали?",
+      "label": {
+        "field": "tag",
+        "value": "грузинская кухня"
+      }
+    },
+    {
+      "intent": "georgian",
+      "split": "test",
+      "query": "Хочется хачапури по-аджарски и кавказского ужина",
+      "label": {
+        "field": "tag",
+        "value": "грузинская кухня"
+      }
+    },
+    {
+      "intent": "chinese",
+      "split": "train",
+      "query": "Хочу китайскую кухню",
+      "label": {
+        "field": "tag",
+        "value": "китайская кухня"
+      }
+    },
+    {
+      "intent": "chinese",
+      "split": "train",
+      "query": "Где поесть китайские блюда",
+      "label": {
+        "field": "tag",
+        "value": "китайская кухня"
+      }
+    },
+    {
+      "intent": "chinese",
+      "split": "train",
+      "query": "Ищу китайское кафе",
+      "label": {
+        "field": "tag",
+        "value": "китайская кухня"
+      }
+    },
+    {
+      "intent": "chinese",
+      "split": "train",
+      "query": "Ресторан китайской кухни",
+      "label": {
+        "field": "tag",
+        "value": "китайская кухня"
+      }
+    },
+    {
+      "intent": "chinese",
+      "split": "validation",
+      "query": "Где поужинать уткой по-пекински?",
+      "label": {
+        "field": "tag",
+        "value": "китайская кухня"
+      }
+    },
+    {
+      "intent": "chinese",
+      "split": "test",
+      "query": "Хочется попробовать традиционные блюда Китая",
+      "label": {
+        "field": "tag",
+        "value": "китайская кухня"
+      }
+    },
+    {
+      "intent": "japanese",
+      "split": "train",
+      "query": "Хочу японскую кухню",
+      "label": {
+        "field": "tag",
+        "value": "японская кухня"
+      }
+    },
+    {
+      "intent": "japanese",
+      "split": "train",
+      "query": "Ищу японский ресторан",
+      "label": {
+        "field": "tag",
+        "value": "японская кухня"
+      }
+    },
+    {
+      "intent": "japanese",
+      "split": "train",
+      "query": "Где поесть японские блюда",
+      "label": {
+        "field": "tag",
+        "value": "японская кухня"
+      }
+    },
+    {
+      "intent": "japanese",
+      "split": "train",
+      "query": "Хочу суши и японский ужин",
+      "label": {
+        "field": "tag",
+        "value": "японская кухня"
+      }
+    },
+    {
+      "intent": "japanese",
+      "split": "validation",
+      "query": "Хочу поесть блюда страны восходящего солнца",
+      "label": {
+        "field": "tag",
+        "value": "японская кухня"
+      }
+    },
+    {
+      "intent": "japanese",
+      "split": "test",
+      "query": "Где подают японскую еду для ужина вдвоём?",
+      "label": {
+        "field": "tag",
+        "value": "японская кухня"
+      }
+    },
+    {
+      "intent": "seafood",
+      "split": "train",
+      "query": "Хочу морепродукты",
+      "label": {
+        "field": "tag",
+        "value": "морепродукты"
+      }
+    },
+    {
+      "intent": "seafood",
+      "split": "train",
+      "query": "Где поесть краба",
+      "label": {
+        "field": "tag",
+        "value": "морепродукты"
+      }
+    },
+    {
+      "intent": "seafood",
+      "split": "train",
+      "query": "Ресторан с рыбой и морепродуктами",
+      "label": {
+        "field": "tag",
+        "value": "морепродукты"
+      }
+    },
+    {
+      "intent": "seafood",
+      "split": "train",
+      "query": "Хочу ужин из даров моря",
+      "label": {
+        "field": "tag",
+        "value": "морепродукты"
+      }
+    },
+    {
+      "intent": "seafood",
+      "split": "validation",
+      "query": "Хочется попробовать морские деликатесы",
+      "label": {
+        "field": "tag",
+        "value": "морепродукты"
+      }
+    },
+    {
+      "intent": "seafood",
+      "split": "test",
+      "query": "Где поужинать дарами моря во Владивостоке?",
+      "label": {
+        "field": "tag",
+        "value": "морепродукты"
+      }
+    },
+    {
+      "intent": "waterfront",
+      "split": "train",
+      "query": "Хочу погулять по набережной",
+      "label": {
+        "field": "type",
+        "value": "набережная"
+      }
+    },
+    {
+      "intent": "waterfront",
+      "split": "train",
+      "query": "Прогулка вдоль воды по набережной",
+      "label": {
+        "field": "type",
+        "value": "набережная"
+      }
+    },
+    {
+      "intent": "waterfront",
+      "split": "train",
+      "query": "Ищу набережную для прогулки",
+      "label": {
+        "field": "type",
+        "value": "набережная"
+      }
+    },
+    {
+      "intent": "waterfront",
+      "split": "train",
+      "query": "Где пройтись по городской набережной",
+      "label": {
+        "field": "type",
+        "value": "набережная"
+      }
+    },
+    {
+      "intent": "waterfront",
+      "split": "validation",
+      "query": "Хочу пройтись по обустроенному берегу и посмотреть на воду",
+      "label": {
+        "field": "type",
+        "value": "набережная"
+      }
+    },
+    {
+      "intent": "waterfront",
+      "split": "test",
+      "query": "Где прогуляться вдоль моря по городской береговой линии?",
+      "label": {
+        "field": "type",
+        "value": "набережная"
+      }
+    },
+    {
+      "intent": "parks",
+      "split": "train",
+      "query": "Хочу погулять в парке",
+      "label": {
+        "field": "type_any",
+        "value": [
+          "парк",
+          "сквер",
+          "аллея",
+          "дендропарк"
+        ]
+      }
+    },
+    {
+      "intent": "parks",
+      "split": "train",
+      "query": "Ищу зелёный сквер",
+      "label": {
+        "field": "type_any",
+        "value": [
+          "парк",
+          "сквер",
+          "аллея",
+          "дендропарк"
+        ]
+      }
+    },
+    {
+      "intent": "parks",
+      "split": "train",
+      "query": "Прогулка по аллеям парка",
+      "label": {
+        "field": "type_any",
+        "value": [
+          "парк",
+          "сквер",
+          "аллея",
+          "дендропарк"
+        ]
+      }
+    },
+    {
+      "intent": "parks",
+      "split": "train",
+      "query": "Где отдохнуть среди деревьев в городе",
+      "label": {
+        "field": "type_any",
+        "value": [
+          "парк",
+          "сквер",
+          "аллея",
+          "дендропарк"
+        ]
+      }
+    },
+    {
+      "intent": "parks",
+      "split": "validation",
+      "query": "Хочу неспешно походить по зелёным дорожкам среди деревьев",
+      "label": {
+        "field": "type_any",
+        "value": [
+          "парк",
+          "сквер",
+          "аллея",
+          "дендропарк"
+        ]
+      }
+    },
+    {
+      "intent": "parks",
+      "split": "test",
+      "query": "Где в городе подышать воздухом и пройтись по зелёной территории?",
+      "label": {
+        "field": "type_any",
+        "value": [
+          "парк",
+          "сквер",
+          "аллея",
+          "дендропарк"
+        ]
+      }
+    },
+    {
+      "intent": "viewpoint",
+      "split": "train",
+      "query": "Хочу на смотровую площадку",
+      "label": {
+        "field": "tag",
+        "value": "смотровая площадка"
+      }
+    },
+    {
+      "intent": "viewpoint",
+      "split": "train",
+      "query": "Посмотреть панораму Владивостока",
+      "label": {
+        "field": "tag",
+        "value": "смотровая площадка"
+      }
+    },
+    {
+      "intent": "viewpoint",
+      "split": "train",
+      "query": "Ищу место с видом с высоты",
+      "label": {
+        "field": "tag",
+        "value": "смотровая площадка"
+      }
+    },
+    {
+      "intent": "viewpoint",
+      "split": "train",
+      "query": "Куда подняться ради красивого вида",
+      "label": {
+        "field": "tag",
+        "value": "смотровая площадка"
+      }
+    },
+    {
+      "intent": "viewpoint",
+      "split": "validation",
+      "query": "Где полюбоваться городом сверху?",
+      "label": {
+        "field": "tag",
+        "value": "смотровая площадка"
+      }
+    },
+    {
+      "intent": "viewpoint",
+      "split": "test",
+      "query": "Хочу увидеть городскую панораму с высокой точки",
+      "label": {
+        "field": "tag",
+        "value": "смотровая площадка"
+      }
+    },
+    {
+      "intent": "beach",
+      "split": "train",
+      "query": "Хочу сходить на пляж",
+      "label": {
+        "field": "type",
+        "value": "пляж"
+      }
+    },
+    {
+      "intent": "beach",
+      "split": "train",
+      "query": "Где отдохнуть на пляже",
+      "label": {
+        "field": "type",
+        "value": "пляж"
+      }
+    },
+    {
+      "intent": "beach",
+      "split": "train",
+      "query": "Пляжный отдых у моря",
+      "label": {
+        "field": "type",
+        "value": "пляж"
+      }
+    },
+    {
+      "intent": "beach",
+      "split": "train",
+      "query": "Ищу пляж для отдыха",
+      "label": {
+        "field": "type",
+        "value": "пляж"
+      }
+    },
+    {
+      "intent": "beach",
+      "split": "validation",
+      "query": "Хочу посидеть у прибоя на песке или гальке",
+      "label": {
+        "field": "type",
+        "value": "пляж"
+      }
+    },
+    {
+      "intent": "beach",
+      "split": "test",
+      "query": "Куда отправиться позагорать на морском берегу?",
+      "label": {
+        "field": "type",
+        "value": "пляж"
+      }
+    },
+    {
+      "intent": "history",
+      "split": "train",
+      "query": "Хочу посмотреть памятники и музеи",
+      "label": {
+        "field": "tag",
+        "value": "музеи и памятники"
+      }
+    },
+    {
+      "intent": "history",
+      "split": "train",
+      "query": "Ищу исторические достопримечательности",
+      "label": {
+        "field": "tag",
+        "value": "музеи и памятники"
+      }
+    },
+    {
+      "intent": "history",
+      "split": "train",
+      "query": "Где познакомиться с историей города",
+      "label": {
+        "field": "tag",
+        "value": "музеи и памятники"
+      }
+    },
+    {
+      "intent": "history",
+      "split": "train",
+      "query": "Посмотреть места связанные с историей",
+      "label": {
+        "field": "tag",
+        "value": "музеи и памятники"
+      }
+    },
+    {
+      "intent": "history",
+      "split": "validation",
+      "query": "Куда сходить ради культурного наследия Владивостока?",
+      "label": {
+        "field": "tag",
+        "value": "музеи и памятники"
+      }
+    },
+    {
+      "intent": "history",
+      "split": "test",
+      "query": "Где узнать о прошлом города через его памятные места?",
+      "label": {
+        "field": "tag",
+        "value": "музеи и памятники"
+      }
+    },
+    {
+      "intent": "playground",
+      "split": "train",
+      "query": "Нужна детская площадка",
+      "label": {
+        "field": "tag",
+        "value": "детская площадка"
+      }
+    },
+    {
+      "intent": "playground",
+      "split": "train",
+      "query": "Где погулять с ребёнком на площадке",
+      "label": {
+        "field": "tag",
+        "value": "детская площадка"
+      }
+    },
+    {
+      "intent": "playground",
+      "split": "train",
+      "query": "Поиграть с детьми на детской площадке",
+      "label": {
+        "field": "tag",
+        "value": "детская площадка"
+      }
+    },
+    {
+      "intent": "playground",
+      "split": "train",
+      "query": "Ищу место для детских игр на улице",
+      "label": {
+        "field": "tag",
+        "value": "детская площадка"
+      }
+    },
+    {
+      "intent": "playground",
+      "split": "validation",
+      "query": "Куда отвести малыша поиграть на свежем воздухе?",
+      "label": {
+        "field": "tag",
+        "value": "детская площадка"
+      }
+    },
+    {
+      "intent": "playground",
+      "split": "test",
+      "query": "Где ребёнок сможет поиграть на оборудованной уличной площадке?",
+      "label": {
+        "field": "tag",
+        "value": "детская площадка"
+      }
+    }
+  ]
+}

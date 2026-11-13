@@ -1,11 +1,12 @@
 import secrets
 from fastapi import APIRouter, Response
-from sqlalchemy import select
+from sqlalchemy import case, select
 from sqlalchemy.dialects.postgresql import insert
 from app.api.dependencies import DB, CurrentProfile, hash_token
 from app.catalog.service import get_public, validate_categories
 from app.db.models import Profile, PlaceState
 from app.profiles.schemas import Preferences, ProfileOut, ProfileCreated, ReactionIn, KnownIn, StateOut
+from app.profiles.service import lock_profile
 from uuid import UUID
 
 router = APIRouter(tags=["Профиль и реакции"])
@@ -35,9 +36,20 @@ async def preferences(data: Preferences, db: DB, profile: CurrentProfile):
 
 
 async def upsert_state(db, profile, place_id, values):
+    await lock_profile(db, profile.id)
     await get_public(db, place_id)
-    statement = insert(PlaceState).values(profile_id=profile.id, place_id=place_id, **values)
-    await db.execute(statement.on_conflict_do_update(index_elements=["profile_id", "place_id"], set_=values))
+    updates = dict(values)
+    initial_revision = 0
+    if "reaction" in values:
+        initial_revision = 1
+        updates["reaction_revision"] = case(
+            (PlaceState.reaction.is_distinct_from(values["reaction"]), PlaceState.reaction_revision + 1),
+            else_=PlaceState.reaction_revision,
+        )
+    statement = insert(PlaceState).values(
+        profile_id=profile.id, place_id=place_id, reaction_revision=initial_revision, **values
+    )
+    await db.execute(statement.on_conflict_do_update(index_elements=["profile_id", "place_id"], set_=updates))
     await db.commit()
     return await db.get(PlaceState, (profile.id, place_id), populate_existing=True)
 
@@ -54,9 +66,11 @@ async def react(place_id: UUID, data: ReactionIn, db: DB, profile: CurrentProfil
 
 @router.delete("/me/reactions/{place_id}", status_code=204, summary="Отменить реакцию")
 async def undo(place_id: UUID, db: DB, profile: CurrentProfile):
+    await lock_profile(db, profile.id)
     state = await db.get(PlaceState, (profile.id, place_id))
-    if state:
+    if state and state.reaction is not None:
         state.reaction = None
+        state.reaction_revision += 1
         await db.commit()
     return Response(status_code=204)
 

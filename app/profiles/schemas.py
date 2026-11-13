@@ -35,3 +35,4 @@ class StateOut(BaseModel):
     place_id: UUID
     reaction: str | None
     is_known: bool
+    reaction_revision: int

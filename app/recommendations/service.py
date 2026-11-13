@@ -3,6 +3,7 @@ from collections import defaultdict
 from sqlalchemy import select
 from app.catalog.service import candidates, distance_km
 from app.db.models import PlaceState, Place
+from app.analytics.service import record_run
 from app.recommendations.ranking import (
     RankingCandidate,
     RankingContext,
@@ -112,8 +113,13 @@ async def recommend(db, request, profile, exploration=False, ranker=None):
         by_id = {item["place"].id: item for item in results}
         results = [by_id[place_id] for place_id in order.place_ids]
         algorithm_version = order.algorithm_version
+    page = results[request.offset : request.offset + request.limit]
+    recommendation_id = await record_run(
+        db, profile, request, effective, page, len(results), algorithm_version, exploration
+    )
     return {
-        "items": results[request.offset : request.offset + request.limit],
+        "recommendation_id": recommendation_id,
+        "items": page,
         "total": len(results),
         "algorithm_version": algorithm_version,
     }

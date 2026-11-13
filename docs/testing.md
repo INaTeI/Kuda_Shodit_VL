@@ -70,3 +70,25 @@ docs/import-verification.json. Резервная копия до изменен
 
 Результат HTTP-проверки: docs/import-api-verification.json.
 Проверка DTO для импорта дополнена ограничениями длины полей; полный XLSM не изменён.
+
+
+## Статистика карточек — 13 ноября 2026
+
+- На macOS создано отдельное окружение backend; зависимости Qwen не изменялись.
+- SQLAlchemy получает extra asyncio: greenlet нужен и на macOS ARM.
+- PostgreSQL 16.9 запущен в отдельном временном контейнере vdk-analytics-test;
+  рабочая БД и её тома не использовались.
+- Миграция 0004 применена настоящим Alembic.
+- Весь набор backend: 90 passed.
+- После усиления сценариев конкурентных свайпов, влияния лайка на ranking и удаления
+  истории с отменой повторно прошли все 9 тестов analytics.
+- alembic check: No new upgrade operations detected.
+- Ruff app/tests и git diff --check прошли.
+- Сохранённая docs/openapi.json обновлена; пример события валиден по схеме.
+- Реализованы owner/membership checks, идемпотентность, rollback при конфликте,
+  optimistic concurrency, legacy-состояния, summary и retention/profile cascade.
+- Тесты API выполнены через ASGITransport, не через публичный сервер.
+- Рабочая миграция, Docker-сборка API, нагрузка и браузерный интерфейс карточек
+  не проверялись и не развёртывались. TypeScript helper не запускался в браузере.
+
+Контракт: docs/analytics.md. Тесты: tests/test_analytics.py.
