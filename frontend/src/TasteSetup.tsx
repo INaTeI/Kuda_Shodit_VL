@@ -94,23 +94,21 @@ export function TasteInvitation({
     <Dialog
       open={open}
       onClose={dismiss}
-      title="Сделаем подборку ещё точнее?"
+      title="Выбирай места карточками"
       className="taste-invitation"
     >
       <SwipePreview />
       <p className="taste-intro">
-        Ты уже рассказал о своих интересах. Теперь покажи, что тебе по душе, на
-        конкретных местах.
+        Покажем места по одному. Твои оценки помогут составить личную подборку.
       </p>
       <div className="taste-promise">
         <span>До {TASTE_CARD_LIMIT} карточек</span>
         <span>1–2 минуты</span>
-        <span>Можно пропустить</span>
+        <span>Можно закончить раньше</span>
       </div>
       <p>
-        Смахивай <strong>вправо, если нравится</strong>, и{" "}
-        <strong>влево, если не подходит</strong>. Учтём ответы в подборке. Можно
-        закончить раньше — оценки сохранятся.
+        Смахни <strong>вправо, если нравится</strong>, или{" "}
+        <strong>влево, если не подходит</strong>. Можно нажимать кнопки — жесты не обязательны.
       </p>
       <div className="taste-invite-actions">
         <button
@@ -128,9 +126,9 @@ export function TasteInvitation({
             });
           }}
         >
-          Давай попробуем →
+          Начать выбор →
         </button>
-        <button onClick={dismiss}>Пока к подборке</button>
+        <button onClick={dismiss}>Пропустить и открыть подборку</button>
       </div>
     </Dialog>
   );
@@ -152,6 +150,7 @@ export default function TasteSetup() {
     return (
       <section className="wrap page">
         <Empty title="Сначала познакомимся">
+          <p>Выбери интересы, чтобы начать оценивать места карточками.</p>
           <Link to="/preferences">Настроить предпочтения</Link>
         </Empty>
       </section>
@@ -174,9 +173,9 @@ function TasteGate() {
   if (ready) return <TasteDeck />;
   return (
     <section className="wrap page taste-page">
-      <div className="eyebrow">ТВОЙ ГОРОД / ТВОЙ ВЫБОР</div>
-      <h1>Познакомимся с твоим вкусом</h1>
-      <p>Несколько оценок помогут настроить подборку мест.</p>
+      <div className="eyebrow">ЛИЧНЫЙ ВЫБОР / ШАГ 2 ИЗ 2</div>
+      <h1>Выбирай места карточками</h1>
+      <p>Оцени несколько мест. После этого откроется подборка с учётом твоего выбора.</p>
       <TasteInvitation always onStart={() => setReady(true)} />
     </section>
   );
@@ -482,9 +481,9 @@ function TasteDeck() {
     <section className="wrap page taste-page">
       <div className="taste-page-head">
         <div>
-          <div className="eyebrow">ТВОЙ ГОРОД / ТВОЙ ВЫБОР</div>
+          <div className="eyebrow">ЛИЧНЫЙ ВЫБОР / ШАГ 2 ИЗ 2</div>
           <h1>
-            Поймаем твой <em>ритм.</em>
+            Выбери <em>свои места.</em>
           </h1>
         </div>
         <button onClick={leave} disabled={busy}>

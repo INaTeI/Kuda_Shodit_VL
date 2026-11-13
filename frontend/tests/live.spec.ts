@@ -10,12 +10,12 @@ test("live FastAPI preferences to reaction to refreshed selection", async ({
     const created = page.waitForResponse(
       (r) => r.url().endsWith("/profiles") && r.request().method() === "POST",
     );
-    await page.getByRole("button", { name: "Сохранить и подобрать" }).click();
+    await page.getByRole("button", { name: "Сохранить и перейти к карточкам" }).click();
     token = (await (await created).json()).access_token;
     await expect(
-      page.getByRole("dialog", { name: "Сделаем подборку ещё точнее?" }),
+      page.getByRole("dialog", { name: "Выбирай места карточками" }),
     ).toBeVisible();
-    await page.getByRole("button", { name: "Пока к подборке" }).click();
+    await page.getByRole("button", { name: "Пропустить и открыть подборку" }).click();
     await expect(page.locator(".card").first()).toBeVisible();
     const firstName = await page.locator(".card h3").first().innerText();
     const dislike = page
@@ -62,9 +62,9 @@ test("live taste swipe, undo and persisted reactions", async ({
     const created = page.waitForResponse(
       (r) => r.url().endsWith("/profiles") && r.request().method() === "POST",
     );
-    await page.getByRole("button", { name: "Сохранить и подобрать" }).click();
+    await page.getByRole("button", { name: "Сохранить и перейти к карточкам" }).click();
     token = (await (await created).json()).access_token;
-    await page.getByRole("button", { name: "Давай попробуем →" }).click();
+    await page.getByRole("button", { name: "Начать выбор →" }).click();
     await expect(page.locator(".taste-card")).toBeVisible();
     const swipeReply = () =>
       page.waitForResponse(

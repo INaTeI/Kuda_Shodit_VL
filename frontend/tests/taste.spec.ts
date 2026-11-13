@@ -102,9 +102,9 @@ async function mock(
 }
 async function begin(page: Page) {
   await page.goto("/preferences");
-  await page.getByRole("button", { name: "Сохранить и подобрать" }).click();
+  await page.getByRole("button", { name: "Сохранить и перейти к карточкам" }).click();
   const modal = page.getByRole("dialog", {
-    name: "Сделаем подборку ещё точнее?",
+    name: "Выбирай места карточками",
   });
   await expect(modal).toBeVisible();
   return modal;
@@ -126,12 +126,12 @@ test("first questionnaire offers optional setup; returning profile is not prompt
     path: "test-results/taste-invitation.png",
     fullPage: false,
   });
-  await modal.getByRole("button", { name: "Пока к подборке" }).click();
+  await modal.getByRole("button", { name: "Пропустить и открыть подборку" }).click();
   await expect(modal).not.toBeVisible();
   await page.goto("/preferences");
-  await page.getByRole("button", { name: "Сохранить и подобрать" }).click();
+  await page.getByRole("button", { name: "Сохранить и открыть подборку" }).click();
   await expect(
-    page.getByRole("link", { name: "Уточнить мой вкус ♡" }),
+    page.getByRole("link", { name: "Выбрать ещё карточки ♡" }),
   ).toBeVisible();
   await page.waitForTimeout(500);
   await expect(modal).not.toBeVisible();
@@ -141,7 +141,7 @@ test("keyboard directions, view ordering, undo and completion of 12 cards", asyn
 }) => {
   const { events } = await mock(page, { guest: false });
   const modal = await begin(page);
-  await modal.getByRole("button", { name: "Давай попробуем →" }).click();
+  await modal.getByRole("button", { name: "Начать выбор →" }).click();
   await expect(page).toHaveURL(/\/taste$/);
   const card = page.locator(".taste-card");
   await card.focus();
@@ -183,7 +183,7 @@ test("lost response retries identical event and keeps card", async ({
 }) => {
   const { events } = await mock(page, { count: 3, lostReply: true });
   await page.goto("/taste");
-  await page.getByRole("button", { name: "Давай попробуем →" }).click();
+  await page.getByRole("button", { name: "Начать выбор →" }).click();
   await page.getByRole("button", { name: "Нравится — вправо" }).click();
   await expect(page.getByText("Ответ потерян. Повтори запрос.")).toBeVisible();
   await expect(page.getByText("Карточка 1 из 3")).toBeVisible();
@@ -196,7 +196,7 @@ test("lost response retries identical event and keeps card", async ({
 test("stale reaction refreshes without losing deck", async ({ page }) => {
   await mock(page, { count: 3, conflict: true });
   await page.goto("/taste");
-  await page.getByRole("button", { name: "Давай попробуем →" }).click();
+  await page.getByRole("button", { name: "Начать выбор →" }).click();
   await page.getByRole("button", { name: "Нравится — вправо" }).click();
   await expect(
     page.getByText(/Оценка изменилась в другой вкладке/),
@@ -210,7 +210,7 @@ for (const width of [360, 390, 768, 1280])
     await page.setViewportSize({ width, height: width < 500 ? 740 : 900 });
     const { events } = await mock(page, { count: 3 });
     await page.goto("/taste");
-    await page.getByRole("button", { name: "Давай попробуем →" }).click();
+    await page.getByRole("button", { name: "Начать выбор →" }).click();
     const card = page.locator(".taste-card");
     await expect(card).toBeVisible();
     expect(
@@ -260,7 +260,7 @@ for (const width of [360, 390, 768, 1280])
 test("empty discovery keeps preferences", async ({ page }) => {
   await mock(page, { count: 0 });
   await page.goto("/taste");
-  await page.getByRole("button", { name: "Давай попробуем →" }).click();
+  await page.getByRole("button", { name: "Начать выбор →" }).click();
   await expect(page.getByText("Пока нет новых карточек")).toBeVisible();
   await page.getByRole("button", { name: "Перейти к подборке" }).click();
   await expect(page).toHaveURL(/\/recommendations$/);
@@ -272,7 +272,7 @@ test("phone touch swipe right likes the place; vertical scrolling does not react
   await page.setViewportSize({ width: 390, height: 740 });
   const { events } = await mock(page, { count: 3 });
   await page.goto("/taste");
-  await page.getByRole("button", { name: "Давай попробуем →" }).click();
+  await page.getByRole("button", { name: "Начать выбор →" }).click();
   const card = page.locator(".taste-card");
   await expect(card).toBeVisible();
   await card.scrollIntoViewIfNeeded();
@@ -321,23 +321,23 @@ test("invitation appears on every reentry and reload before cards are requested"
   await mock(page, { count: 3 });
   await page.goto("/recommendations");
   for (let n = 0; n < 2; n++) {
-    await page.getByRole("link", { name: "Уточнить мой вкус ♡" }).click();
+    await page.getByRole("link", { name: "Выбрать ещё карточки ♡" }).click();
     await expect(
-      page.getByRole("dialog", { name: "Сделаем подборку ещё точнее?" }),
+      page.getByRole("dialog", { name: "Выбирай места карточками" }),
     ).toBeVisible();
     await expect(page.locator(".taste-card")).toHaveCount(0);
-    await page.getByRole("button", { name: "Давай попробуем →" }).click();
+    await page.getByRole("button", { name: "Начать выбор →" }).click();
     await expect(page.locator(".taste-card")).toBeVisible();
     await page.getByRole("button", { name: "Закончить пока" }).click();
   }
-  await page.getByRole("link", { name: "Уточнить мой вкус ♡" }).click();
-  await page.getByRole("button", { name: "Давай попробуем →" }).click();
+  await page.getByRole("link", { name: "Выбрать ещё карточки ♡" }).click();
+  await page.getByRole("button", { name: "Начать выбор →" }).click();
   await expect(page.locator(".taste-card")).toBeVisible();
   await page.reload();
   await expect(
-    page.getByRole("dialog", { name: "Сделаем подборку ещё точнее?" }),
+    page.getByRole("dialog", { name: "Выбирай места карточками" }),
   ).toBeVisible();
-  await page.getByRole("button", { name: "Пока к подборке" }).click();
+  await page.getByRole("button", { name: "Пропустить и открыть подборку" }).click();
   await expect(page).toHaveURL(/\/recommendations$/);
 });
 
@@ -365,7 +365,7 @@ test("swipe IDs work when randomUUID is unavailable on HTTP", async ({
     }),
   );
   await page.goto("/taste");
-  await page.getByRole("button", { name: "Давай попробуем →" }).click();
+  await page.getByRole("button", { name: "Начать выбор →" }).click();
   await page.getByRole("button", { name: "Нравится — вправо" }).click();
   await expect(page.getByText("Карточка 2 из 3")).toBeVisible();
 });
@@ -385,7 +385,7 @@ test("drag release flies from the released position while server reply is delaye
     await route.fallback();
   });
   await page.goto("/taste");
-  await page.getByRole("button", { name: "Давай попробуем →" }).click();
+  await page.getByRole("button", { name: "Начать выбор →" }).click();
   const card = page.locator(".taste-card");
   await expect(card).toBeVisible();
   await card.scrollIntoViewIfNeeded();
@@ -416,7 +416,7 @@ test("mobile unsure button saves neutral and advances the card", async ({
   await page.setViewportSize({ width: 390, height: 740 });
   const { events } = await mock(page, { count: 3 });
   await page.goto("/taste");
-  await page.getByRole("button", { name: "Давай попробуем →" }).click();
+  await page.getByRole("button", { name: "Начать выбор →" }).click();
   await page.getByRole("button", { name: "Пока не знаю" }).click();
   await expect(page.getByText("Карточка 2 из 3")).toBeVisible();
   expect(events.find((e) => e.event_type === "swipe").reaction).toBe("neutral");
@@ -429,7 +429,7 @@ test("reaction dock keeps outlined icons and shows hover states", async ({
   await mock(page, { count: 3 });
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/taste");
-  await page.getByRole("button", { name: "Давай попробуем →" }).click();
+  await page.getByRole("button", { name: "Начать выбор →" }).click();
 
   const dislike = page.getByRole("button", { name: "Не нравится — влево" });
   const neutral = page.getByRole("button", { name: "Пока не знаю" });
@@ -459,7 +459,7 @@ test("next card is underneath without a view event, last card reveals green chec
 }) => {
   const { events, places } = await mock(page, { count: 2 });
   await page.goto("/taste");
-  await page.getByRole("button", { name: "Давай попробуем →" }).click();
+  await page.getByRole("button", { name: "Начать выбор →" }).click();
   const active = page.locator(".taste-card");
   const underneath = page.locator(".taste-under-card");
   await expect(underneath).toHaveAttribute("inert", "");

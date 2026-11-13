@@ -1,4 +1,4 @@
-# VDK GID — городской гид
+# Куда_Сходить_ВЛ — выбор мест во Владивостоке
 
 Общий Swagger модели: **http://149.154.70.109/model/docs** — открыть, выбрать
 POST /recommendations → Try it out → Execute. Инструкция: [docs/qwen-server.md](docs/qwen-server.md).
@@ -133,7 +133,7 @@ Draft скрыт (404), archived исключён из подборок и во�
 
 Python 3.12, FastAPI 0.115.12, Pydantic 2, SQLAlchemy 2 async, asyncpg, Alembic,
 PostgreSQL 16.9. Версии библиотек закреплены; это совместимый набор, не обещание последних версий.
-React — клиент будущей итерации; полноценный frontend здесь не создаётся.
+React-клиент находится в `frontend/`: каталог, выбор карточками и личная подборка.
 
 ```text
 app/

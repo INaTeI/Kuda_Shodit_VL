@@ -35,15 +35,16 @@ import Weather from "./Weather";
 import logo from "./assets/logo.svg";
 const nav = [
   ["/catalog", "Каталог"],
-  ["/recommendations", "Подборка"],
-  ["/preferences", "Предпочтения"],
+  ["/taste", "Свайп"],
+  ["/recommendations", "Моя подборка"],
+  ["/preferences", "Настройки"],
 ];
 export default function App() {
   const location = useLocation();
   const guest = useGuest();
   useEffect(() => {
     window.scrollTo(0, 0);
-    document.title = `Куда_Сходить_ВЛ — ${nav.find(([p]) => location.pathname === p)?.[1] || "Владивосток, который подходит тебе"}`;
+    document.title = `Куда_Сходить_ВЛ — ${nav.find(([p]) => location.pathname === p)?.[1] || "Выбери, куда сходить во Владивостоке"}`;
     document.querySelector<HTMLElement>("main")?.focus();
   }, [location.pathname]);
   return (
@@ -53,7 +54,9 @@ export default function App() {
       </a>
       <header className="header wrap">
         <Link to="/" className="logo" aria-label="Куда_Сходить_ВЛ — главная">
-          <img className="brand-mark" src={logo} alt="" /> Куда_Сходить_ВЛ
+          <img className="brand-mark" src={logo} alt="" />
+          <span className="brand-full">Куда_Сходить_ВЛ</span>
+          <span className="brand-short">КСВЛ</span>
           <span className="logo-dot">.</span>
         </Link>
         <Weather />
@@ -66,9 +69,9 @@ export default function App() {
         </nav>
         <Link
           className="button primary header-cta"
-          to={guest.profile ? "/recommendations" : "/preferences"}
+          to="/catalog"
         >
-          Подобрать места ↗
+          Смотреть места ↗
         </Link>
       </header>
       <main id="main" tabIndex={-1}>
@@ -111,7 +114,7 @@ export default function App() {
       >
         {nav.map(([p, n], i) => (
           <NavLink key={p} to={p}>
-            <span aria-hidden="true">{["▦", "✳", "☷"][i]}</span>
+            <span aria-hidden="true">{["▦", "♡", "✳", "☷"][i]}</span>
             {n}
           </NavLink>
         ))}
@@ -126,74 +129,77 @@ function Home() {
     <>
       <section className="hero wrap">
         <div className="hero-copy">
-          <div className="eyebrow">Персональный гид по Владивостоку</div>
+          <div className="eyebrow">КУДА СХОДИТЬ ВО ВЛАДИВОСТОКЕ</div>
           <h1>
-            Владивосток,
+            Найди место,
             <br />
-            который
+            где хочется
             <br />
-            <em>подходит тебе.</em>
+            <em>провести время.</em>
           </h1>
           <p>
-            Выбирай места по интересам и бюджету. Отмечай, что нравится, —
-            следующие подборки учтут твой выбор.
+            Собрали места Владивостока в удобный каталог. Смотри, что интересно,
+            а затем оценивай карточки свайпами — так появится подборка под тебя.
           </p>
           <div className="actions">
-            <Link
-              className="button primary"
-              to={guest.profile ? "/recommendations" : "/preferences"}
-            >
-              Подобрать места <span>↗</span>
+            <Link className="button primary" to="/catalog">
+              Смотреть места <span>↗</span>
             </Link>
-            <Link className="text-link" to="/catalog">
-              Открыть каталог →
+            <Link className="text-link" to={guest.profile ? "/taste" : "/preferences"}>
+              Выбирать карточками →
             </Link>
           </div>
           <div className="hero-note">
-            <span>01 — 03</span> Город начинается с любопытства
+            Каталог открыт без регистрации. Настройки нужны только для личной подборки.
           </div>
         </div>
         <div className="hero-visual">
           <div className="coordinate">ВЛАДИВОСТОК / ПРИМОРСКИЙ КРАЙ</div>
           <Artwork hero />
           <div className="hero-label">
-            <span>Ближе, чем кажется</span>
+            <span>Два способа выбрать</span>
             <strong>
-              Маленькое открытие.
+              Смотри все места.
               <br />
-              Большой день.
+              Или выбирай по одному.
             </strong>
             <Link to="/catalog" aria-label="Исследовать каталог">
               ↗
             </Link>
           </div>
           <span className="vertical-note">
-            МОРЕ ВОЗМОЖНОСТЕЙ — В ТВОЁМ РИТМЕ
+            МЕСТА ВЛАДИВОСТОКА — НА ТВОЙ ВКУС
           </span>
         </div>
       </section>
-      <section className="wrap intro-strip">
-        <span className="section-number">01 / ТВОЙ ГОРОД</span>
-        <h2>
-          Не просто куда-нибудь.
-          <br />
-          <em>Туда, где тебе хорошо.</em>
-        </h2>
-        <div>
-          <p>
-            Прогулка у воды или тихий вечер в городе? Начни с того, что тебе
-            интересно.
-          </p>
-          <Link to="/preferences" className="text-link">
-            Выбрать интересы ↗
-          </Link>
+      <section className="wrap choice-section" aria-labelledby="choice-heading">
+        <div className="section-number">КАК ЗДЕСЬ ВЫБИРАТЬ</div>
+        <h2 id="choice-heading">Начни так, как тебе удобнее</h2>
+        <div className="choice-grid">
+          <article className="choice-card choice-catalog">
+            <span className="choice-index">01 / КАТАЛОГ</span>
+            <span className="choice-symbol" aria-hidden="true">▦</span>
+            <h3>Посмотреть все места</h3>
+            <p>Листай сетку карточек. Выбирай категории, бюджет и места рядом с собой. Профиль не нужен.</p>
+            <Link className="button" to="/catalog">Открыть каталог →</Link>
+          </article>
+          <article className="choice-card choice-swipe">
+            <span className="choice-index">02 / ЛИЧНЫЙ ВЫБОР</span>
+            <span className="choice-symbol" aria-hidden="true">♡</span>
+            <h3>Выбрать свайпами</h3>
+            <p>Укажи интересы и, если хочешь, бюджет. Затем оценивай места по одному: нравится, не подходит или пока не знаю.</p>
+            <Link className="button primary" to={guest.profile ? "/taste" : "/preferences"}>
+              {guest.profile ? "Продолжить выбор →" : "Начать выбор →"}
+            </Link>
+          </article>
         </div>
+        <p className="choice-outcome">После оценки карточек открой «Мою подборку» — следующие предложения учтут твои ответы.</p>
       </section>
       {guest.profile && (
         <section className="wrap section">
           <div className="section-heading">
-            <h2>Твой следующий выход</h2>
-            <Link to="/recommendations">Открыть подборку ↗</Link>
+            <h2>Места для тебя</h2>
+            <Link to="/recommendations">Моя подборка ↗</Link>
           </div>
           <HomeRecommendations />
         </section>
@@ -201,8 +207,8 @@ function Home() {
       <section className="wrap section">
         <div className="section-heading">
           <div>
-            <div className="eyebrow">02 / ИССЛЕДУЙ</div>
-            <h2>Места для нового дня</h2>
+            <div className="eyebrow">ПРИМЕРЫ ИЗ КАТАЛОГА</div>
+            <h2>Посмотри, что есть в городе</h2>
           </div>
           <Link className="text-link" to="/catalog">
             Весь каталог ↗
@@ -350,10 +356,11 @@ function Catalog() {
   return (
     <section className="wrap page">
       <div className="eyebrow">ГОРОД / КАТАЛОГ</div>
-      <h1>Куда пойдём?</h1>
+      <h1>Все места в одном месте</h1>
       <p className="lede">
-        Знакомые улицы. Неожиданные открытия. Выбирай свой повод выйти.
+        Смотри места Владивостока сеткой. Фильтруй по интересам, бюджету и расположению — без настройки профиля.
       </p>
+      <p className="flow-next">Хочешь выбрать быстрее и получить личные предложения? <Link to="/preferences">Настроить интересы и перейти к карточкам →</Link></p>
       <div className="desktop-filters panel">{form}</div>
       <button className="mobile-filter primary" onClick={() => setOpen(true)}>
         Фильтры и расположение
@@ -442,8 +449,8 @@ function Preferences() {
     try {
       const firstVisit = !g.profile;
       await g.save(interests, budget === "" ? null : Number(budget));
-      navigate("/recommendations", {
-        state: { geo, offerTasteSetup: firstVisit },
+      navigate(firstVisit ? "/taste" : "/recommendations", {
+        state: { geo },
       });
     } catch (e) {
       setError((e as Error).message);
@@ -453,14 +460,14 @@ function Preferences() {
   }
   return (
     <section className="wrap page preferences">
-      <div className="eyebrow">ТВОЙ РИТМ / ПРЕДПОЧТЕНИЯ</div>
+      <div className="eyebrow">ЛИЧНЫЙ ВЫБОР / ШАГ 1 ИЗ 2</div>
       <h1>
-        Что тебе <em>по душе?</em>
+        {g.profile ? <>Мои <em>интересы</em></> : <>Что тебе <em>интересно?</em></>}
       </h1>
       <p className="lede">
-        Никаких паролей. Только то, что интересно тебе.
-        <br />
-        Настройки можно изменить в любой момент.
+        {g.profile
+          ? "Измени интересы и бюджет. После сохранения откроется обновлённая подборка."
+          : "Выбери интересы и при желании бюджет. Следом покажем карточки мест: оценивай их свайпом или кнопками. Регистрация с паролем не нужна."}
       </p>
       {g.loading ? (
         <Skeleton />
@@ -520,7 +527,7 @@ function Preferences() {
           {error && <ErrorBox message={error} />}
           <div className="actions">
             <button className="primary" disabled={busy || resetting}>
-              {busy ? "Сохраняем…" : "Сохранить и подобрать ↗"}
+              {busy ? "Сохраняем…" : g.profile ? "Сохранить и открыть подборку →" : "Сохранить и перейти к карточкам →"}
             </button>
             <Link to="/catalog">Пока посмотреть каталог</Link>
           </div>
@@ -606,10 +613,10 @@ function Selection({ discovery = false }: { discovery?: boolean }) {
   return (
     <section className="wrap page">
       <div className="eyebrow">
-        {discovery ? "НОВЫЙ ВЗГЛЯД / DISCOVERY" : "ЛИЧНЫЙ МАРШРУТ ВЫБОРА"}
+        {discovery ? "МЕСТО ПО ОДНОМУ" : "ПОСЛЕ ТВОЕГО ВЫБОРА"}
       </div>
       <div className="section-heading">
-        <h1>{discovery ? "А что, если сюда?" : "Это может быть твоим."}</h1>
+        <h1>{discovery ? "Оцени новое место" : "Моя подборка"}</h1>
         <Link to="/preferences">Изменить предпочтения ↗</Link>
       </div>
       {g.loading ? (
@@ -618,9 +625,7 @@ function Selection({ discovery = false }: { discovery?: boolean }) {
         <ErrorBox message={g.error} retry={g.refresh} />
       ) : !g.profile ? (
         <Empty title="Сначала познакомимся">
-          <p>
-            Расскажи, что тебе интересно, и мы соберём персональную подборку.
-          </p>
+          <p>Сначала выбери интересы, затем оцени несколько карточек мест. Так появится личная подборка.</p>
           <Link className="button primary" to="/preferences">
             Настроить предпочтения
           </Link>
@@ -668,20 +673,20 @@ function SelectionResults({ discovery }: { discovery: boolean }) {
       {!discovery && <TasteInvitation />}
       {!discovery && (
         <Link className="button taste-reentry" to="/taste" state={{ geo }}>
-          Уточнить мой вкус ♡
+          Выбрать ещё карточки ♡
         </Link>
       )}
       <div className="selection-toolbar">
         <p>
           {discovery
             ? "Новые места — по одному. Оценивай и открывай следующее."
-            : "Причины подбора — рядом с каждым местом. Твой выбор меняет следующие рекомендации."}
+            : "Эти места подходят под твои интересы и предыдущие оценки. Причину показываем на каждой карточке."}
         </p>
         <Link
           className="button"
           to={discovery ? "/recommendations" : "/discovery"}
         >
-          {discovery ? "Вся подборка" : "Открыть discovery ↗"}
+          {discovery ? "Моя подборка" : "Оценить место по одному →"}
         </Link>
       </div>
       {discovery && (

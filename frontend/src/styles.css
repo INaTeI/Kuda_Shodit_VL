@@ -10,6 +10,9 @@
   --paper: #fff;
   --radius: 20px;
   --space: 8px;
+  --surface-sea: #e9f3f0;
+  --surface-sand: #f3eee4;
+  --space-section: clamp(56px, 7vw, 96px);
 }
 * {
   box-sizing: border-box;
@@ -989,7 +992,8 @@ dialog::backdrop {
   }
   .mobile-nav a {
     min-height: 48px;
-    min-width: 90px;
+    min-width: 0;
+    flex: 1 1 0;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -1902,7 +1906,50 @@ main:focus-visible {
 .cookie-notice .fine-print {
   margin-bottom: 0;
 }
+.header .logo .brand-full { font-size: inherit; color: inherit; margin: 0; vertical-align: baseline; }
+.header .logo .brand-short { display: none; }
+@media (max-width: 600px) {
+  .header .logo .brand-full { display: none; }
+  .header .logo .brand-short { display: inline; }
+  .hero-note { font-size: 13px; }
+}
+
+/* Two clear entry points: browse every place, then refine by rating cards. */
+.choice-section { border-top: 1px solid var(--line); padding-block: var(--space-section) 8px; }
+.choice-section > h2 { max-width: 760px; margin: 12px 0 32px; font-size: clamp(30px, 3.5vw, 46px); }
+.choice-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.choice-card { position: relative; display: flex; flex-direction: column; align-items: flex-start; min-height: 310px; padding: clamp(24px, 3vw, 40px); border: 1px solid var(--line); border-radius: 24px; background: var(--surface-sand); }
+.choice-swipe { background: var(--surface-sea); }
+.choice-index { color: var(--muted); font-size: 12px; font-weight: 700; letter-spacing: .1em; }
+.choice-symbol { position: absolute; top: 28px; right: 32px; color: var(--accent); font-size: 36px; line-height: 1; }
+.choice-card h3 { max-width: 460px; margin: 50px 0 10px; font-size: clamp(25px, 2.5vw, 34px); }
+.choice-card p { max-width: 470px; margin: 0 0 28px; font-size: 16px; line-height: 1.6; }
+.choice-card .button { margin-top: auto; }
+.choice-outcome { max-width: 720px; margin: 24px 0 0; font-size: 15px; }
+.flow-next { max-width: 760px; margin: 0 0 28px; padding: 16px 20px; border-left: 3px solid var(--accent); background: var(--surface-sea); border-radius: 0 12px 12px 0; }
+.flow-next a { font-weight: 700; color: #0d6471; }
+@media (min-width: 601px) and (max-width: 850px) {
+  .header nav { display: none; }
+  .mobile-nav { display: flex; position: fixed; bottom: 0; left: 0; right: 0; z-index: 10; justify-content: space-around; padding: 8px 20px max(10px, env(safe-area-inset-bottom)); border-top: 1px solid var(--line); background: var(--paper); }
+  .mobile-nav a { flex: 1 1 0; min-height: 48px; display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 11px; text-decoration: none; color: var(--muted); }
+  .mobile-nav span { font-size: 22px; }
+  .footer { padding-bottom: 104px; }
+}
+@media (max-width: 720px) {
+  .choice-grid { grid-template-columns: 1fr; gap: 12px; }
+  .choice-card { min-height: 270px; }
+  .choice-card h3 { margin-top: 38px; }
+  .hero-note { max-width: 300px; line-height: 1.5; }
+}
 .cookie-settings { padding-bottom: 100px; }
+@media (max-width: 600px) {
+  .cookie-notice { padding: 14px; }
+  .cookie-notice h2 { font-size: 18px; }
+  .cookie-notice p { font-size: 12px; line-height: 1.4; margin: 8px 0; }
+  .cookie-notice .fine-print { font-size: 10px; }
+  .cookie-notice .actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .cookie-notice .actions button { min-width: 0; min-height: 48px; padding: 8px; font-size: 11px; line-height: 1.2; }
+}
 
 .taste-page .taste-complete-card { overflow-y: auto; align-content: center; padding: 24px; }
 .taste-complete-card h2,

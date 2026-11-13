@@ -64,6 +64,14 @@ test.beforeEach(async ({ page }) => {
     await route.fulfill({ json: data });
   });
 });
+test("home explains both ways to choose a place", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.getByRole("heading", { name: /Найди место/ })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Открыть каталог →" })).toHaveAttribute("href", "/catalog");
+  await page.getByRole("link", { name: "Начать выбор →" }).click();
+  await expect(page.getByRole("heading", { name: /Что тебе интересно/ })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Сохранить и перейти к карточкам" })).toBeVisible();
+});
 test("new visitor and saved preferences flow", async ({ page }) => {
   await page.goto("/recommendations");
   await expect(page.getByText("Сначала познакомимся")).toBeVisible();
@@ -73,7 +81,9 @@ test("new visitor and saved preferences flow", async ({ page }) => {
   await page
     .getByRole("spinbutton", { name: "Бюджет на человека" })
     .fill("1000");
-  await page.getByRole("button", { name: "Сохранить и подобрать" }).click();
+  await page.getByRole("button", { name: "Сохранить и перейти к карточкам" }).click();
+  await expect(page.getByRole("dialog", { name: "Выбирай места карточками" })).toBeVisible();
+  await page.getByRole("button", { name: "Пропустить и открыть подборку" }).click();
   await expect(page.getByText("Совпадает с интересами")).toBeVisible();
   await page.goto("/preferences");
   await expect(page.getByRole("spinbutton")).toHaveValue("1000");
@@ -136,7 +146,7 @@ test("empty filters and denied geolocation", async ({ page }) => {
     .click();
   await expect(
     page
-      .getByText("Не получилось определить расположение.", { exact: false })
+      .getByText("Доступ к геопозиции запрещён.", { exact: false })
       .last(),
   ).toBeVisible();
   await page.route("**/api/v1/places?**", (r) =>
