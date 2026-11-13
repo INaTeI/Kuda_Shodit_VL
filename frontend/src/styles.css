@@ -1094,15 +1094,28 @@ main:focus-visible {
 .place-map {
   margin: 16px 0;
 }
+.map-frame {
+  position: relative;
+}
 .map-controls {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: grid;
+  grid-template-columns: repeat(2, 44px);
+  gap: 4px;
 }
 .map-controls button {
-  min-height: 44px;
-  min-width: 44px;
-  padding: 8px 12px;
+  height: 44px;
+  padding: 0;
+  background: #fff;
+  color: #16343b;
+  font-size: 20px;
+  line-height: 1;
+  box-shadow: 0 1px 4px #16343b33;
+}
+.map-controls button:disabled {
+  opacity: 0.65;
 }
 .map-viewport {
   overflow: hidden;
@@ -1862,10 +1875,6 @@ main:focus-visible {
   .taste-stack,
   .taste-page .taste-complete-card { height: 420px; }
 }
-
-@media (max-width: 600px) {
-  .taste-stack,
-  .taste-page .taste-complete-card { height: 420px; }
 
 .map-user-marker {
   position: absolute;
