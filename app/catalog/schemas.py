@@ -67,7 +67,13 @@ class PlaceOut(BaseModel):
     checked_at: date | None
     status: str
     categories: list[CategoryOut]
-    photo_url: str | None = None
+    photo_url: str | None = Field(
+        default=None, description="Главное фото из опубликованного оформления конструктора"
+    )
+    card_style: dict | None = Field(
+        default=None, description="Оформление карточки в ленте: bg, framed, items (см. /places/{id}/design)"
+    )
+    title_accent: int | None = None
     place_type: str | None = None
     interest_tags: list[str] | None = None
     cost_details: dict | None = None

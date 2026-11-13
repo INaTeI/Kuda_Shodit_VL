@@ -19,9 +19,18 @@ export interface Place {
   status: string;
   categories: Category[];
   photo_url: string | null;
+  /** Оформление карточки из конструктора; null — оформление не настроено. */
+  card_style?: CardStyle | null;
+  title_accent?: number | null;
   place_type: string | null;
   interest_tags: string[] | null;
   cost_details: Record<string, unknown> | null;
+}
+export interface CardStyle {
+  preset: string | null;
+  bg: string;
+  framed: boolean;
+  items: string[];
 }
 export interface Profile {
   id: string;

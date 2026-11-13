@@ -8,7 +8,6 @@ import {
   Routes,
   useLocation,
   useNavigate,
-  useNavigationType,
   useParams,
 } from "react-router-dom";
 import {
@@ -22,7 +21,6 @@ import {
 import {
   Artwork,
   Card,
-  CostDetails,
   CategoryPicker,
   Dialog,
   Empty,
@@ -32,25 +30,20 @@ import {
   useLoad,
 } from "./components";
 import { useGuest } from "./state";
-import { useAdmin } from "./admin";
-import { ConstructedPlace, type ConstructorState } from "./ConstructedPlace";
-import TasteSetup, { TasteInvitation, SwipePreview } from "./TasteSetup";
+import TasteSetup, { TasteInvitation } from "./TasteSetup";
 import Weather from "./Weather";
-import logo from "./assets/logo.svg";
 const nav = [
   ["/catalog", "Каталог"],
-  ["/taste", "Свайпы"],
   ["/recommendations", "Подборка"],
-  ["/preferences", "Настройки"],
+  ["/preferences", "Предпочтения"],
 ];
 export default function App() {
   const location = useLocation();
-  const navigationType = useNavigationType();
   const guest = useGuest();
   useEffect(() => {
-    if (navigationType !== "POP") window.scrollTo(0, 0);
-    document.title = `Куда_Сходить_ВЛ — ${nav.find(([p]) => location.pathname === p)?.[1] || "Один свайп до нового места"}`;
-    document.querySelector<HTMLElement>("main")?.focus({ preventScroll: true });
+    window.scrollTo(0, 0);
+    document.title = `Куда_Сходить_ВЛ — ${nav.find(([p]) => location.pathname === p)?.[1] || "Владивосток, который подходит тебе"}`;
+    document.querySelector<HTMLElement>("main")?.focus();
   }, [location.pathname]);
   return (
     <>
@@ -59,7 +52,7 @@ export default function App() {
       </a>
       <header className="header wrap">
         <Link to="/" className="logo" aria-label="Куда_Сходить_ВЛ — главная">
-          <img className="brand-mark" src={logo} alt="" /> Куда_Сходить_ВЛ
+          <span aria-hidden="true">≋</span> Куда_Сходить_ВЛ
           <span className="logo-dot">.</span>
         </Link>
         <Weather />
@@ -72,9 +65,9 @@ export default function App() {
         </nav>
         <Link
           className="button primary header-cta"
-          to="/catalog"
+          to={guest.profile ? "/recommendations" : "/preferences"}
         >
-          Смотреть места ↗
+          Подобрать места ↗
         </Link>
       </header>
       <main id="main" tabIndex={-1}>
@@ -104,11 +97,11 @@ export default function App() {
         </Routes>
       </main>
       <footer className="wrap footer">
-        <div className="footer-brand"><Link className="logo" to="/">
-          <img className="brand-mark" src={logo} alt="" /><span className="brand-name">КСВЛ</span>
-        </Link><p>Места Владивостока для твоего свободного времени.</p></div>
-        <nav className="footer-links" aria-label="Навигация внизу страницы"><Link to="/catalog">Каталог мест</Link><Link to="/taste">Выбрать свайпами</Link><Link to="/recommendations">Моя подборка</Link><Link to="/preferences">Настройки</Link></nav>
-        <div className="footer-meta"><strong>Один свайп до нового места.</strong><span>Владивосток · 43°07′ с. ш.</span></div>
+        <Link className="logo" to="/">
+          ≋ КСВЛ.
+        </Link>
+        <p>Свой ритм. Свои места. Свой Владивосток.</p>
+        <span>43°07′ с. ш. / 131°53′ в. д.</span>
       </footer>
       <nav
         className={`mobile-nav ${location.pathname === "/taste" ? "taste-nav-hidden" : ""}`}
@@ -116,7 +109,7 @@ export default function App() {
       >
         {nav.map(([p, n], i) => (
           <NavLink key={p} to={p}>
-            <span aria-hidden="true">{["▦", "♡", "✳", "☷"][i]}</span>
+            <span aria-hidden="true">{["▦", "✳", "☷"][i]}</span>
             {n}
           </NavLink>
         ))}
@@ -131,40 +124,51 @@ function Home() {
     <>
       <section className="hero wrap">
         <div className="hero-copy">
-          <div className="eyebrow">МЕСТА ВЛАДИВОСТОКА</div>
+          <div className="eyebrow">Персональный гид по Владивостоку</div>
           <h1>
-            Один свайп до <em>нового места.</em>
+            Владивосток,
+            <br />
+            который
+            <br />
+            <em>подходит тебе.</em>
           </h1>
           <p>
-            Ищешь, где провести время во Владивостоке? Открой каталог или оценивай места карточками — твой выбор поможет составить подборку.
+            Выбирай места по интересам и бюджету. Отмечай, что нравится, —
+            следующие подборки учтут твой выбор.
           </p>
           <div className="actions">
             <Link
-              className="button primary hero-catalog-button"
-              to="/catalog"
+              className="button primary"
+              to={guest.profile ? "/recommendations" : "/preferences"}
             >
-              Смотреть места <span>↗</span>
+              Подобрать места <span>↗</span>
+            </Link>
+            <Link className="text-link" to="/catalog">
+              Открыть каталог →
             </Link>
           </div>
           <div className="hero-note">
-            Выбирай в своём темпе — без регистрации.
+            <span>01 — 03</span> Город начинается с любопытства
           </div>
         </div>
-        <Link to="/taste" className="hero-visual hero-swipe-link" aria-label="Начать выбирать места свайпами">
+        <div className="hero-visual">
           <div className="coordinate">ВЛАДИВОСТОК / ПРИМОРСКИЙ КРАЙ</div>
-          <SwipePreview />
+          <Artwork hero />
           <div className="hero-label">
-            <span>ВЫБИРАЙ СВАЙПАМИ</span>
+            <span>Ближе, чем кажется</span>
             <strong>
-              Давай познакомимся
+              Маленькое открытие.
+              <br />
+              Большой день.
             </strong>
-            <small className="hero-swipe-prompt">Нажми и начни выбирать</small>
-            <span className="hero-swipe-arrow" aria-hidden="true">↗</span>
+            <Link to="/catalog" aria-label="Исследовать каталог">
+              ↗
+            </Link>
           </div>
           <span className="vertical-note">
             МОРЕ ВОЗМОЖНОСТЕЙ — В ТВОЁМ РИТМЕ
           </span>
-        </Link>
+        </div>
       </section>
       <section className="wrap intro-strip">
         <span className="section-number">01 / ТВОЙ ГОРОД</span>
@@ -175,16 +179,13 @@ function Home() {
         </h2>
         <div>
           <p>
-            Выбирай интересы, чтобы подборка лучше подходила тебе. Можно изменить их в любой момент.
+            Прогулка у воды или тихий вечер в городе? Начни с того, что тебе
+            интересно.
           </p>
           <Link to="/preferences" className="text-link">
             Выбрать интересы ↗
           </Link>
         </div>
-      </section>
-      <section className="wrap how-it-works" aria-labelledby="how-it-works-title">
-        <div><span className="section-number">КАК ЭТО РАБОТАЕТ</span><h2 id="how-it-works-title">Найти место проще, чем выбирать весь вечер</h2></div>
-        <ol><li><span>01</span><div><strong>Открой карточки</strong><p>Покажем места Владивостока по одному.</p></div></li><li><span>02</span><div><strong>Отметь, что нравится</strong><p>Смахивай или используй кнопки под карточкой.</p></div></li><li><span>03</span><div><strong>Посмотри подборку</strong><p>Выбор поможет предложить подходящие места.</p></div></li></ol>
       </section>
       {guest.profile && (
         <section className="wrap section">
@@ -273,37 +274,13 @@ function LocationFields({
   );
 }
 function Catalog() {
-  const navigationType = useNavigationType();
-  const restored = useRef(false);
-  const [saved] = useState(() => {
-    try {
-      const value = JSON.parse(sessionStorage.getItem("vdk-catalog-view") || "{}");
-      return { categories: Array.isArray(value.categories) ? value.categories.filter((x: unknown): x is string => typeof x === "string").slice(0, 8) : [], offset: Number.isSafeInteger(value.offset) && value.offset >= 0 ? value.offset : 0 };
-    } catch { return { categories: [], offset: 0 }; }
-  });
-  const [filters, setFilters] = useState<Filters>({ categories: saved.categories }),
-    [draft, setDraft] = useState<Filters>({ categories: saved.categories }),
-    [offset, setOffset] = useState(saved.offset),
+  const [filters, setFilters] = useState<Filters>({}),
+    [draft, setDraft] = useState<Filters>({}),
+    [offset, setOffset] = useState(0),
     [open, setOpen] = useState(false);
-  useEffect(() => {
-    try { sessionStorage.setItem("vdk-catalog-view", JSON.stringify({ categories: filters.categories || [], offset })); } catch { /* storage is optional */ }
-  }, [filters, offset]);
   const q = useLoad<Page>(
     `/places?${query({ ...filters, limit: 12, offset })}`,
   );
-  useEffect(() => {
-    const rememberScroll = () => { try { sessionStorage.setItem("vdk-catalog-scroll", String(window.scrollY)); } catch { /* storage is optional */ } };
-    window.addEventListener("scroll", rememberScroll, { passive: true });
-    return () => window.removeEventListener("scroll", rememberScroll);
-  }, []);
-  useEffect(() => {
-    if (navigationType !== "POP" || q.loading || restored.current) return;
-    restored.current = true;
-    try {
-      const y = Number(sessionStorage.getItem("vdk-catalog-scroll"));
-      if (Number.isFinite(y) && y > 0) requestAnimationFrame(() => window.scrollTo(0, y));
-    } catch { /* storage is optional */ }
-  }, [navigationType, q.loading]);
   function apply(e: FormEvent) {
     e.preventDefault();
     setFilters(draft);
@@ -324,7 +301,41 @@ function Catalog() {
           onChange={(categories) => setDraft({ ...draft, categories })}
         />
       </fieldset>
-      <div className="actions catalog-actions">
+      <div className="filter-fields">
+        <label>
+          Бюджет на человека, ₽
+          <input
+            type="number"
+            min="0"
+            max="10000000"
+            placeholder="Без ограничения"
+            value={draft.budget_rub ?? ""}
+            onChange={(e) =>
+              setDraft({
+                ...draft,
+                budget_rub:
+                  e.target.value === "" ? null : Number(e.target.value),
+              })
+            }
+          />
+        </label>
+        <LocationFields
+          value={draft}
+          onChange={(v) =>
+            setDraft(({ latitude, longitude, radius_km, ...rest }) => ({
+              ...rest,
+              ...(v.latitude !== undefined
+                ? {
+                    latitude: v.latitude,
+                    longitude: v.longitude,
+                    radius_km: v.radius_km,
+                  }
+                : {}),
+            }))
+          }
+        />
+      </div>
+      <div className="actions">
         <button className="primary" type="submit">
           Показать места
         </button>
@@ -339,11 +350,11 @@ function Catalog() {
       <div className="eyebrow">ГОРОД / КАТАЛОГ</div>
       <h1>Куда пойдём?</h1>
       <p className="lede">
-        Выбери категории и посмотри места Владивостока в удобной сетке.
+        Знакомые улицы. Неожиданные открытия. Выбирай свой повод выйти.
       </p>
       <div className="desktop-filters panel">{form}</div>
       <button className="mobile-filter primary" onClick={() => setOpen(true)}>
-        Фильтры
+        Фильтры и расположение
       </button>
       <Dialog open={open} onClose={() => setOpen(false)} title="Выбрать места">
         {form}
@@ -354,6 +365,14 @@ function Catalog() {
           {filters.categories?.length ? (
             <span className="tag">Категорий: {filters.categories.length}</span>
           ) : null}
+          {filters.budget_rub != null && (
+            <span className="tag">
+              До {filters.budget_rub.toLocaleString("ru-RU")} ₽
+            </span>
+          )}
+          {filters.latitude !== undefined && (
+            <span className="tag">В радиусе {filters.radius_km} км</span>
+          )}
         </div>
       </div>
       {q.loading ? (
@@ -386,7 +405,8 @@ function Catalog() {
       ) : (
         <Empty title="Пока ничего не нашлось">
           <p>
-            Попробуйте изменить категории или сбросить фильтры.
+            Попробуйте изменить категории, бюджет или радиус. Мы не меняем ваши
+            условия автоматически.
           </p>
           <button onClick={reset}>Сбросить фильтры</button>
         </Empty>
@@ -395,10 +415,6 @@ function Catalog() {
   );
 }
 function Preferences() {
-  const admin = useAdmin();
-  const [adminKey, setAdminKey] = useState("");
-  const [adminBusy, setAdminBusy] = useState(false);
-  const [adminError, setAdminError] = useState("");
   const g = useGuest(),
     navigate = useNavigate();
   const [interests, setInterests] = useState<string[]>([]),
@@ -424,7 +440,9 @@ function Preferences() {
     try {
       const firstVisit = !g.profile;
       await g.save(interests, budget === "" ? null : Number(budget));
-      navigate(firstVisit ? "/taste" : "/recommendations", { state: { geo } });
+      navigate("/recommendations", {
+        state: { geo, offerTasteSetup: firstVisit },
+      });
     } catch (e) {
       setError((e as Error).message);
     } finally {
@@ -442,27 +460,6 @@ function Preferences() {
         <br />
         Настройки можно изменить в любой момент.
       </p>
-      <section className="panel">
-        <h2>Администратор</h2>
-        {admin.checking ? <p>Проверяем вход…</p> : admin.isAdmin ? (
-          <div className="actions"><span>Вы вошли как администратор.</span><button type="button" onClick={async () => {
-            setAdminBusy(true); setAdminError("");
-            try { await admin.logout(); } catch (error) { setAdminError((error as Error).message); }
-            finally { setAdminBusy(false); }
-          }} disabled={adminBusy}>Выйти из режима администратора</button></div>
-        ) : (
-          <form onSubmit={async (event) => {
-            event.preventDefault(); setAdminBusy(true); setAdminError("");
-            try { await admin.login(adminKey); setAdminKey(""); }
-            catch (error) { setAdminError((error as Error).message); }
-            finally { setAdminBusy(false); }
-          }}>
-            <label>Ключ администратора <input type="password" autoComplete="off" value={adminKey} onChange={(event) => setAdminKey(event.target.value)} required minLength={12} /></label>
-            <button type="submit" disabled={adminBusy}>{adminBusy ? "Входим…" : "Войти как администратор"}</button>
-          </form>
-        )}
-        {adminError && <p role="alert">{adminError}</p>}
-      </section>
       {g.loading ? (
         <Skeleton />
       ) : g.error ? (
@@ -521,7 +518,7 @@ function Preferences() {
           {error && <ErrorBox message={error} />}
           <div className="actions">
             <button className="primary" disabled={busy || resetting}>
-              {busy ? "Сохраняем…" : g.profile ? "Сохранить и открыть подборку →" : "Сохранить и перейти к карточкам →"}
+              {busy ? "Сохраняем…" : "Сохранить и подобрать ↗"}
             </button>
             <Link to="/catalog">Пока посмотреть каталог</Link>
           </div>
@@ -535,7 +532,8 @@ function Preferences() {
         <section className="panel">
           <h2>Начать подбор заново</h2>
           <p>
-            Удалим выбранные категории и оценки мест. Бюджет сохранится.
+            Очистим любимые категории и все оценки мест, включая свайпы. Бюджет
+            и отметки «Уже знакомо» сохранятся.
           </p>
           <button
             disabled={busy || resetting}
@@ -564,20 +562,20 @@ function Preferences() {
       )}
       {g.profile && (
         <button className="danger" onClick={() => setConfirm(true)}>
-          Удалить мои данные
+          Удалить гостевой профиль
         </button>
       )}
       <Dialog
         open={confirm}
         onClose={() => setConfirm(false)}
-        title="Удалить данные?"
+        title="Удалить профиль?"
       >
         <p>
-          Интересы и оценки будут удалены. Восстановить их не получится.
+          Интересы и все реакции будут удалены. Отменить это действие нельзя.
         </p>
         {error && <ErrorBox message={error} />}
         <div className="actions">
-          <button onClick={() => setConfirm(false)}>Отмена</button>
+          <button onClick={() => setConfirm(false)}>Оставить профиль</button>
           <button
             className="danger"
             disabled={busy}
@@ -594,7 +592,7 @@ function Preferences() {
               }
             }}
           >
-            Удалить данные
+            Удалить навсегда
           </button>
         </div>
       </Dialog>
@@ -606,10 +604,10 @@ function Selection({ discovery = false }: { discovery?: boolean }) {
   return (
     <section className="wrap page">
       <div className="eyebrow">
-        {discovery ? "ВЫБОР МЕСТ" : "ПОДБОРКА ДЛЯ ТЕБЯ"}
+        {discovery ? "НОВЫЙ ВЗГЛЯД / DISCOVERY" : "ЛИЧНЫЙ МАРШРУТ ВЫБОРА"}
       </div>
       <div className="section-heading">
-        <h1>{discovery ? "Оцени место" : "Моя подборка"}</h1>
+        <h1>{discovery ? "А что, если сюда?" : "Это может быть твоим."}</h1>
         <Link to="/preferences">Изменить предпочтения ↗</Link>
       </div>
       {g.loading ? (
@@ -619,10 +617,10 @@ function Selection({ discovery = false }: { discovery?: boolean }) {
       ) : !g.profile ? (
         <Empty title="Сначала познакомимся">
           <p>
-            Оцени несколько мест карточками — твой выбор поможет собрать подборку.
+            Расскажи, что тебе интересно, и мы соберём персональную подборку.
           </p>
-          <Link className="button primary" to="/taste">
-            Начать выбирать места
+          <Link className="button primary" to="/preferences">
+            Настроить предпочтения
           </Link>
         </Empty>
       ) : (
@@ -668,38 +666,26 @@ function SelectionResults({ discovery }: { discovery: boolean }) {
       {!discovery && <TasteInvitation />}
       {!discovery && (
         <Link className="button taste-reentry" to="/taste" state={{ geo }}>
-          Выбрать ещё карточки ♡
+          Уточнить мой вкус ♡
         </Link>
       )}
       <div className="selection-toolbar">
         <p>
           {discovery
             ? "Новые места — по одному. Оценивай и открывай следующее."
-            : "Здесь места с учётом твоих интересов и оценок. Продолжай оценивать карточки, чтобы уточнить подборку."}
+            : "Причины подбора — рядом с каждым местом. Твой выбор меняет следующие рекомендации."}
         </p>
-        {discovery && <Link className="button" to="/recommendations">Вся подборка</Link>}
+        <Link
+          className="button"
+          to={discovery ? "/recommendations" : "/discovery"}
+        >
+          {discovery ? "Вся подборка" : "Открыть discovery ↗"}
+        </Link>
       </div>
       {discovery && (
         <p className="notice">
           ← не подходит · → нравится · ↑ нейтрально. Кнопки доступны под
           карточкой. На карточке работают и стрелки клавиатуры.
-        </p>
-      )}
-      {!q.loading && !q.error && !!q.data?.total && (
-        <p className="selection-count" role="status">
-          {discovery ? (
-            <>
-              Новых мест для тебя: <strong>{q.data.total}</strong>
-            </>
-          ) : (
-            <>
-              Показываем{" "}
-              <strong>
-                {offset + 1}–{offset + q.data.items.length}
-              </strong>{" "}
-              из <strong>{q.data.total}</strong> подходящих мест
-            </>
-          )}
         </p>
       )}
       <p role="status">{message}</p>
@@ -772,33 +758,18 @@ function SelectionResults({ discovery }: { discovery: boolean }) {
           </div>
           {!discovery && (
             <nav className="pagination" aria-label="Страницы подборки">
-              <div className="pagination-steps">
-                <button
-                  disabled={offset === 0}
-                  onClick={() => setOffset(Math.max(0, offset - 6))}
-                >
-                  ← Назад
-                </button>
-                <button
-                  disabled={offset + 6 >= q.data.total}
-                  onClick={() => setOffset(offset + 6)}
-                >
-                  Далее →
-                </button>
-              </div>
               <button
-                className="pagination-refresh"
-                onClick={q.retry}
-                aria-label="Обновить подборку"
-                title="Обновить подборку"
+                disabled={offset === 0}
+                onClick={() => setOffset(Math.max(0, offset - 6))}
               >
-                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                  <path d="M20.5 14.2A8.5 8.5 0 1 1 18.2 6.2" />
-                  <polyline points="20.6 2.6 20.6 8.2 15 8.2" />
-                </svg>
-                <span className="pagination-refresh-label">
-                  Обновить подборку
-                </span>
+                ← Назад
+              </button>
+              <button onClick={q.retry}>Обновить подборку</button>
+              <button
+                disabled={offset + 6 >= q.data.total}
+                onClick={() => setOffset(offset + 6)}
+              >
+                Далее →
               </button>
             </nav>
           )}
@@ -832,21 +803,15 @@ function SelectionResults({ discovery }: { discovery: boolean }) {
   );
 }
 function PlaceDetail() {
-  const { isAdmin } = useAdmin();
   const { id } = useParams();
-  const location = useLocation();
-  const navigate = useNavigate();
-  const from = ["/catalog", "/recommendations", "/"].includes(location.state?.from) ? location.state.from as string : null;
-  const [photoOpen, setPhotoOpen] = useState(false);
   const q = useLoad<Place>(`/places/${encodeURIComponent(id || "")}`);
-  const design = useLoad<{ state: ConstructorState | null }>(`/constructor-state/${encodeURIComponent(id || "")}`);
   const p = q.data;
   return (
     <section className="wrap page">
-      <Link className="back-link" to={from || "/catalog"} onClick={(event) => { if (from) { event.preventDefault(); navigate(-1); } }}>
-        ← Назад к местам
+      <Link className="back-link" to="/catalog">
+        ← В каталог
       </Link>
-      {q.loading || design.loading ? (
+      {q.loading ? (
         <Skeleton />
       ) : q.error ? (
         <>
@@ -856,23 +821,15 @@ function PlaceDetail() {
       ) : (
         p && (
           <>
-            {design.data?.state?.page?.order?.length ? <>
-              {isAdmin && <a className="button" href={`/constructor/?place_id=${encodeURIComponent(p.id)}`}>Открыть конструктор</a>}
-              <ConstructedPlace key={p.id} place={p} state={design.data.state} />
-            </> : <>
             <div className="detail-art">
-              {p.photo_url ? <button className="photo-open" onClick={() => setPhotoOpen(true)} aria-label="Открыть фотографию места"><Artwork place={p} hero /></button> : <Artwork place={p} hero />}
+              <Artwork place={p} hero />
             </div>
-            <Dialog open={photoOpen} onClose={() => setPhotoOpen(false)} title="Фотография места">
-              {p.photo_url && <img className="gallery-large" src={p.photo_url} alt={p.name} />}
-            </Dialog>
             <div className="detail-layout">
               <div>
                 <div className="eyebrow">
                   {p.categories.map((c) => c.name).join(" · ")}
                 </div>
                 <h1>{p.name}</h1>
-                {isAdmin && <a className="button" href={`/constructor/?place_id=${encodeURIComponent(p.id)}`}>Открыть конструктор</a>}
                 {p.interest_tags?.length ? (
                   <div className="chips">
                     {p.interest_tags.map((t) => (
@@ -896,10 +853,10 @@ function PlaceDetail() {
               <aside className="panel visit-info">
                 <div className="eyebrow">ПОЛЕЗНО ЗНАТЬ</div>
                 <h2>{price(p)}</h2>
-                <CostDetails place={p} />
+                <p>{p.price_note}</p>
                 <hr />
                 <h3>Где находится</h3>
-                <p>{p.address && !/^https?:\/\//i.test(p.address.trim()) ? p.address : "Адрес уточняется"}</p>
+                <p>{p.address || "Адрес уточняется"}</p>
                 <PlaceMap key={p.id} latitude={p.latitude} longitude={p.longitude} name={p.name} />
                 <h3>Когда прийти</h3>
                 <p>{p.opening_hours || "Часы работы уточняются"}</p>
@@ -916,7 +873,6 @@ function PlaceDetail() {
                 </p>
               </aside>
             </div>
-            </>}
           </>
         )
       )}

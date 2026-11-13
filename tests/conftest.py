@@ -29,7 +29,8 @@ async def client():
     async with factory() as session:
         await session.execute(
             text(
-                "TRUNCATE interaction_events, recommendation_items, recommendation_runs, "
+                "TRUNCATE place_photos, place_designs, "
+                "interaction_events, recommendation_items, recommendation_runs, "
                 "import_batches, place_states, profiles, place_categories, places, categories CASCADE"
             )
         )
