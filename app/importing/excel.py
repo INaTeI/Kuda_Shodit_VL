@@ -12,6 +12,7 @@ import warnings
 
 from openpyxl import load_workbook
 from pydantic import HttpUrl, TypeAdapter, ValidationError
+from app.catalog.schemas import PlaceWrite
 
 HEADERS = [
     "Название места *",
@@ -285,6 +286,19 @@ def prepare_row(row, values, raw, sha256, file_name):
             import_warnings=warnings_,
         ),
     )
+    try:
+        PlaceWrite.model_validate(
+            {
+                **{k: v for k, v in fields.items() if k in PlaceWrite.model_fields},
+                "category_slugs": sorted(categories),
+            }
+        )
+    except ValidationError as error:
+        messages = [
+            f"{'.'.join(str(part) for part in item['loc'])}: {item['msg']}"
+            for item in error.errors()
+        ]
+        raise ValueError("; ".join(messages)) from error
     return ImportRow(row, key, fields, sorted(categories), warnings_)
 
 
@@ -306,8 +320,8 @@ def read_plan(path: Path) -> ImportPlan:
         if "Места" not in workbook.sheetnames:
             raise ValueError("Не найден лист «Места»")
         sheet = workbook["Места"]
-        if sheet.max_row > 10000:
-            raise ValueError("Лимит импорта — 10000 строк")
+        if (sheet.max_row or 0) > 10000 or (sheet.max_column or 0) > 100:
+            raise ValueError("Лимит импорта — 10000 строк и 100 столбцов")
         rows = sheet.iter_rows()
         headers = [clean(c.value) for c in next(rows)]
         if len(headers) != len(set(headers)):
@@ -317,6 +331,8 @@ def read_plan(path: Path) -> ImportPlan:
             raise ValueError("Отсутствуют столбцы: " + ", ".join(sorted(missing)))
         positions = [headers.index(h) for h in HEADERS]
         for row_number, cells in enumerate(rows, 2):
+            if row_number > 10000 or len(cells) > 100:
+                raise ValueError("Лимит импорта — 10000 строк и 100 столбцов")
             if not any(c.value is not None and clean(c.value) for c in cells):
                 plan.blank += 1
                 continue

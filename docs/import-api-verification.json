@@ -1,0 +1,11 @@
+{
+  "status": "passed",
+  "unique_places": 54,
+  "created": 0,
+  "skipped_existing": 54,
+  "catalog_before": 62,
+  "catalog_after": 62,
+  "preview_seconds": 0.534,
+  "repeated_confirmation": "passed",
+  "import_id": "3cda25b8-52ac-4339-a664-93755aad0d09"
+}
