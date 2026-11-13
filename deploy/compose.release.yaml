@@ -1,0 +1,9 @@
+# Merge after the server's hardened and ACME configuration.
+# VDK_RELEASE_DIR is an immutable release containing the built frontend.
+services:
+  api:
+    image: vdk-gid-api:${VDK_RELEASE_ID:?Set release ID}
+  nginx:
+    volumes:
+      - ./nginx.web.conf:/etc/nginx/nginx.conf:ro
+      - ${VDK_RELEASE_DIR:?Set absolute release directory}/frontend/dist:/usr/share/nginx/html:ro
