@@ -1261,13 +1261,13 @@ main:focus-visible {
   opacity: 1;
 }
 .taste-exit-like {
-  animation: taste-like 0.23s ease-in forwards;
+  animation: taste-like 0.32s ease-out forwards;
 }
 .taste-exit-dislike {
-  animation: taste-dislike 0.23s ease-in forwards;
+  animation: taste-dislike 0.32s ease-out forwards;
 }
 .taste-exit-neutral {
-  animation: taste-neutral 0.23s ease-in forwards;
+  animation: taste-neutral 0.32s ease-out forwards;
 }
 .taste-controls {
   display: grid;
@@ -1386,12 +1386,20 @@ main:focus-visible {
   }
 }
 @keyframes taste-like {
+  from {
+    transform: translateX(var(--drag-x, 0px)) rotate(var(--drag-rotate, 0deg));
+    opacity: 1;
+  }
   to {
     transform: translateX(110%) rotate(15deg);
     opacity: 0;
   }
 }
 @keyframes taste-dislike {
+  from {
+    transform: translateX(var(--drag-x, 0px)) rotate(var(--drag-rotate, 0deg));
+    opacity: 1;
+  }
   to {
     transform: translateX(-110%) rotate(-15deg);
     opacity: 0;
@@ -1527,11 +1535,21 @@ main:focus-visible {
 }
 @media (max-width: 600px) {
   .taste-controls,
-  .taste-secondary,
+  .taste-secondary .taste-undo,
   .taste-desktop-hint {
     display: none;
   }
   .taste-mobile-hint {
     display: inline;
+  }
+}
+
+@media (max-width: 600px) {
+  .taste-secondary {
+    justify-content: center;
+    margin-top: 0;
+  }
+  .taste-secondary button {
+    min-width: 160px;
   }
 }

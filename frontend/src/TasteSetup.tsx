@@ -288,7 +288,11 @@ function TasteDeck() {
     lock.current = true;
     setBusy(true);
     setError("");
-    resetDrag();
+    pointer.current = null;
+    setExit(reaction);
+    const animationDone = matchMedia("(prefers-reduced-motion: reduce)").matches
+      ? Promise.resolve()
+      : new Promise((resolve) => setTimeout(resolve, 320));
     try {
       await ensureView();
       if (!swipeAttempt.current)
@@ -303,19 +307,20 @@ function TasteDeck() {
       await guestRef.current.recordEvent(event, requests.current.signal);
       if (!mounted.current) return;
       setRetryKind(null);
-      setExit(reaction);
-      if (!matchMedia("(prefers-reduced-motion: reduce)").matches)
-        await new Promise((resolve) => setTimeout(resolve, 230));
+      await animationDone;
       if (!mounted.current) return;
       setHistory((prev) => [
         ...prev,
         { index, eventId: event.event_id, reaction },
       ]);
       swipeAttempt.current = null;
+      resetDrag();
       setIndex((n) => n + 1);
       setExit("");
     } catch (e) {
       if (!mounted.current) return;
+      setExit("");
+      resetDrag();
       if (e instanceof ApiError && e.status === 409) {
         swipeAttempt.current = null;
         setRetryKind(null);
@@ -504,9 +509,10 @@ function TasteDeck() {
                 if (!start) return;
                 const dx = event.clientX - start.x,
                   dy = event.clientY - start.y;
-                resetDrag();
+                pointer.current = null;
                 if (Math.abs(dx) > 75 && Math.abs(dx) > Math.abs(dy) * 1.3)
                   void decide(dx < 0 ? "dislike" : "like");
+                else resetDrag();
               }}
             >
               <Artwork key={place.id} place={place} />
@@ -566,6 +572,7 @@ function TasteDeck() {
           </div>
           <div className="taste-secondary">
             <button
+              className="taste-undo"
               onClick={() => void undo()}
               disabled={busy || !!retryKind || !history.length}
             >

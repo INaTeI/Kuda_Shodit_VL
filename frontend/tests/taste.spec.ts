@@ -242,7 +242,10 @@ for (const width of [360, 390, 768, 1280])
     );
     if (width <= 600) {
       await expect(page.locator(".taste-controls")).toBeHidden();
-      await expect(page.locator(".taste-secondary")).toBeHidden();
+      await expect(page.locator(".taste-secondary .taste-undo")).toBeHidden();
+      await expect(
+        page.getByRole("button", { name: "Пока не знаю" }),
+      ).toBeVisible();
       await card.focus();
       await page.keyboard.press("ArrowRight");
     } else {
@@ -363,4 +366,56 @@ test("swipe IDs work when randomUUID is unavailable on HTTP", async ({
   await page.getByRole("button", { name: "Давай попробуем →" }).click();
   await page.getByRole("button", { name: "Нравится Вправо →" }).click();
   await expect(page.getByText("Карточка 2 из 3")).toBeVisible();
+});
+
+test("drag release flies from the released position while server reply is delayed", async ({
+  page,
+}) => {
+  await mock(page, { count: 3 });
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  let release!: () => void;
+  const responseGate = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  await page.route("**/api/v1/me/events", async (route) => {
+    if (route.request().postDataJSON().event_type === "swipe")
+      await responseGate;
+    await route.fallback();
+  });
+  await page.goto("/taste");
+  await page.getByRole("button", { name: "Давай попробуем →" }).click();
+  const card = page.locator(".taste-card");
+  await expect(card).toBeVisible();
+  const box = (await card.boundingBox())!;
+  await page.mouse.move(box.x + box.width / 2, box.y + 80);
+  await page.mouse.down();
+  await page.mouse.move(box.x + box.width / 2 + 140, box.y + 80, { steps: 8 });
+  expect(await card.evaluate((e) => e.style.getPropertyValue("--drag-x"))).toBe(
+    "140px",
+  );
+  await page.mouse.up();
+  await expect(card).toHaveClass(/taste-exit-like/);
+  const start = await card.evaluate(
+    (e) => e.getAnimations()[0]?.effect?.getKeyframes()[0].transform,
+  );
+  expect(start).toContain("140px");
+  await expect(card).toHaveAttribute("aria-busy", "true");
+  release();
+  await expect(page.getByText("Карточка 2 из 3")).toBeVisible();
+  expect(await card.evaluate((e) => e.style.getPropertyValue("--drag-x"))).toBe(
+    "0px",
+  );
+});
+
+test("mobile unsure button saves neutral and advances the card", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 740 });
+  const { events } = await mock(page, { count: 3 });
+  await page.goto("/taste");
+  await page.getByRole("button", { name: "Давай попробуем →" }).click();
+  await page.getByRole("button", { name: "Пока не знаю" }).click();
+  await expect(page.getByText("Карточка 2 из 3")).toBeVisible();
+  expect(events.find((e) => e.event_type === "swipe").reaction).toBe("neutral");
+  await expect(page.locator(".taste-controls")).toBeHidden();
 });
