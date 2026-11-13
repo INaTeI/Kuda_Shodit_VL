@@ -9,6 +9,15 @@ async function mock(
     conflict?: boolean;
   } = {},
 ) {
+  await page
+    .context()
+    .addCookies([
+      {
+        name: "vdk-cookie-choice",
+        value: "necessary",
+        url: "http://127.0.0.1:5173",
+      },
+    ]);
   const events: any[] = [],
     receipts = new Map<string, any>(),
     revisions = new Map<string, number>();
@@ -229,6 +238,7 @@ for (const width of [360, 390, 768, 1280])
       path: `test-results/taste-${width}.png`,
       fullPage: true,
     });
+    await card.scrollIntoViewIfNeeded();
     const box = (await card.boundingBox())!;
     await page.mouse.move(box.x + box.width / 2, box.y + 90);
     await page.mouse.down();
@@ -241,12 +251,15 @@ for (const width of [360, 390, 768, 1280])
       "dislike",
     );
     if (width <= 600) {
-      await expect(page.locator(".taste-controls")).toBeHidden();
-      await expect(page.locator(".taste-secondary")).toBeHidden();
+      await expect(page.locator(".taste-reaction-dock")).toBeVisible();
+      await expect(page.locator(".taste-secondary .taste-undo")).toBeHidden();
+      await expect(
+        page.getByRole("button", { name: "Пока не знаю" }),
+      ).toBeVisible();
       await card.focus();
       await page.keyboard.press("ArrowRight");
     } else {
-      await expect(page.locator(".taste-controls")).toBeVisible();
+      await expect(page.locator(".taste-reaction-dock")).toBeVisible();
       await page.getByRole("button", { name: "Пока не знаю" }).click();
     }
     await expect(page.getByText("Карточка 3 из 3")).toBeVisible();
@@ -271,6 +284,7 @@ test("phone touch swipe right likes the place; vertical scrolling does not react
   await page.getByRole("button", { name: "Давай попробуем →" }).click();
   const card = page.locator(".taste-card");
   await expect(card).toBeVisible();
+  await card.scrollIntoViewIfNeeded();
   const box = (await card.boundingBox())!;
   const cdp = await page.context().newCDPSession(page);
   const x = box.x + box.width / 2,
@@ -363,4 +377,127 @@ test("swipe IDs work when randomUUID is unavailable on HTTP", async ({
   await page.getByRole("button", { name: "Давай попробуем →" }).click();
   await page.getByRole("button", { name: "Нравится — вправо" }).click();
   await expect(page.getByText("Карточка 2 из 3")).toBeVisible();
+});
+
+test("drag release flies from the released position while server reply is delayed", async ({
+  page,
+}) => {
+  await mock(page, { count: 3 });
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  let release!: () => void;
+  const responseGate = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  await page.route("**/api/v1/me/events", async (route) => {
+    if (route.request().postDataJSON().event_type === "swipe")
+      await responseGate;
+    await route.fallback();
+  });
+  await page.goto("/taste");
+  await page.getByRole("button", { name: "Давай попробуем →" }).click();
+  const card = page.locator(".taste-card");
+  await expect(card).toBeVisible();
+  await card.scrollIntoViewIfNeeded();
+  const box = (await card.boundingBox())!;
+  await page.mouse.move(box.x + box.width / 2, box.y + 80);
+  await page.mouse.down();
+  await page.mouse.move(box.x + box.width / 2 + 140, box.y + 80, { steps: 8 });
+  expect(await card.evaluate((e) => e.style.getPropertyValue("--drag-x"))).toBe(
+    "140px",
+  );
+  await page.mouse.up();
+  await expect(card).toHaveClass(/taste-exit-like/);
+  const start = await card.evaluate(
+    (e) => e.getAnimations()[0]?.effect?.getKeyframes()[0].transform,
+  );
+  expect(start).toContain("140px");
+  await expect(card).toHaveAttribute("aria-busy", "true");
+  release();
+  await expect(page.getByText("Карточка 2 из 3")).toBeVisible();
+  expect(await card.evaluate((e) => e.style.getPropertyValue("--drag-x"))).toBe(
+    "0px",
+  );
+});
+
+test("mobile unsure button saves neutral and advances the card", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 740 });
+  const { events } = await mock(page, { count: 3 });
+  await page.goto("/taste");
+  await page.getByRole("button", { name: "Давай попробуем →" }).click();
+  await page.getByRole("button", { name: "Пока не знаю" }).click();
+  await expect(page.getByText("Карточка 2 из 3")).toBeVisible();
+  expect(events.find((e) => e.event_type === "swipe").reaction).toBe("neutral");
+  await expect(page.locator(".taste-reaction-dock")).toBeVisible();
+});
+
+test("reaction dock keeps outlined icons and shows hover states", async ({
+  page,
+}) => {
+  await mock(page, { count: 3 });
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/taste");
+  await page.getByRole("button", { name: "Давай попробуем →" }).click();
+
+  const dislike = page.getByRole("button", { name: "Не нравится — влево" });
+  const neutral = page.getByRole("button", { name: "Пока не знаю" });
+  const like = page.getByRole("button", { name: "Нравится — вправо" });
+  await expect(dislike).toBeVisible();
+  await expect(neutral).toBeVisible();
+  await expect(like).toBeVisible();
+
+  const likeHeart = like.locator(".reaction-heart");
+  await expect(likeHeart).toHaveCSS("fill", "rgba(0, 0, 0, 0)");
+  await like.hover();
+  await expect(likeHeart).toHaveCSS("fill", "rgb(22, 125, 141)");
+
+  const dislikeHeart = dislike.locator(".reaction-heart");
+  await expect(dislikeHeart).toHaveCSS("fill", "rgba(0, 0, 0, 0)");
+  await dislike.hover();
+  await expect(dislikeHeart).toHaveCSS("fill", "rgb(196, 84, 64)");
+
+  const neutralIcon = neutral.locator(".reaction-icon");
+  await expect(neutralIcon).toHaveCSS("color", "rgb(99, 119, 123)");
+  await neutral.hover();
+  await expect(neutralIcon).toHaveCSS("color", "rgb(22, 125, 141)");
+});
+
+test("next card is underneath without a view event, last card reveals green check", async ({
+  page,
+}) => {
+  const { events, places } = await mock(page, { count: 2 });
+  await page.goto("/taste");
+  await page.getByRole("button", { name: "Давай попробуем →" }).click();
+  const active = page.locator(".taste-card");
+  const underneath = page.locator(".taste-under-card");
+  await expect(underneath).toHaveAttribute("inert", "");
+  await expect(underneath).toContainText(places[1].name);
+  await expect(active).toHaveCSS("box-shadow", "none");
+  const firstBox = (await active.boundingBox())!;
+  const nextBox = (await underneath.boundingBox())!;
+  expect(Math.abs(firstBox.width - nextBox.width)).toBeLessThan(2);
+  expect(Math.abs(firstBox.height - nextBox.height)).toBeLessThan(2);
+  expect(
+    events.some(
+      (e) => e.event_type === "card_view" && e.place_id === places[1].id,
+    ),
+  ).toBe(false);
+  await page.getByRole("button", { name: "Нравится — вправо" }).click();
+  await expect(page.getByText("Карточка 2 из 2")).toBeVisible();
+  await expect(underneath.locator(".finish-symbol")).toHaveText("✓");
+  await expect(underneath.locator(".finish-symbol")).toHaveCSS(
+    "color",
+    "rgb(33, 134, 75)",
+  );
+  const lastBox = (await active.boundingBox())!;
+  await page.getByRole("button", { name: "Пока не знаю" }).click();
+  const finish = page.locator(".taste-complete-card");
+  await expect(finish).toBeVisible();
+  expect(
+    Math.abs((await finish.boundingBox())!.width - lastBox.width),
+  ).toBeLessThan(2);
+  expect(
+    Math.abs((await finish.boundingBox())!.height - lastBox.height),
+  ).toBeLessThan(2);
 });

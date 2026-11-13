@@ -158,7 +158,7 @@ test("failed reaction retains discovery card and keyboard works", async ({
   );
   await page.goto("/discovery");
   await expect(page.getByRole("heading", { name: place.name })).toBeVisible();
-  await page.getByRole("button", { name: "♡ Нравится" }).click();
+  await page.getByRole("button", { name: "Нравится", exact: true }).click();
   await expect(page.getByRole("alert")).toContainText("Тестовая ошибка");
   await expect(page.getByRole("heading", { name: place.name })).toBeVisible();
   const card = page.getByLabel(

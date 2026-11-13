@@ -590,12 +590,81 @@ input[type="checkbox"] {
 }
 .reaction-row {
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+  align-items: center;
+  gap: 14px;
 }
-.reaction-row button {
-  font-size: 12px;
-  padding: 10px 12px;
+.reaction-row .reaction-icon {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  min-height: 0;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: transparent;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.15s ease;
+}
+.reaction-row .reaction-icon svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.reaction-row .icon-heart {
+  fill: transparent;
+  transition: fill 0.2s ease;
+}
+.reaction-row .icon-slash {
+  transition: stroke 0.2s ease;
+}
+.reaction-row .icon-eye {
+  fill: currentColor;
+  stroke: none;
+}
+.reaction-row .reaction-yes {
+  color: var(--accent);
+}
+.reaction-row .reaction-no {
+  color: #b4513d;
+}
+.reaction-row .reaction-skip {
+  color: #5d6f73;
+}
+.reaction-row .reaction-icon:is(:hover, :focus-visible):not(:disabled) {
+  transform: translateY(-1px);
+}
+/* The active reaction is a highlight, not the global dark pressed slab. */
+.reaction-row .reaction-icon[aria-pressed="true"] {
+  background: transparent;
+  color: inherit;
+  border-color: currentColor;
+}
+.reaction-row .reaction-yes[aria-pressed="true"] {
+  color: var(--accent);
+}
+.reaction-row .reaction-no[aria-pressed="true"] {
+  color: #b4513d;
+}
+.reaction-row :is(.reaction-yes, .reaction-no):is(:hover, :focus-visible):not(:disabled)
+  .icon-heart,
+.reaction-row :is(.reaction-yes, .reaction-no)[aria-pressed="true"] .icon-heart {
+  fill: currentColor;
+}
+.reaction-row .reaction-no:is(:hover, :focus-visible):not(:disabled) .icon-slash,
+.reaction-row .reaction-no[aria-pressed="true"] .icon-slash {
+  stroke: var(--paper);
+}
+.reaction-row .reaction-skip:is(:hover, :focus-visible):not(:disabled),
+.reaction-row .reaction-skip[aria-pressed="true"] {
+  background: #e7efec;
+  color: #3c5a55;
 }
 .reaction-box .known {
   font-size: 13px;
@@ -1237,26 +1306,61 @@ main:focus-visible {
 }
 .taste-arena {
   position: relative;
-  padding: 16px 20px 20px;
+  padding: 16px 20px 52px;
   margin: 0 -20px;
   overflow: clip;
 }
-.taste-back-card {
+.taste-stack {
+  position: relative;
+  width: min(420px, 100%);
+  height: 460px;
+  margin: auto;
+}
+.taste-under-card {
   position: absolute;
-  inset: 20px max(20px, calc((100% - 400px) / 2)) 12px;
-  background: #d6e5dd;
-  border-radius: 22px;
-  transform: rotate(2deg);
+  inset: 0;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  overflow: hidden;
+  background: var(--paper);
+  pointer-events: none;
+}
+.taste-under-card .art {
+  width: 100%;
+  aspect-ratio: auto;
+  height: 175px;
+  min-height: 0;
+}
+.taste-complete-preview {
+  min-height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  text-align: center;
+}
+.taste-page .taste-complete-card {
+  width: min(420px, 100%);
+  height: 460px;
+  margin: 16px auto 52px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: var(--paper);
+}
+.taste-page .finish-symbol {
+  color: #21864b;
 }
 .taste-card {
   position: relative;
-  max-width: 420px;
-  margin: auto;
+  width: 100%;
+  height: 100%;
   border-radius: 20px;
   overflow: hidden;
   background: var(--paper);
   border: 1px solid var(--line);
-  box-shadow: 0 10px 24px #16343b14;
+  box-shadow: none;
   transform: translateX(var(--drag-x, 0px)) rotate(var(--drag-rotate, 0deg));
   touch-action: pan-y;
   user-select: none;
@@ -1268,7 +1372,7 @@ main:focus-visible {
   min-height: 0;
 }
 .taste-card-body {
-  padding: 18px 22px;
+  padding: 18px 22px 50px;
 }
 .taste-card-body h2 {
   font-size: 24px;
@@ -1320,101 +1424,111 @@ main:focus-visible {
   opacity: 1;
 }
 .taste-exit-like {
-  animation: taste-like 0.23s ease-in forwards;
+  will-change: transform, opacity;
 }
 .taste-exit-dislike {
-  animation: taste-dislike 0.23s ease-in forwards;
+  will-change: transform, opacity;
 }
 .taste-exit-neutral {
-  animation: taste-neutral 0.23s ease-in forwards;
+  will-change: transform, opacity;
 }
-.taste-controls {
+.taste-reaction-dock {
   position: relative;
-  z-index: 2;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 34px;
-  width: fit-content;
-  margin-top: -34px;
-  padding: 10px 32px;
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  box-shadow: 0 16px 32px #16343b21;
-}
-.taste-controls button {
+  z-index: 3;
   display: grid;
-  place-items: center;
-  width: 58px;
-  height: 58px;
-  min-height: 0;
-  padding: 0;
+  grid-template-columns: repeat(3, 72px);
+  justify-content: center;
+  gap: 12px;
+  width: fit-content;
+  margin: -34px auto -38px;
+  padding: 12px 20px;
+  border: 1px solid #e5ebe9;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 14px 34px #16343b24;
+}
+.taste-reaction {
+  width: 72px;
+  height: 72px;
+  min-height: 72px;
+  padding: 10px;
   border: 0;
   border-radius: 50%;
   background: transparent;
   transition:
     background 0.2s ease,
-    box-shadow 0.2s ease,
-    transform 0.15s ease;
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
-.taste-controls button:disabled {
-  opacity: 0.4;
+.taste-reaction:not(:disabled):hover,
+.taste-reaction:not(:disabled):focus-visible {
+  background: #f4f8f7;
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 8px 18px #16343b17;
 }
-.taste-controls svg {
-  width: 34px;
-  height: 34px;
-  fill: none;
+.reaction-icon {
+  width: 52px;
+  height: 52px;
+  overflow: visible;
+  transition:
+    color 0.2s ease,
+    filter 0.2s ease;
+}
+.reaction-heart {
+  fill: transparent;
   stroke: currentColor;
-  stroke-width: 2;
+  stroke-width: 4;
   stroke-linecap: round;
   stroke-linejoin: round;
-}
-.taste-controls .icon-heart {
-  fill: transparent;
   transition: fill 0.2s ease;
 }
-.taste-controls .icon-slash {
+.reaction-icon-dislike {
+  color: #c45440;
+}
+.reaction-icon-like {
+  color: var(--accent);
+}
+.reaction-slash {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 4;
+  stroke-linecap: round;
   transition: stroke 0.2s ease;
 }
-.taste-controls .icon-eye {
+.taste-reaction-dislike:not(:disabled):hover .reaction-heart,
+.taste-reaction-dislike:not(:disabled):focus-visible .reaction-heart,
+.taste-reaction-dislike:not(:disabled):active .reaction-heart,
+.taste-reaction-like:not(:disabled):hover .reaction-heart,
+.taste-reaction-like:not(:disabled):focus-visible .reaction-heart,
+.taste-reaction-like:not(:disabled):active .reaction-heart {
+  fill: currentColor;
+}
+.taste-reaction-dislike:not(:disabled):hover .reaction-slash,
+.taste-reaction-dislike:not(:disabled):focus-visible .reaction-slash,
+.taste-reaction-dislike:not(:disabled):active .reaction-slash {
+  stroke: #fff;
+}
+.reaction-icon-neutral {
+  color: #63777b;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+.reaction-icon-neutral .reaction-eye {
   fill: currentColor;
   stroke: none;
 }
-.taste-no {
-  color: #b4513d;
-}
-.taste-yes {
+.taste-reaction-neutral:not(:disabled):hover .reaction-icon,
+.taste-reaction-neutral:not(:disabled):focus-visible .reaction-icon,
+.taste-reaction-neutral:not(:disabled):active .reaction-icon {
   color: var(--accent);
-}
-.taste-skip {
-  width: 52px;
-  height: 52px;
-  color: #5d6f73;
-}
-.taste-skip svg {
-  width: 30px;
-  height: 30px;
-}
-.taste-no:is(:hover, :focus-visible):not(:disabled),
-.taste-yes:is(:hover, :focus-visible):not(:disabled) {
-  transform: translateY(-2px) scale(1.05);
-}
-.taste-no:is(:hover, :focus-visible):not(:disabled) .icon-heart,
-.taste-yes:is(:hover, :focus-visible):not(:disabled) .icon-heart {
-  fill: currentColor;
-}
-.taste-no:is(:hover, :focus-visible):not(:disabled) .icon-slash {
-  stroke: var(--paper);
-}
-.taste-skip:is(:hover, :focus-visible):not(:disabled) {
-  background: #e7efec;
-  box-shadow: 0 0 0 6px #e7efec;
+  filter: drop-shadow(0 0 7px #167d8d66);
 }
 .taste-secondary {
   display: flex;
   justify-content: center;
-  margin-top: 14px;
+  margin-top: 4px;
   gap: 8px;
 }
 .taste-secondary button {
@@ -1497,12 +1611,20 @@ main:focus-visible {
   }
 }
 @keyframes taste-like {
+  from {
+    transform: translateX(var(--drag-x, 0px)) rotate(var(--drag-rotate, 0deg));
+    opacity: 1;
+  }
   to {
     transform: translateX(110%) rotate(15deg);
     opacity: 0;
   }
 }
 @keyframes taste-dislike {
+  from {
+    transform: translateX(var(--drag-x, 0px)) rotate(var(--drag-rotate, 0deg));
+    opacity: 1;
+  }
   to {
     transform: translateX(-110%) rotate(-15deg);
     opacity: 0;
@@ -1537,11 +1659,16 @@ main:focus-visible {
     font-size: 13px;
     margin: 12px 0 16px;
   }
-  .taste-card .art {
+  .taste-stack,
+  .taste-page .taste-complete-card {
+    height: 420px;
+  }
+  .taste-card .art,
+  .taste-under-card .art {
     height: 145px;
   }
   .taste-card-body {
-    padding: 14px 16px;
+    padding: 14px 16px 46px;
   }
   .taste-card-body h2 {
     font-size: 22px;
@@ -1587,7 +1714,23 @@ main:focus-visible {
 @media (max-width: 600px) {
   .taste-arena {
     margin-inline: -16px;
-    padding-inline: 16px;
+    padding: 12px 16px 48px;
+  }
+  .taste-reaction-dock {
+    grid-template-columns: repeat(3, 60px);
+    gap: 6px;
+    margin-top: -29px;
+    padding: 9px 14px;
+  }
+  .taste-reaction {
+    width: 60px;
+    height: 60px;
+    min-height: 60px;
+    padding: 8px;
+  }
+  .reaction-icon {
+    width: 44px;
+    height: 44px;
   }
 }
 .mobile-nav.taste-nav-hidden {
@@ -1631,8 +1774,7 @@ main:focus-visible {
   display: none;
 }
 @media (max-width: 600px) {
-  .taste-controls,
-  .taste-secondary,
+  .taste-secondary .taste-undo,
   .taste-desktop-hint {
     display: none;
   }
@@ -1691,11 +1833,39 @@ main:focus-visible {
 @media(max-width:600px) { .header .weather-wind { max-width:110px; } .forecast-astro { grid-column:1 / -1; } }
 @media(max-width:600px){.header .weather-wind{white-space:normal;line-height:1.2;overflow-wrap:anywhere}}
 @media(max-width:600px){.header .logo{font-size:clamp(13px,3.6vw,18px);letter-spacing:-.5px}}
+.selection-count{margin:18px 0 4px;font-size:14px;color:var(--muted)}
+.selection-count strong{color:var(--ink);font-weight:650}
+.taste-finish-auto{font-size:13px;color:var(--muted);margin:0}
+.pagination-steps{display:flex;align-items:center;gap:20px}
+.pagination-refresh{gap:10px}
+.pagination-refresh svg{width:18px;height:18px;display:block;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+@media(max-width:600px){
+.pagination{flex-wrap:nowrap;justify-content:space-between;gap:10px}
+.pagination-steps{flex:1;gap:8px}
+.pagination-steps button{flex:1;padding:12px 8px;white-space:nowrap}
+.pagination-refresh{flex:none;width:48px;height:48px;min-width:48px;padding:0;border-radius:50%;gap:0}
+.pagination-refresh svg{width:20px;height:20px}
+.pagination-refresh-label{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+}
+.logo{display:inline-flex;align-items:center;gap:10px}.logo .brand-mark{display:block;width:44px;height:44px;flex:none}.logo .brand-name:first-of-type{font-size:inherit;color:inherit;vertical-align:baseline;margin:0}.footer .brand-mark{width:36px;height:36px}@media(max-width:600px){.header .logo .brand-mark{width:38px;height:38px}.header .logo{gap:7px}}
 .cookie-notice { margin-block: 16px; padding: 20px; border: 1px solid #c4d1ce; border-radius: 16px; background: #eef1eb; }
 .cookie-notice h2 { font-size: 22px; }
 .cookie-notice p { max-width: 900px; line-height: 1.6; }
 .cookie-notice .actions { display: flex; flex-wrap: wrap; gap: 12px; }
 .cookie-settings { padding-bottom: 100px; }
+
+.taste-page .taste-complete-card { overflow-y: auto; align-content: center; padding: 24px; }
+.taste-complete-card h2,
+.taste-complete-card p { max-width: 100%; margin-inline: auto; }
+
+@media (max-width: 600px) {
+  .taste-stack,
+  .taste-page .taste-complete-card { height: 420px; }
+}
+
+@media (max-width: 600px) {
+  .taste-stack,
+  .taste-page .taste-complete-card { height: 420px; }
 
 .map-user-marker {
   position: absolute;
