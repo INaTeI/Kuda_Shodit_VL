@@ -1,0 +1,1076 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Конструктор места — VDK GID</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@1,8..60,400;1,8..60,500&display=swap"
+/>
+<style>
+/* ───────── Токены сервиса (не настраиваются владельцем) ───────── */
+:root {
+  --bg: #f6f7f5;
+  --accent: #157f8c;
+  --accent-strong: #106775;
+  --accent-soft: #d3ecee;
+  --ink: #16343b;
+  --muted: #5d6f73;
+  --line: #dfe7e5;
+  --paper: #fff;
+  --danger: #a3432f;
+  --warn: #8a5a00;
+  --radius: 20px;
+  --radius-sm: 12px;
+  --serif: "Source Serif 4", "Source Serif Pro", Georgia, serif;
+  --sans: Inter, "Segoe UI", Arial, sans-serif;
+  --shadow: 0 10px 24px #16343b14;
+  --panel-w: 372px;
+  font-family: var(--sans);
+  color: var(--ink);
+  background: var(--bg);
+  font-synthesis: none;
+}
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100vh; }
+button, input, textarea, select { font: inherit; color: inherit; }
+em, .serif { font-family: var(--serif); font-style: italic; font-weight: 400; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+.btn {
+  min-height: 40px; padding: 8px 14px; border-radius: var(--radius-sm);
+  border: 1px solid #c6d5d3; background: transparent; cursor: pointer;
+  font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  transition: background .15s, border-color .15s, color .15s;
+}
+.btn:hover { background: #e5eeeb; }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+.btn.primary:hover { background: var(--accent-strong); }
+.btn.ghost { border-color: transparent; }
+.btn.small { min-height: 32px; padding: 4px 10px; font-size: 13px; border-radius: 10px; }
+.btn:disabled, .btn[aria-disabled="true"] { opacity: .45; cursor: not-allowed; }
+.icon-btn { width: 40px; padding: 0; }
+
+/* ───────── Верхняя панель ───────── */
+.topbar {
+  position: sticky; top: 0; z-index: 30; background: #f6f7f5f2; backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--line);
+  display: flex; align-items: center; gap: 12px; padding: 10px 20px; flex-wrap: nowrap; min-height: var(--top-h, 62px);
+}
+.brand { font-weight: 700; font-size: 18px; letter-spacing: -.02em; white-space: nowrap; }
+.brand em { color: var(--accent); font-size: 21px; }
+.tabs, .seg { display: inline-flex; padding: 3px; background: #e8eeec; border-radius: 12px; gap: 2px; }
+.tabs button, .seg button {
+  border: 0; background: transparent; border-radius: 9px; padding: 7px 12px; min-height: 34px;
+  font-weight: 600; font-size: 14px; color: var(--muted); cursor: pointer;
+}
+.tabs button[aria-selected="true"], .seg button[aria-pressed="true"] { background: var(--paper); color: var(--ink); box-shadow: 0 1px 3px #16343b1f; }
+.tabs button:hover, .seg button:hover { color: var(--ink); }
+.seg button:disabled { opacity: .45; cursor: not-allowed; }
+.topbar .spacer { flex: 1; }
+.status { font-size: 13px; color: var(--muted); display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.publish-short { display: none; }
+.status .dot { width: 8px; height: 8px; border-radius: 50%; background: #9fb3b1; }
+.status[data-state="dirty"] .dot { background: #d29a2b; }
+.status[data-state="review"] .dot { background: var(--accent); }
+.role { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--muted); }
+.role select { border: 1px solid #c6d5d3; border-radius: 10px; padding: 6px 8px; background: var(--paper); }
+
+/* ───────── Рабочая область ───────── */
+.workspace { display: grid; grid-template-columns: minmax(0, 1fr) var(--panel-w); min-height: calc(100vh - var(--top-h, 62px)); }
+.workspace.view { grid-template-columns: minmax(0, 1fr); }
+.stage { padding: 24px 28px 120px; overflow: auto; }
+.stage-tools { display: flex; align-items: center; gap: 12px; justify-content: space-between; margin: 0 auto 16px; max-width: 1040px; flex-wrap: wrap; }
+.stage-tools p { margin: 0; font-size: 13px; color: var(--muted); }
+.frame { margin: auto; max-width: 1040px; transition: max-width .25s ease; }
+.frame.mobile { max-width: 400px; }
+.frame.mobile .device { border: 10px solid #16343b; border-radius: 36px; overflow: hidden; }
+
+/* ───────── Страница места (холст) ───────── */
+.device { background: var(--bg); border-radius: 24px; }
+.site-head { display: flex; align-items: center; justify-content: space-between; padding: 18px 24px; border-bottom: 1px solid var(--line); gap: 12px; }
+.site-head nav { display: flex; gap: 18px; font-size: 14px; color: var(--muted); }
+.frame.mobile .site-head nav { display: none; }
+.page { padding: 20px 24px 28px; }
+.crumbs { font-size: 14px; color: var(--muted); margin-bottom: 16px; }
+.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; align-items: start; }
+.frame.mobile .page { padding: 16px; }
+.frame.mobile .grid { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+.blk { position: relative; grid-column: span 1; border-radius: 24px; }
+.blk.full, .frame.mobile .blk { grid-column: 1 / -1; }
+.blk-inner {
+  background: var(--b-bg); color: var(--b-text); border-radius: var(--radius); padding: 22px 24px;
+  border: 1px solid var(--b-border, transparent); overflow-wrap: anywhere; height: 100%;
+}
+.blk-label { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; font-weight: 600; opacity: .85; margin: 0 0 8px; }
+.blk[data-type="title"] .blk-inner { padding: 18px 24px; }
+.blk[data-type="title"] .cat { font-size: 13px; text-transform: uppercase; letter-spacing: .08em; font-weight: 600; margin-bottom: 10px; }
+.blk[data-type="title"] h1 { margin: 0; font-weight: 600; letter-spacing: -.045em; line-height: 1.05; }
+.blk[data-type="title"] h1 em { color: var(--b-accent); }
+.blk[data-type="title"][data-size="S"] h1 { font-size: 30px; }
+.blk[data-type="title"][data-size="M"] h1 { font-size: clamp(32px, 4.4vw, 46px); }
+.blk[data-type="title"][data-size="L"] h1 { font-size: clamp(36px, 6vw, 64px); }
+.blk[data-type="description"] p { margin: 0 0 .8em; line-height: 1.7; white-space: pre-line; }
+.blk[data-type="description"] p:last-child { margin-bottom: 0; }
+.blk[data-type="description"][data-size="S"] { font-size: 15px; }
+.blk[data-type="description"][data-size="M"] { font-size: 17px; }
+.blk[data-type="description"][data-size="L"] { font-size: 20px; }
+.blk[data-type="address"] .addr { font-weight: 500; line-height: 1.4; margin: 0 0 12px; }
+.blk[data-type="address"][data-size="S"] .addr { font-size: 15px; }
+.blk[data-type="address"][data-size="M"] .addr { font-size: 18px; }
+.blk[data-type="address"][data-size="L"] .addr { font-size: 23px; }
+.blk .inline-link { background: none; border: 0; padding: 0; color: inherit; font-weight: 600; text-decoration: underline; text-underline-offset: 4px; cursor: pointer; min-height: 24px; }
+.blk[data-type="price"] .amount { font-weight: 650; letter-spacing: -.03em; line-height: 1.1; }
+.blk[data-type="price"][data-size="S"] .amount { font-size: 22px; }
+.blk[data-type="price"][data-size="M"] .amount { font-size: 30px; }
+.blk[data-type="price"][data-size="L"] .amount { font-size: 42px; }
+.blk[data-type="price"] .note { font-size: 14px; margin: 6px 0 0; line-height: 1.5; }
+.blk[data-type="gallery"] .blk-inner { padding: 10px; }
+.gal-main { position: relative; border-radius: 14px; overflow: hidden; background: #dfe7e5; }
+.gal-main img { display: block; width: 100%; object-fit: cover; }
+.blk[data-type="gallery"][data-size="S"] .gal-main img { height: 220px; }
+.blk[data-type="gallery"][data-size="M"] .gal-main img { height: 340px; }
+.blk[data-type="gallery"][data-size="L"] .gal-main img { height: 460px; }
+.frame.mobile .blk[data-type="gallery"] .gal-main img { height: 260px; }
+.gal-thumbs { display: flex; gap: 8px; margin-top: 10px; overflow-x: auto; padding: 2px; }
+.gal-thumbs button { flex: 0 0 auto; width: 72px; height: 54px; padding: 0; border: 2px solid transparent; border-radius: 10px; overflow: hidden; cursor: pointer; background: #dfe7e5; }
+.gal-thumbs button[aria-current="true"] { border-color: var(--b-accent, var(--accent)); }
+.gal-thumbs img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.gal-empty { display: grid; place-items: center; text-align: center; gap: 8px; padding: 40px 20px; min-height: 220px; border: 2px dashed #b9cccb; border-radius: 14px; color: var(--muted); }
+.main-badge {
+  position: absolute; left: 12px; top: 12px; display: inline-flex; align-items: center; gap: 6px;
+  background: #fffffff2; color: var(--ink); font-size: 13px; font-weight: 600; padding: 6px 10px; border-radius: 999px; box-shadow: var(--shadow);
+}
+.main-badge .star { color: #c98a00; }
+
+/* Системный блок действий: одинаков у всех мест */
+.actions-bar { margin-top: 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.sys-note { font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+.react-pill { display: inline-flex; align-items: center; gap: 22px; padding: 8px 24px; background: var(--paper); border: 1px solid var(--line); border-radius: 999px; box-shadow: 0 16px 32px #16343b21; }
+.react-pill button { width: 52px; height: 52px; border-radius: 50%; border: 0; background: transparent; display: grid; place-items: center; cursor: pointer; padding: 0; }
+.react-pill svg { width: 30px; height: 30px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.react-pill .r-no { color: #b4513d; } .react-pill .r-yes { color: var(--accent); } .react-pill .r-skip { color: var(--muted); width: 46px; height: 46px; }
+.react-pill .heart { fill: transparent; transition: fill .2s; }
+.react-pill button:hover .heart, .react-pill button[aria-pressed="true"] .heart { fill: currentColor; }
+.react-pill .r-no[aria-pressed="true"] .slash, .react-pill .r-no:hover .slash { stroke: #fff; }
+.react-pill .eye { fill: currentColor; stroke: none; }
+.react-pill button[aria-pressed="true"], .react-pill button:hover { background: #eef4f3; }
+
+/* ───────── Режим редактирования: обвязка блоков ───────── */
+.editing .blk { cursor: pointer; outline: 2px dashed transparent; outline-offset: 5px; transition: outline-color .12s; }
+.editing .blk:hover { outline-color: #9cc9cf; }
+.editing .blk.selected { outline: 2px solid var(--accent); }
+.editing .blk:focus-visible { outline: 3px solid var(--accent); }
+.blk-tag {
+  position: absolute; z-index: 5; top: -15px; left: 14px; display: inline-flex; align-items: center; gap: 2px;
+  background: var(--ink); color: #fff; border-radius: 999px; padding: 2px 4px 2px 2px; font-size: 12px; font-weight: 600; box-shadow: var(--shadow); opacity: 0; pointer-events: none; transition: opacity .12s;
+}
+.editing .blk:hover .blk-tag, .editing .blk.selected .blk-tag, .editing .blk:focus-within .blk-tag { opacity: 1; pointer-events: auto; }
+.blk-tag button { border: 0; background: transparent; color: #fff; border-radius: 999px; min-width: 28px; height: 28px; display: grid; place-items: center; cursor: pointer; padding: 0 6px; font-size: 13px; }
+.blk-tag button:hover { background: #ffffff26; }
+.blk-tag .handle { cursor: grab; letter-spacing: -2px; }
+.blk-tag .name { padding: 0 6px; }
+.editing .blk.is-hidden .blk-inner { opacity: .35; filter: grayscale(.6); }
+.editing .blk.is-hidden::after {
+  content: "Скрыт — посетители его не видят"; position: absolute; inset: 12px 12px auto auto; background: var(--ink); color: #fff;
+  font-size: 12px; font-weight: 600; padding: 5px 10px; border-radius: 999px;
+}
+.editing .blk a, .editing .blk .inline-link, .editing .gal-thumbs button { pointer-events: none; }
+.blk.dragging { z-index: 20; opacity: .9; box-shadow: 0 24px 48px #16343b33; cursor: grabbing; pointer-events: none; }
+.blk.drop-before::before, .blk.drop-after::before, .blk.drop-left::before, .blk.drop-right::before {
+  content: ""; position: absolute; background: var(--accent); border-radius: 4px; z-index: 6;
+}
+.blk.drop-before::before { left: 0; right: 0; top: -10px; height: 4px; }
+.blk.drop-after::before { left: 0; right: 0; bottom: -10px; height: 4px; }
+.blk.drop-left::before { top: 0; bottom: 0; left: -10px; width: 4px; }
+.blk.drop-right::before { top: 0; bottom: 0; right: -10px; width: 4px; }
+
+/* ───────── Панель инструментов ───────── */
+.panel { background: var(--paper); border-left: 1px solid var(--line); position: sticky; top: var(--top-h, 62px); height: calc(100vh - var(--top-h, 62px)); overflow: auto; }
+.blk { scroll-margin-top: calc(var(--top-h, 62px) + 24px); }
+.panel-head { position: sticky; top: 0; z-index: 2; background: var(--paper); padding: 16px 20px 12px; border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 10px; }
+.panel-head h2 { font-size: 18px; margin: 0; letter-spacing: -.02em; flex: 1; }
+.panel-head .kicker { display: block; font-size: 12px; color: var(--muted); font-weight: 500; letter-spacing: 0; margin-bottom: 2px; }
+.sheet-toggle { display: none; }
+.sec { padding: 16px 20px; border-bottom: 1px solid var(--line); }
+.sec:last-child { border-bottom: 0; }
+.sec h3 { font-size: 13px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 0 0 12px; font-weight: 600; display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.hint { font-size: 13px; color: var(--muted); line-height: 1.5; margin: 8px 0 0; }
+.hint.warn { color: var(--warn); }
+.hint.err { color: var(--danger); }
+.field { display: grid; gap: 6px; margin-bottom: 14px; }
+.field:last-child { margin-bottom: 0; }
+.field label, .field .lbl { font-size: 13px; font-weight: 600; display: flex; justify-content: space-between; gap: 8px; }
+.field .count { font-weight: 500; color: var(--muted); font-variant-numeric: tabular-nums; }
+.field .count.over { color: var(--danger); }
+.field input[type="text"], .field textarea, .field select {
+  width: 100%; border: 1px solid #c6d5d3; border-radius: 10px; padding: 9px 11px; background: var(--paper); line-height: 1.5;
+}
+.field textarea { min-height: 150px; resize: vertical; }
+.field input:focus-visible, .field textarea:focus-visible, .field select:focus-visible { outline-offset: 0; }
+.readonly { background: #f2f5f4; border: 1px dashed #c6d5d3; border-radius: 10px; padding: 10px 12px; font-size: 14px; }
+.lock { font-size: 12px; color: var(--muted); display: inline-flex; gap: 4px; align-items: center; font-weight: 500; }
+
+.swatches { display: flex; flex-wrap: wrap; gap: 8px; }
+.sw { position: relative; }
+.sw input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+.sw input:disabled { cursor: not-allowed; }
+.sw span {
+  display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--c);
+  border: 1px solid #16343b33; font-size: 12px; font-weight: 700; color: var(--t, var(--ink));
+}
+.sw input:checked + span { box-shadow: 0 0 0 2px var(--paper), 0 0 0 4px var(--accent); }
+.sw input:focus-visible + span { outline: 3px solid var(--accent); outline-offset: 4px; }
+.sw input:disabled + span { opacity: .3; background-image: linear-gradient(135deg, transparent 46%, #a3432f 46% 54%, transparent 54%); }
+.sw.text span { border-radius: 10px; width: auto; min-width: 42px; padding: 0 8px; background: var(--bgc); color: var(--c); font-size: 15px; }
+.contrast { display: flex; align-items: center; gap: 8px; font-size: 13px; margin-top: 10px; }
+.contrast .chip { font-weight: 700; border-radius: 999px; padding: 2px 8px; font-variant-numeric: tabular-nums; }
+.contrast .ok { background: #dff1e8; color: #135c41; }
+.contrast .mid { background: #fdf0d5; color: #6b4600; }
+
+.full-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.seg.wide { display: flex; width: 100%; }
+.seg.wide button { flex: 1; }
+
+.toggle-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.switch { position: relative; width: 46px; height: 28px; flex: 0 0 auto; }
+.switch input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; }
+.switch input:disabled { cursor: not-allowed; }
+.switch span { position: absolute; inset: 0; background: #c6d5d3; border-radius: 999px; transition: background .15s; pointer-events: none; }
+.switch span::after { content: ""; position: absolute; left: 3px; top: 3px; width: 22px; height: 22px; border-radius: 50%; background: #fff; transition: transform .15s; box-shadow: 0 1px 3px #0003; }
+.switch input:checked + span { background: var(--accent); }
+.switch input:checked + span::after { transform: translateX(18px); }
+.switch input:focus-visible + span { outline: 3px solid var(--accent); outline-offset: 3px; }
+.switch input:disabled + span { opacity: .5; }
+
+/* Пресеты */
+.presets { display: grid; grid-template-columns: repeat(auto-fill, minmax(98px, 1fr)); gap: 10px; }
+.preset { border: 1px solid var(--line); background: var(--paper); border-radius: 14px; padding: 8px; cursor: pointer; text-align: left; display: grid; gap: 6px; }
+.preset:hover { border-color: #9cc9cf; }
+.preset[aria-pressed="true"] { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.preset .mini-pv { height: 64px; border-radius: 9px; background: var(--bg); padding: 5px; display: grid; gap: 3px; grid-template-columns: 1fr 1fr; align-content: start; }
+.preset .mini-pv i { display: block; border-radius: 4px; height: 10px; }
+.preset .mini-pv i.f { grid-column: 1 / -1; }
+.preset .mini-pv i.tall { height: 22px; }
+.preset strong { font-size: 13px; }
+.preset small { font-size: 11px; color: var(--muted); line-height: 1.3; }
+
+/* Список блоков (слои) */
+.layers { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.layers li { display: flex; align-items: center; gap: 4px; border: 1px solid var(--line); border-radius: 12px; padding: 4px 4px 4px 12px; }
+.layers li.hidden-row .ln { color: var(--muted); text-decoration: line-through; }
+.layers .ln { flex: 1; text-align: left; border: 0; background: none; padding: 8px 0; font-weight: 600; cursor: pointer; font-size: 14px; }
+.layers .ln small { font-weight: 500; color: var(--muted); margin-left: 6px; }
+.layers .mini { width: 32px; height: 32px; border-radius: 8px; border: 0; background: transparent; cursor: pointer; display: grid; place-items: center; font-size: 15px; }
+.layers .mini:hover { background: #eef4f3; }
+.layers .mini:disabled { opacity: .3; cursor: not-allowed; background: transparent; }
+
+/* Менеджер галереи */
+.ph-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.ph { position: relative; aspect-ratio: 4 / 3; border-radius: 10px; overflow: hidden; border: 2px solid transparent; padding: 0; cursor: pointer; background: #dfe7e5; }
+.ph img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.ph[aria-pressed="true"] { border-color: var(--accent); }
+.ph .tag { position: absolute; left: 4px; top: 4px; background: #fffffff2; color: var(--ink); font-size: 11px; font-weight: 700; padding: 2px 6px; border-radius: 999px; }
+.ph .tag .star { color: #c98a00; }
+.ph .num { position: absolute; right: 4px; bottom: 4px; background: #16343bcc; color: #fff; font-size: 11px; padding: 1px 6px; border-radius: 999px; }
+.drop { border: 2px dashed #b9cccb; border-radius: 12px; padding: 14px; text-align: center; font-size: 14px; color: var(--muted); display: grid; gap: 8px; place-items: center; margin-top: 10px; transition: background .15s, border-color .15s; }
+.drop.over { background: var(--accent-soft); border-color: var(--accent); }
+.ph-detail { margin-top: 12px; display: grid; gap: 10px; }
+.ph-detail .row { display: flex; gap: 6px; flex-wrap: wrap; }
+.is-main-note { display: flex; gap: 8px; align-items: center; background: #fff6df; border-radius: 10px; padding: 8px 10px; font-size: 13px; font-weight: 600; }
+
+/* ───────── Мини-профиль (карточка) ───────── */
+.card-stage { display: grid; place-items: center; gap: 22px; padding-top: 12px; }
+.deck { position: relative; width: min(360px, 100%); }
+.deck .ghost { position: absolute; inset: 14px 10px -10px; border-radius: 22px; background: #d6e5dd; transform: rotate(2.5deg); }
+.deck .ghost.g2 { inset: 22px 18px -18px; background: #e4ece8; transform: rotate(-2deg); }
+.mini {
+  position: relative; border-radius: var(--radius); overflow: hidden; background: var(--c-bg); color: var(--c-text);
+  border: 1px solid var(--c-border, var(--line)); box-shadow: var(--shadow); width: 100%;
+}
+.mini.framed { padding: 10px 10px 0; }
+.mini.framed .mini-photo { border-radius: 12px; }
+.mini-photo { position: relative; height: 300px; overflow: hidden; background: #dfe7e5; }
+.mini-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.mini-photo .noph { position: absolute; inset: 0; display: grid; place-items: center; color: var(--muted); font-size: 14px; text-align: center; padding: 20px; }
+.mini-stickers { position: absolute; top: 12px; left: 12px; right: 12px; display: flex; flex-wrap: wrap; gap: 6px; }
+.sticker { background: #ffffffeb; color: var(--ink); font-size: 12px; font-weight: 700; padding: 5px 10px; border-radius: 999px; box-shadow: 0 2px 8px #16343b26; transform: rotate(var(--rot, -2deg)); white-space: nowrap; }
+.sticker.editor { background: var(--accent); color: #fff; }
+.mini-emoji { position: absolute; left: 12px; bottom: 12px; display: flex; gap: 2px; background: #ffffffeb; border-radius: 999px; padding: 4px 8px; box-shadow: 0 2px 8px #16343b26; font-size: 20px; line-height: 1; }
+.mini-emoji span { display: grid; place-items: center; width: 28px; height: 28px; }
+.mini-body { padding: 16px 20px 20px; }
+.mini.framed .mini-body { padding: 14px 10px 18px; }
+.mini-cat { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; opacity: .85; }
+.mini-body h3 { margin: 6px 0 10px; font-size: 24px; line-height: 1.15; letter-spacing: -.03em; font-weight: 600; }
+.mini-body h3 em { color: var(--c-accent); }
+.mini-price { font-weight: 650; font-size: 17px; }
+.mini-price small { font-weight: 500; font-size: 13px; opacity: .85; margin-left: 4px; }
+.editing-card .mini-emoji span, .editing-card .sticker { cursor: pointer; }
+.editing-card .mini-emoji span:hover, .editing-card .sticker:hover { outline: 2px solid var(--accent); outline-offset: 1px; border-radius: 8px; }
+.lockmark { position: absolute; right: 10px; top: 10px; background: #16343bd9; color: #fff; font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 999px; }
+.mini-stickers + .lockmark { top: auto; bottom: 12px; }
+
+.meter-wrap { display: grid; gap: 8px; }
+.meter-top { display: flex; align-items: baseline; justify-content: space-between; }
+.meter-val { font-size: 26px; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
+.meter-val small { font-size: 15px; color: var(--muted); font-weight: 600; }
+.meter { height: 10px; border-radius: 999px; background: #e3eae8; overflow: hidden; }
+.meter i { display: block; height: 100%; background: var(--accent); border-radius: 999px; transition: width .2s ease, background .2s; }
+.meter-wrap[data-level="high"] .meter i { background: #c98a00; }
+.meter-wrap[data-level="full"] .meter i { background: var(--ink); }
+.limit-banner { display: flex; gap: 8px; align-items: flex-start; background: #16343b; color: #fff; border-radius: 12px; padding: 10px 12px; font-size: 13px; line-height: 1.45; }
+.chosen { display: flex; flex-wrap: wrap; gap: 6px; min-height: 36px; }
+.chosen button { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); background: var(--bg); border-radius: 999px; padding: 4px 6px 4px 10px; font-size: 14px; cursor: pointer; }
+.chosen button:hover { border-color: var(--danger); }
+.chosen .w { font-size: 11px; color: var(--muted); font-weight: 700; }
+.chosen .x { width: 20px; height: 20px; border-radius: 50%; display: grid; place-items: center; background: #e3eae8; font-size: 12px; }
+.chosen button:disabled { cursor: not-allowed; opacity: .7; }
+.chosen-empty { font-size: 13px; color: var(--muted); align-self: center; }
+.decor-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.decor { position: relative; border: 1px solid var(--line); background: var(--paper); border-radius: 12px; padding: 8px 4px 6px; display: grid; justify-items: center; gap: 2px; cursor: pointer; min-height: 72px; }
+.decor:hover { border-color: #9cc9cf; }
+.decor .g { font-size: 24px; line-height: 1.2; }
+.decor .l { font-size: 11px; color: var(--muted); }
+.decor .wt { font-size: 11px; font-weight: 700; color: var(--accent-strong); background: #e6f2f3; border-radius: 999px; padding: 1px 7px; font-variant-numeric: tabular-nums; }
+.decor[aria-pressed="true"] { border-color: var(--accent); background: #eef7f8; box-shadow: 0 0 0 1px var(--accent); }
+.decor[aria-pressed="true"]::after { content: "✓"; position: absolute; right: 5px; top: 3px; font-size: 12px; font-weight: 800; color: var(--accent); }
+.decor[aria-disabled="true"] { opacity: .42; cursor: not-allowed; background: #f2f5f4; }
+.decor[aria-disabled="true"] .wt { background: #f3dcd6; color: var(--danger); }
+.sticker-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+.sticker-grid .decor { min-height: 0; display: inline-flex; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 999px; }
+.sticker-grid .decor .l { font-size: 13px; color: var(--ink); font-weight: 600; }
+.sticker-grid .decor[aria-pressed="true"]::after { content: none; }
+.live { font-size: 13px; min-height: 20px; margin: 8px 0 0; color: var(--muted); }
+.live.err { color: var(--danger); }
+
+/* ───────── Тост ───────── */
+.toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%) translateY(20px); opacity: 0; background: var(--ink); color: #fff; padding: 12px 18px; border-radius: 12px; font-size: 14px; box-shadow: var(--shadow); transition: .2s; z-index: 60; pointer-events: none; max-width: calc(100% - 32px); }
+.toast.show { opacity: 1; transform: translateX(-50%); }
+
+/* ───────── Адаптив: панель → нижний лист ───────── */
+@media (max-width: 980px) {
+  .workspace { grid-template-columns: minmax(0, 1fr); }
+  .stage { padding: 16px 12px 46vh; }
+  .panel { position: fixed; top: auto; left: 0; right: 0; bottom: 0; height: auto; max-height: 62vh; border-left: 0; border-top: 1px solid var(--line); border-radius: 20px 20px 0 0; box-shadow: 0 -12px 32px #16343b29; z-index: 40; }
+  .panel.collapsed { max-height: 64px; overflow: hidden; }
+  .panel { max-height: 55vh; }
+  .topbar { flex-wrap: wrap; row-gap: 8px; }
+  .topbar .tabs { order: -1; flex: 1 1 100%; }
+  .topbar .tabs button { flex: 1; }
+  .role { display: none; }
+  .sheet-toggle { display: inline-flex; }
+  .topbar { padding: 10px 12px; gap: 10px; }
+  .status { display: none; }
+}
+@media (max-width: 560px) {
+  .grid { grid-template-columns: minmax(0, 1fr); }
+  .blk { grid-column: 1 / -1; }
+  .page { padding: 14px; }
+  .brand { display: none; }
+  .publish-long { display: none; }
+  .publish-short { display: inline; }
+  .topbar .spacer { display: none; }
+  .topbar .seg { flex: 1; }
+  .topbar .seg button { flex: 1; padding: 7px 8px; }
+  .icon-btn { width: 36px; min-height: 36px; }
+  #publish { padding: 8px 12px; min-height: 40px; }
+  .stage-tools { display: none; }
+  .topbar { gap: 6px; }
+  .topbar .seg button { padding: 7px 6px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">VDK <em>гид</em></div>
+  <div class="tabs" role="tablist" aria-label="Что настраиваем">
+    <button role="tab" id="tab-page" data-tab="page">Страница места</button>
+    <button role="tab" id="tab-card" data-tab="card">Карточка в ленте</button>
+  </div>
+  <div class="seg" role="group" aria-label="Режим">
+    <button data-mode="view">Просмотр</button>
+    <button data-mode="edit"><span class="publish-long">Редактирование</span><span class="publish-short">Правка</span></button>
+  </div>
+  <div class="spacer"></div>
+  <button class="btn ghost icon-btn" id="undo" aria-label="Отменить (Ctrl+Z)" title="Отменить (Ctrl+Z)">↶</button>
+  <button class="btn ghost icon-btn" id="redo" aria-label="Повторить (Ctrl+Shift+Z)" title="Повторить (Ctrl+Shift+Z)">↷</button>
+  <span class="status" id="status" role="status"><span class="dot"></span><span id="status-text">Черновик</span></span>
+  <label class="role">Роль
+    <select id="role">
+      <option value="owner">Владелец места</option>
+      <option value="moderator">Модератор</option>
+    </select>
+  </label>
+  <button class="btn primary" id="publish"><span class="publish-long">Отправить на проверку</span><span class="publish-short">Отправить</span></button>
+</header>
+
+<div class="workspace" id="workspace">
+  <main class="stage" id="stage" tabindex="-1"></main>
+  <aside class="panel" id="panel" aria-label="Панель инструментов"></aside>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<input type="file" id="file" accept="image/jpeg,image/png,image/webp" multiple class="sr" tabindex="-1" aria-hidden="true" />
+
+<script>
+"use strict";
+/* ═════════════ Справочники ═════════════ */
+const MAX_WEIGHT = 50, MAX_PHOTOS = 12, MAX_FILE_MB = 8;
+const LIMITS = { name: 60, description: 1200, address: 120 };
+
+const BG = [
+  { id: "paper", name: "Бумага", hex: "#F6F7F5" },
+  { id: "white", name: "Белый", hex: "#FFFFFF" },
+  { id: "mist", name: "Туман", hex: "#E6F0EF" },
+  { id: "lagoon", name: "Лагуна", hex: "#D3ECEE" },
+  { id: "sand", name: "Песок", hex: "#F3E9D8" },
+  { id: "dawn", name: "Заря", hex: "#F6D9CB" },
+  { id: "teal", name: "Бирюза", hex: "#157F8C" },
+  { id: "pine", name: "Сосна", hex: "#2F5D50" },
+  { id: "deep", name: "Глубина", hex: "#16343B" },
+  { id: "night", name: "Ночь", hex: "#0F1E24" },
+];
+const TEXT = [
+  { id: "auto", name: "Авто — лучший контраст" },
+  { id: "ink", name: "Чернила", hex: "#16343B" },
+  { id: "graphite", name: "Графит", hex: "#3F4F53" },
+  { id: "teal", name: "Бирюза", hex: "#106775" },
+  { id: "white", name: "Белый", hex: "#FFFFFF" },
+  { id: "sand", name: "Песок", hex: "#F3E9D8" },
+];
+const BLOCKS = {
+  gallery: { name: "Фото", hideable: true },
+  title: { name: "Название", hideable: false, why: "Без названия посетитель не поймёт, где он" },
+  price: { name: "Цена", hideable: true },
+  address: { name: "Адрес", hideable: true },
+  description: { name: "Описание", hideable: true },
+};
+const SIZES = [["S", "Компактный"], ["M", "Обычный"], ["L", "Крупный"]];
+
+const b = (bg, text, size, width) => ({ bg, text, size, width, hidden: false });
+const PAGE_PRESETS = {
+  classic: {
+    name: "Классика", hint: "Как весь сервис",
+    order: ["gallery", "title", "price", "address", "description"],
+    blocks: { gallery: b("white", "auto", "L", "full"), title: b("paper", "ink", "M", "full"), price: b("white", "auto", "M", "half"), address: b("white", "auto", "M", "half"), description: b("white", "auto", "M", "full") },
+  },
+  sea: {
+    name: "Море", hint: "Бирюзовый акцент",
+    order: ["title", "gallery", "price", "address", "description"],
+    blocks: { title: b("teal", "white", "L", "full"), gallery: b("lagoon", "auto", "L", "full"), price: b("lagoon", "auto", "M", "half"), address: b("mist", "auto", "M", "half"), description: b("white", "auto", "M", "full") },
+  },
+  magazine: {
+    name: "Журнал", hint: "Фото и текст рядом",
+    order: ["title", "gallery", "description", "price", "address"],
+    blocks: { title: b("paper", "ink", "L", "full"), gallery: b("white", "auto", "L", "half"), description: b("white", "auto", "L", "half"), price: b("sand", "auto", "M", "half"), address: b("white", "auto", "M", "half") },
+  },
+  night: {
+    name: "Ночной город", hint: "Тёмные блоки",
+    order: ["gallery", "title", "description", "price", "address"],
+    blocks: { gallery: b("night", "auto", "L", "full"), title: b("deep", "white", "L", "full"), description: b("deep", "auto", "M", "full"), price: b("teal", "white", "M", "half"), address: b("night", "auto", "M", "half") },
+  },
+  warm: {
+    name: "Тёплый вечер", hint: "Песок и заря",
+    order: ["gallery", "title", "price", "address", "description"],
+    blocks: { gallery: b("sand", "auto", "M", "full"), title: b("sand", "ink", "M", "full"), price: b("dawn", "auto", "L", "half"), address: b("sand", "auto", "M", "half"), description: b("white", "auto", "M", "full") },
+  },
+};
+const CARD_PRESETS = {
+  light: { name: "Светлая", bg: "white", framed: false },
+  teal: { name: "Бирюза", bg: "teal", framed: false },
+  sand: { name: "Песок", bg: "sand", framed: false },
+  night: { name: "Ночь", bg: "night", framed: false },
+  polaroid: { name: "Полароид", bg: "white", framed: true },
+};
+const EMOJI = [
+  { id: "smile", g: "🙂", l: "Улыбка", w: 5 },
+  { id: "grin", g: "😀", l: "Радость", w: 5 },
+  { id: "wave", g: "🌊", l: "Море", w: 5 },
+  { id: "coffee", g: "☕", l: "Кофе", w: 5 },
+  { id: "art", g: "🎨", l: "Искусство", w: 5 },
+  { id: "music", g: "🎶", l: "Музыка", w: 5 },
+  { id: "love", g: "😍", l: "Восторг", w: 10 },
+  { id: "fire", g: "🔥", l: "Огонь", w: 10 },
+  { id: "sunset", g: "🌅", l: "Закат", w: 10 },
+  { id: "star", g: "⭐", l: "Звезда", w: 15 },
+  { id: "gem", g: "💎", l: "Находка", w: 20 },
+  { id: "trophy", g: "🏆", l: "Лучшее", w: 20 },
+];
+const STICKERS = [
+  { id: "new", l: "Новинка", w: 10 },
+  { id: "seaview", l: "Вид на море", w: 10 },
+  { id: "cozy", l: "Тихо и уютно", w: 10 },
+  { id: "kids", l: "Можно с детьми", w: 10 },
+  { id: "date", l: "Для свидания", w: 10 },
+  { id: "hit", l: "Хит сезона", w: 15 },
+  { id: "editor", l: "Выбор редакции", w: 20, mod: true },
+];
+const DECOR = Object.fromEntries([...EMOJI.map((e) => [e.id, { ...e, kind: "emoji" }]), ...STICKERS.map((s) => [s.id, { ...s, kind: "sticker" }])]);
+
+/* ═════════════ Утилиты цвета и контраста ═════════════ */
+const hex = (id) => BG.find((x) => x.id === id)?.hex || "#FFFFFF";
+function lum(h) {
+  const v = [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16) / 255).map((c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4));
+  return 0.2126 * v[0] + 0.7152 * v[1] + 0.0722 * v[2];
+}
+function ratio(a, b) { const x = lum(a), y = lum(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); }
+function autoText(bgHex) { return ratio(bgHex, "#16343B") >= ratio(bgHex, "#FFFFFF") ? "#16343B" : "#FFFFFF"; }
+function textHex(textId, bgHex) {
+  if (textId === "auto") return autoText(bgHex);
+  const t = TEXT.find((x) => x.id === textId)?.hex;
+  return t && ratio(t, bgHex) >= 4.5 ? t : autoText(bgHex); // защитная замена
+}
+function accentFor(bgHex, textH) {
+  for (const c of ["#157F8C", "#106775", "#8FD6DE"]) if (ratio(c, bgHex) >= 3) return c;
+  return textH;
+}
+const isLight = (h) => lum(h) > 0.6;
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+const uid = () => Math.random().toString(36).slice(2, 9);
+
+/* ═════════════ Демо-иллюстрации вместо фото ═════════════ */
+function art(v) {
+  const P = [
+    { s1: "#BFE3E6", s2: "#F6F7F5", sea: "#157F8C", hill: "#2F5D50", sun: "#F3C98B" },
+    { s1: "#F2B9A0", s2: "#F3E9D8", sea: "#1F6F7A", hill: "#16343B", sun: "#FBE3C4" },
+    { s1: "#0F1E24", s2: "#2F5D50", sea: "#0B161A", hill: "#08110F", sun: "#E8F1F0" },
+    { s1: "#E6F0EF", s2: "#FFFFFF", sea: "#7FBFC6", hill: "#8FA3A5", sun: "#FFFFFF" },
+  ][v % 4];
+  const waves = Array.from({ length: 7 }, (_, i) => `<path d="M-20 ${430 + i * 24} Q200 ${410 + i * 22} 400 ${432 + i * 24} T820 ${426 + i * 24}" stroke="#ffffff" stroke-opacity=".28" fill="none" stroke-width="2"/>`).join("");
+  const bridge = v === 2
+    ? `<g stroke="#E8F1F0" stroke-opacity=".7" stroke-width="2" fill="none"><path d="M0 392 H800"/><path d="M250 392 V230 M550 392 V230"/>${[0, 1, 2, 3, 4, 5].map((i) => `<path d="M250 236 L${120 + i * 22} 392 M250 236 L${280 + i * 22} 392 M550 236 L${420 + i * 22} 392 M550 236 L${580 + i * 22} 392"/>`).join("")}</g>
+       ${Array.from({ length: 22 }, (_, i) => `<circle cx="${(i * 97) % 800}" cy="${(i * 53) % 200 + 20}" r="1.6" fill="#fff" opacity=".7"/>`).join("")}`
+    : "";
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600"><defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${P.s1}"/><stop offset="1" stop-color="${P.s2}"/></linearGradient></defs>
+  <rect width="800" height="600" fill="url(#g)"/><circle cx="${v === 1 ? 400 : 620}" cy="${v === 1 ? 330 : 150}" r="${v === 2 ? 34 : 62}" fill="${P.sun}" opacity=".95"/>
+  <path d="M-10 400 Q120 250 250 330 T520 300 T820 340 V420 H-10Z" fill="${P.hill}" opacity=".9"/>
+  ${bridge}<rect y="400" width="800" height="200" fill="${P.sea}"/>${waves}</svg>`;
+  return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+}
+
+/* ═════════════ Состояние ═════════════ */
+function demo() {
+  const photos = [
+    { id: "p1", src: art(0), alt: "Демо-иллюстрация: утро у воды, сопки и бухта" },
+    { id: "p2", src: art(1), alt: "Демо-иллюстрация: закат над бухтой" },
+    { id: "p3", src: art(2), alt: "Демо-иллюстрация: ночной вантовый мост" },
+    { id: "p4", src: art(3), alt: "Демо-иллюстрация: туман над сопками" },
+  ];
+  const p = PAGE_PRESETS.classic;
+  return {
+    place: {
+      name: "ДЕМО Кофейня у маяка",
+      accent: 3,
+      category: "Кофейни · Виды на море",
+      description: "Демонстрационный текст. Небольшая кофейня на набережной с окнами на бухту.\nЗдесь варят фильтр-кофе на зёрнах местной обжарки и пекут булочки с морской солью. Днём тихо — можно поработать, вечером приходят смотреть закат.",
+      address: "ДЕМО, Владивосток, ул. Набережная, 1",
+      price: { max: 600, note: "на человека: кофе и выпечка", checked: "2 ноября 2026" },
+      photos, mainId: "p1",
+    },
+    page: { preset: "classic", order: [...p.order], blocks: structuredClone(p.blocks) },
+    card: { preset: "light", bg: "white", framed: false, items: ["wave", "coffee", "sunset", "seaview"] },
+  };
+}
+const KEY = "vdk-place-constructor-v1";
+let S;
+try { S = JSON.parse(localStorage.getItem(KEY)) || demo(); } catch { S = demo(); }
+const UI = { tab: "page", mode: "edit", role: "owner", selected: null, viewport: "desktop", photoSel: S.place.mainId, viewPhoto: null, sheet: innerWidth <= 980 ? "closed" : "open", reviewed: false, dirty: false, savedAt: null, live: "", liveErr: false, uploadErr: "", reactions: null };
+const past = [], future = [];
+const snap = () => JSON.stringify(S);
+
+function save() {
+  try { localStorage.setItem(KEY, snap()); UI.savedAt = new Date(); }
+  catch { toast("Фото слишком большие для хранения в прототипе: изменения сохранятся до перезагрузки страницы."); }
+}
+function commit(fn, { inspector = true } = {}) {
+  past.push(snap()); if (past.length > 60) past.shift(); future.length = 0;
+  fn(); UI.dirty = true; UI.reviewed = false; save(); render({ inspector });
+}
+function undo() { if (!past.length) return; future.push(snap()); S = JSON.parse(past.pop()); UI.dirty = true; save(); render(); toast("Действие отменено"); }
+function redo() { if (!future.length) return; past.push(snap()); S = JSON.parse(future.pop()); UI.dirty = true; save(); render(); }
+
+/* ═════════════ Производные ═════════════ */
+const mainPhoto = () => S.place.photos.find((p) => p.id === S.place.mainId) || null;
+const weight = () => S.card.items.reduce((s, id) => s + (DECOR[id]?.w || 0), 0);
+function nameHTML(name, idx) {
+  const words = name.trim().split(/\s+/).filter(Boolean);
+  if (!words.length) return '<span style="opacity:.5">Без названия</span>';
+  return words.map((w, i) => (i === idx ? `<em>${esc(w)}</em>` : esc(w))).join(" ");
+}
+function blockColors(cfg) {
+  const bgH = hex(cfg.bg), t = textHex(cfg.text, bgH);
+  return { bgH, t, a: accentFor(bgH, t), border: isLight(bgH) ? "#DFE7E5" : "transparent" };
+}
+const priceText = () => (S.place.price.max === 0 ? "Бесплатно" : `до ${S.place.price.max.toLocaleString("ru-RU")} ₽`);
+
+/* ═════════════ Рендер: страница места ═════════════ */
+const HEART = "M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z";
+function reactPill() {
+  const r = UI.reactions;
+  return `<div class="react-pill" role="group" aria-label="Оценка места">
+    <button class="r-no" data-react="dislike" aria-pressed="${r === "dislike"}" aria-label="Не подходит" title="Не подходит"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="heart" d="${HEART}"/><line class="slash" x1="4.5" y1="3.5" x2="19.5" y2="20.5"/></svg></button>
+    <button class="r-skip" data-react="neutral" aria-pressed="${r === "neutral"}" aria-label="Нейтрально" title="Нейтрально"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle class="eye" cx="8.8" cy="10" r="1.1"/><circle class="eye" cx="15.2" cy="10" r="1.1"/><line x1="8.6" y1="15.4" x2="15.4" y2="15.4"/></svg></button>
+    <button class="r-yes" data-react="like" aria-pressed="${r === "like"}" aria-label="Нравится" title="Нравится"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="heart" d="${HEART}"/></svg></button>
+  </div>`;
+}
+function blockBody(id, cfg, c) {
+  const P = S.place, edit = UI.mode === "edit";
+  switch (id) {
+    case "title":
+      return `<div class="cat">${esc(P.category)}</div><h1>${nameHTML(P.name, P.accent)}</h1>`;
+    case "description": {
+      const paras = P.description.trim() ? P.description.trim().split(/\n+/).map((x) => `<p>${esc(x)}</p>`).join("") : `<p style="opacity:.6">Описание пока не заполнено.</p>`;
+      return `<p class="blk-label">О месте</p>${paras}`;
+    }
+    case "address":
+      return `<p class="blk-label">Адрес</p><p class="addr">${P.address.trim() ? esc(P.address) : '<span style="opacity:.6">Адрес не указан</span>'}</p>
+        <button class="inline-link" data-act="map">Открыть на карте ↗</button>`;
+    case "price":
+      return `<p class="blk-label">Стоимость</p><div class="amount">${priceText()}</div>
+        <p class="note">${esc(P.price.note)} · проверено ${esc(P.price.checked)}</p>`;
+    case "gallery": {
+      if (!P.photos.length) return `<div class="gal-empty"><strong>Фото пока нет</strong><span>${edit ? "Добавьте первое фото — оно станет главным и появится на карточке." : "Владелец ещё не добавил фотографии."}</span></div>`;
+      const ordered = [mainPhoto(), ...P.photos.filter((p) => p.id !== P.mainId)].filter(Boolean);
+      const shown = (!edit && ordered.find((p) => p.id === UI.viewPhoto)) || ordered[0];
+      const badge = edit && shown.id === P.mainId ? `<span class="main-badge"><span class="star" aria-hidden="true">★</span> Главное фото · на карточке в ленте</span>` : "";
+      const thumbs = ordered.length > 1 ? `<div class="gal-thumbs" role="group" aria-label="Фотографии места">${ordered.map((p, i) => `<button data-viewphoto="${p.id}" aria-current="${p.id === shown.id}" aria-label="Фото ${i + 1} из ${ordered.length}"><img src="${p.src}" alt=""></button>`).join("")}</div>` : "";
+      return `<div class="gal-main"><img src="${shown.src}" alt="${esc(shown.alt || P.name)}">${badge}</div>${thumbs}`;
+    }
+  }
+  return "";
+}
+function renderPage() {
+  const edit = UI.mode === "edit";
+  const blocks = S.page.order.map((id) => {
+    const cfg = S.page.blocks[id];
+    if (cfg.hidden && !edit) return "";
+    const c = blockColors(cfg);
+    const tag = edit ? `<div class="blk-tag">
+        <button class="handle" data-drag="${id}" aria-label="Переместить блок «${BLOCKS[id].name}». Стрелки вверх и вниз — сдвиг" title="Перетащите или используйте стрелки">⋮⋮</button>
+        <span class="name">${BLOCKS[id].name}</span>
+        <button data-hide="${id}" ${BLOCKS[id].hideable ? "" : "disabled"} aria-label="${cfg.hidden ? "Показать" : "Скрыть"} блок «${BLOCKS[id].name}»" title="${BLOCKS[id].hideable ? (cfg.hidden ? "Показать" : "Скрыть") : BLOCKS[id].why}">${cfg.hidden ? "◌" : "◉"}</button>
+      </div>` : "";
+    return `<section class="blk ${cfg.width} ${UI.selected === id ? "selected" : ""} ${cfg.hidden ? "is-hidden" : ""}" data-id="${id}" data-type="${id}" data-size="${cfg.size}"
+        ${edit ? `tabindex="0" aria-label="Блок «${BLOCKS[id].name}»${cfg.hidden ? ", скрыт" : ""}. Enter — настроить"` : ""}
+        style="--b-bg:${c.bgH};--b-text:${c.t};--b-accent:${c.a};--b-border:${c.border}">
+        ${tag}<div class="blk-inner">${blockBody(id, cfg, c)}</div></section>`;
+  }).join("");
+  const visible = S.page.order.filter((id) => !S.page.blocks[id].hidden).length;
+  return `${edit ? `<div class="stage-tools"><p>Нажмите на блок, чтобы настроить его. Перетаскивайте за <b>⋮⋮</b>.</p>
+      <div class="seg" role="group" aria-label="Размер экрана предпросмотра"><button data-vp="desktop" aria-pressed="${UI.viewport === "desktop"}">Компьютер</button><button data-vp="mobile" aria-pressed="${UI.viewport === "mobile"}">Телефон</button></div></div>` : ""}
+    <div class="frame ${UI.viewport}"><div class="device ${edit ? "editing" : ""}">
+      <div class="site-head"><div class="brand">VDK <em>гид</em></div><nav aria-label="Разделы сервиса (макет)"><span>Каталог</span><span>Подборка</span><span>Свайпы</span></nav></div>
+      <div class="page"><div class="crumbs">← К подборке</div>
+        <div class="grid" id="grid">${blocks}</div>
+        ${visible === 1 ? `<p class="hint warn">Видно только название. Покажите хотя бы фото или описание — иначе посетителю не на что опереться.</p>` : ""}
+        <div class="actions-bar">${reactPill()}<button class="btn primary" data-act="route">Построить маршрут</button></div>
+        ${edit ? `<p class="sys-note">🔒 Кнопки оценки и маршрута одинаковы для всех мест и не настраиваются — так посетитель всегда знает, где их искать.</p>` : ""}
+      </div></div></div>`;
+}
+
+/* ═════════════ Рендер: мини-профиль ═════════════ */
+function miniCard({ editable = false } = {}) {
+  const P = S.place, C = S.card, bgH = hex(C.bg), t = autoText(bgH), m = mainPhoto();
+  const emo = C.items.filter((id) => DECOR[id]?.kind === "emoji"), st = C.items.filter((id) => DECOR[id]?.kind === "sticker");
+  const rots = ["-3deg", "2deg", "-1deg", "3deg"];
+  const it = (id) => editable ? `role="button" tabindex="0" data-remove="${id}" aria-label="Убрать «${DECOR[id].l}»" title="Убрать «${DECOR[id].l}» (−${DECOR[id].w})"` : "";
+  return `<article class="mini ${C.framed ? "framed" : ""} ${editable ? "editing-card" : ""}" style="--c-bg:${bgH};--c-text:${t};--c-accent:${accentFor(bgH, t)};--c-border:${isLight(bgH) ? "#DFE7E5" : "transparent"}" aria-label="Карточка: ${esc(P.name)}">
+    <div class="mini-photo">${m ? `<img src="${m.src}" alt="${esc(m.alt || P.name)}">` : `<div class="noph">Нет главного фото.<br>Добавьте его на странице места.</div>`}
+      ${st.length ? `<div class="mini-stickers">${st.map((id, i) => `<span class="sticker ${id === "editor" ? "editor" : ""}" style="--rot:${rots[i % 4]}" ${it(id)}>${esc(DECOR[id].l)}</span>`).join("")}</div>` : ""}
+      ${emo.length ? `<div class="mini-emoji">${emo.map((id) => `<span ${it(id)}>${DECOR[id].g}</span>`).join("")}</div>` : ""}
+      ${editable ? `<span class="lockmark" title="Берётся из профиля">🔒 фото из профиля</span>` : ""}
+    </div>
+    <div class="mini-body"><div class="mini-cat">${esc(P.category)}</div><h3>${nameHTML(P.name, P.accent)}</h3>
+      <div class="mini-price">${priceText()}<small>${esc(P.price.note.split(":")[0])}</small></div></div>
+  </article>`;
+}
+function renderCardStage() {
+  const edit = UI.mode === "edit";
+  return `${edit ? `<div class="stage-tools" style="max-width:520px"><p>Нажмите на смайлик или стикер на карточке, чтобы убрать его.</p></div>` : `<div class="stage-tools" style="max-width:520px"><p>Так карточку видят в ленте свайпов.</p></div>`}
+    <div class="card-stage"><div class="deck">${edit ? "" : '<div class="ghost g2"></div><div class="ghost"></div>'}${miniCard({ editable: edit })}</div>
+    ${edit ? "" : reactPill()}</div>`;
+}
+
+/* ═════════════ Рендер: панель инструментов ═════════════ */
+function swatchesBG(name, current) {
+  return `<div class="swatches" role="radiogroup" aria-label="Цвет фона">${BG.map((x) => `<label class="sw" title="${x.name}"><input type="radio" name="${name}" value="${x.id}" ${x.id === current ? "checked" : ""} data-fk="${name}-${x.id}"><span style="--c:${x.hex}"></span><span class="sr">${x.name}</span></label>`).join("")}</div>`;
+}
+function swatchesText(cfg) {
+  const bgH = hex(cfg.bg);
+  return `<div class="swatches" role="radiogroup" aria-label="Цвет текста">${TEXT.map((x) => {
+    const h = x.id === "auto" ? autoText(bgH) : x.hex, r = ratio(h, bgH), bad = x.id !== "auto" && r < 4.5;
+    const title = x.id === "auto" ? `${x.name}` : bad ? `${x.name}: контраст ${r.toFixed(1)} : 1 — нечитаемо на этом фоне` : `${x.name}: контраст ${r.toFixed(1)} : 1`;
+    return `<label class="sw text" title="${title}"><input type="radio" name="txt" value="${x.id}" ${x.id === cfg.text ? "checked" : ""} ${bad ? "disabled" : ""} data-fk="txt-${x.id}"><span style="--bgc:${bgH};--c:${h}">${x.id === "auto" ? "Авто" : "Аа"}</span><span class="sr">${title}</span></label>`;
+  }).join("")}</div>`;
+}
+function contrastLine(cfg) {
+  const { bgH, t } = blockColors(cfg), r = ratio(t, bgH);
+  const lvl = r >= 7 ? ["ok", "отлично читается"] : ["mid", "читается (норма WCAG AA)"];
+  return `<div class="contrast"><span class="chip ${lvl[0]}">${r.toFixed(1)} : 1</span><span>${lvl[1]}</span></div>
+    <p class="hint">Перечёркнутые цвета текста недоступны: на выбранном фоне их было бы трудно прочитать.</p>`;
+}
+function presetThumb(p) {
+  return `<span class="mini-pv" aria-hidden="true">${p.order.map((id) => {
+    const cfg = p.blocks[id], h = hex(cfg.bg);
+    return `<i class="${cfg.width === "full" ? "f" : ""} ${id === "gallery" ? "tall" : ""}" style="background:${h};${isLight(h) ? "box-shadow:inset 0 0 0 1px #dfe7e5" : ""}"></i>`;
+  }).join("")}</span>`;
+}
+function head(kicker, title, back) {
+  return `<div class="panel-head">${back ? `<button class="btn ghost icon-btn" data-act="deselect" aria-label="Назад к настройкам страницы" data-fk="back">←</button>` : ""}
+    <h2><span class="kicker">${kicker}</span>${title}</h2>
+    <button class="btn ghost small sheet-toggle" data-act="sheet" aria-expanded="${UI.sheet === "open"}">${UI.sheet === "open" ? "Свернуть" : "Развернуть"}</button></div>`;
+}
+function panelPage() {
+  if (UI.selected) return panelBlock(UI.selected);
+  const presetMod = S.page.preset && JSON.stringify({ o: S.page.order, b: S.page.blocks }) !== JSON.stringify({ o: PAGE_PRESETS[S.page.preset].order, b: PAGE_PRESETS[S.page.preset].blocks });
+  return head("Страница места", "Оформление") + `
+    <div class="sec"><h3>Стиль страницы ${presetMod ? '<span class="lock">изменён вручную</span>' : ""}</h3>
+      <div class="presets">${Object.entries(PAGE_PRESETS).map(([k, p]) => `<button class="preset" data-pagepreset="${k}" aria-pressed="${S.page.preset === k}" data-fk="pp-${k}">${presetThumb(p)}<strong>${p.name}</strong><small>${p.hint}</small></button>`).join("")}</div>
+      <p class="hint">Стиль меняет цвета, размеры и порядок блоков. Тексты и фото остаются. После этого любой блок можно донастроить.</p></div>
+    <div class="sec"><h3>Блоки страницы</h3>
+      <ul class="layers">${S.page.order.map((id, i) => {
+        const cfg = S.page.blocks[id];
+        return `<li class="${cfg.hidden ? "hidden-row" : ""}"><button class="ln" data-select="${id}" data-fk="ly-${id}">${BLOCKS[id].name}<small>${cfg.hidden ? "скрыт" : SIZES.find((s) => s[0] === cfg.size)[1].toLowerCase()}</small></button>
+          <button class="mini" data-move="${id}" data-dir="-1" ${i === 0 ? "disabled" : ""} aria-label="Поднять «${BLOCKS[id].name}»" data-fk="up-${id}">↑</button>
+          <button class="mini" data-move="${id}" data-dir="1" ${i === S.page.order.length - 1 ? "disabled" : ""} aria-label="Опустить «${BLOCKS[id].name}»" data-fk="dn-${id}">↓</button>
+          <button class="mini" data-hide="${id}" ${BLOCKS[id].hideable ? "" : "disabled"} aria-label="${cfg.hidden ? "Показать" : "Скрыть"} «${BLOCKS[id].name}»" title="${BLOCKS[id].hideable ? "" : BLOCKS[id].why}" data-fk="hd-${id}">${cfg.hidden ? "◌" : "◉"}</button></li>`;
+      }).join("")}</ul>
+      <p class="hint">Блок «Оценка и маршрут» системный: он всегда внизу страницы.</p></div>
+    <div class="sec"><button class="btn small" data-act="reset" data-fk="reset">Сбросить всё к демо-данным</button></div>`;
+}
+function panelBlock(id) {
+  const cfg = S.page.blocks[id], P = S.place, idx = S.page.order.indexOf(id);
+  let content = "";
+  if (id === "title") {
+    const words = P.name.trim().split(/\s+/).filter(Boolean);
+    content = `<div class="field"><label for="f-name">Название <span class="count ${P.name.length > LIMITS.name ? "over" : ""}" id="c-name">${P.name.length} / ${LIMITS.name}</span></label>
+        <input type="text" id="f-name" data-text="name" maxlength="${LIMITS.name}" value="${esc(P.name)}" data-fk="f-name"></div>
+      <div class="field"><label for="f-accent">Акцентное слово <span class="count">курсив с засечкой</span></label>
+        <select id="f-accent" data-fk="f-accent"><option value="-1">Без акцента</option>${words.map((w, i) => `<option value="${i}" ${i === P.accent ? "selected" : ""}>${esc(w)}</option>`).join("")}</select></div>
+      <div class="field"><span class="lbl">Категория <span class="lock">🔒 из каталога</span></span><div class="readonly">${esc(P.category)}</div></div>`;
+  } else if (id === "description") {
+    content = `<div class="field"><label for="f-desc">Текст <span class="count ${P.description.length > LIMITS.description ? "over" : ""}" id="c-desc">${P.description.length} / ${LIMITS.description}</span></label>
+      <textarea id="f-desc" data-text="description" maxlength="${LIMITS.description}" data-fk="f-desc">${esc(P.description)}</textarea>
+      <p class="hint">Пустая строка — новый абзац. Ссылки и разметка не поддерживаются.</p></div>`;
+  } else if (id === "address") {
+    content = `<div class="field"><label for="f-addr">Адрес <span class="count" id="c-addr">${P.address.length} / ${LIMITS.address}</span></label>
+      <input type="text" id="f-addr" data-text="address" maxlength="${LIMITS.address}" value="${esc(P.address)}" data-fk="f-addr">
+      ${UI.role === "owner" ? `<p class="hint warn">После смены адреса модератор заново проверит точку на карте.</p>` : ""}</div>`;
+  } else if (id === "price") {
+    content = `<div class="field"><span class="lbl">Стоимость <span class="lock">🔒 проверенные данные</span></span>
+      <div class="readonly"><b>${priceText()}</b> · ${esc(P.price.note)}<br><small>проверено ${esc(P.price.checked)}</small></div>
+      <p class="hint">Цену меняет редакция после проверки — так посетители видят только подтверждённые суммы. Здесь настраивается только вид блока.</p></div>`;
+  } else if (id === "gallery") content = galleryManager();
+
+  const sizes = `<div class="seg wide" role="group" aria-label="Размер блока">${SIZES.map(([k, l]) => `<button data-setsize="${k}" aria-pressed="${cfg.size === k}" data-fk="sz-${k}">${l}</button>`).join("")}</div>`;
+  const widths = `<div class="seg wide" role="group" aria-label="Ширина блока"><button data-width="full" aria-pressed="${cfg.width === "full"}" data-fk="w-full">Во всю ширину</button><button data-width="half" aria-pressed="${cfg.width === "half"}" data-fk="w-half">Половина</button></div>`;
+  return head("Блок", BLOCKS[id].name, true) + `
+    <div class="sec"><h3>${id === "gallery" ? "Галерея" : "Содержимое"}</h3>${content}</div>
+    <div class="sec"><h3>Цвет</h3>
+      <div class="field"><span class="lbl">Фон</span>${swatchesBG("bg", cfg.bg)}</div>
+      <div class="field"><span class="lbl">Текст</span>${swatchesText(cfg)}${contrastLine(cfg)}</div></div>
+    <div class="sec"><h3>Размер и положение</h3>
+      <div class="field"><span class="lbl">Размер</span>${sizes}</div>
+      <div class="field"><span class="lbl">Ширина</span>${widths}<p class="hint">На телефоне все блоки занимают всю ширину.</p></div>
+      <div class="field"><span class="lbl">Порядок <span class="count">${idx + 1} из ${S.page.order.length}</span></span>
+        <div class="full-btns"><button class="btn small" data-move="${id}" data-dir="-1" ${idx === 0 ? "disabled" : ""} data-fk="bup">↑ Выше</button><button class="btn small" data-move="${id}" data-dir="1" ${idx === S.page.order.length - 1 ? "disabled" : ""} data-fk="bdn">↓ Ниже</button></div>
+        <p class="hint">Или перетащите блок на холсте за ⋮⋮.</p></div></div>
+    <div class="sec"><div class="toggle-row"><div><strong>Показывать блок</strong><p class="hint" style="margin-top:2px">${BLOCKS[id].hideable ? "Скрытый блок остаётся в конструкторе, но посетители его не видят." : BLOCKS[id].why + "."}</p></div>
+      <label class="switch"><input type="checkbox" data-visible="${id}" ${cfg.hidden ? "" : "checked"} ${BLOCKS[id].hideable ? "" : "disabled"} aria-label="Показывать блок «${BLOCKS[id].name}»" data-fk="vis"><span></span></label></div></div>
+    <div class="sec"><button class="btn small" data-act="resetblock" data-fk="rb">Вернуть блок к стилю «${PAGE_PRESETS[S.page.preset || "classic"].name}»</button></div>`;
+}
+function galleryManager() {
+  const P = S.place, sel = P.photos.find((p) => p.id === UI.photoSel) || mainPhoto() || P.photos[0];
+  if (sel) UI.photoSel = sel.id;
+  const grid = P.photos.length ? `<div class="ph-grid" role="group" aria-label="Фото места">${P.photos.map((p, i) => `<button class="ph" data-photo="${p.id}" aria-pressed="${sel && sel.id === p.id}" aria-label="Фото ${i + 1}${p.id === P.mainId ? ", главное" : ""}" data-fk="ph-${p.id}"><img src="${p.src}" alt="">${p.id === P.mainId ? '<span class="tag"><span class="star" aria-hidden="true">★</span> Главное</span>' : ""}<span class="num">${i + 1}</span></button>`).join("")}</div>` : `<p class="hint">Фото пока нет. Первое добавленное станет главным.</p>`;
+  const detail = sel ? `<div class="ph-detail">
+      ${sel.id === P.mainId ? `<div class="is-main-note"><span aria-hidden="true">★</span> Главное фото — показывается на карточке в ленте</div>` : `<button class="btn small" data-act="setmain" data-fk="setmain">☆ Сделать главным</button>`}
+      <div class="field"><label for="f-alt">Описание фото для незрячих</label><input type="text" id="f-alt" data-alt="${sel.id}" maxlength="140" value="${esc(sel.alt)}" placeholder="Что на фото: например, «Вид из окна на бухту»" data-fk="f-alt"></div>
+      <div class="row"><button class="btn small" data-phmove="-1" ${P.photos.indexOf(sel) === 0 ? "disabled" : ""} data-fk="phl">← Раньше</button><button class="btn small" data-phmove="1" ${P.photos.indexOf(sel) === P.photos.length - 1 ? "disabled" : ""} data-fk="phr">Позже →</button><button class="btn small" data-act="delphoto" style="color:var(--danger)" data-fk="phdel">Удалить</button></div></div>` : "";
+  return `${grid}
+    <div class="drop" id="drop"><span>Перетащите фото сюда или</span><button class="btn small primary" data-act="upload" ${P.photos.length >= MAX_PHOTOS ? 'aria-disabled="true"' : ""} data-fk="upload">+ Добавить фото</button>
+      <small>JPG, PNG или WebP до ${MAX_FILE_MB} МБ · ${P.photos.length} из ${MAX_PHOTOS}</small></div>
+    ${UI.uploadErr ? `<p class="hint err" role="alert">${esc(UI.uploadErr)}</p>` : ""}${detail}`;
+}
+function panelCard() {
+  const w = weight(), left = MAX_WEIGHT - w, lvl = w >= MAX_WEIGHT ? "full" : w >= 40 ? "high" : "ok";
+  const decorBtn = (d) => {
+    const on = S.card.items.includes(d.id), modLock = d.mod && UI.role !== "moderator";
+    const tooBig = !on && d.w > left, dis = modLock || tooBig;
+    const why = modLock ? "Только модератор" : tooBig ? `Не помещается: нужно ${d.w}, свободно ${left}` : on ? `Убрать (−${d.w})` : `Добавить (+${d.w})`;
+    return `<button class="decor" data-decor="${d.id}" aria-pressed="${on}" ${dis ? 'aria-disabled="true"' : ""} title="${why}" aria-label="${d.l}, вес ${d.w}. ${why}" data-fk="d-${d.id}">
+      ${d.g ? `<span class="g" aria-hidden="true">${d.g}</span><span class="l">${d.l}</span>` : `<span class="l">${d.l}</span>`}<span class="wt">${d.mod && modLock ? "🔒 " : ""}${d.w}</span></button>`;
+  };
+  const chosen = S.card.items.length ? S.card.items.map((id) => {
+    const d = DECOR[id], lockd = d.mod && UI.role !== "moderator";
+    return `<button data-remove="${id}" ${lockd ? "disabled" : ""} aria-label="Убрать «${d.l}», вес ${d.w}" title="${lockd ? "Добавлено модератором" : "Убрать"}" data-fk="ch-${id}">${d.g || d.l} <span class="w">${d.w}</span><span class="x" aria-hidden="true">${lockd ? "🔒" : "×"}</span></button>`;
+  }).join("") : `<span class="chosen-empty">Пока ничего — выберите ниже.</span>`;
+  const m = mainPhoto();
+  return head("Карточка в ленте", "Мини-профиль") + `
+    <div class="sec"><h3>Из профиля <span class="lock">🔒 только чтение</span></h3>
+      <div style="display:flex;gap:12px;align-items:center">${m ? `<img src="${m.src}" alt="" style="width:64px;height:48px;object-fit:cover;border-radius:8px">` : ""}<div style="min-width:0"><strong style="display:block;overflow-wrap:anywhere">${esc(S.place.name)}</strong><small style="color:var(--muted)">${m ? "главное фото и название" : "главное фото не выбрано"}</small></div></div>
+      <button class="btn small" style="margin-top:10px" data-act="gotogallery" data-fk="gotogal">Изменить на странице места →</button></div>
+    <div class="sec"><h3>Стиль карточки</h3>
+      <div class="presets">${Object.entries(CARD_PRESETS).map(([k, p]) => `<button class="preset" data-cardpreset="${k}" aria-pressed="${S.card.preset === k}" data-fk="cp-${k}"><span class="mini-pv" aria-hidden="true" style="grid-template-columns:1fr;background:${hex(p.bg)};${p.framed ? "padding:6px" : "padding:0;overflow:hidden"};box-shadow:inset 0 0 0 1px #dfe7e5"><i class="tall" style="height:36px;background:#7FBFC6;border-radius:${p.framed ? "4px" : "0"}"></i><i style="width:60%;height:6px;margin:4px 6px 0;background:${autoText(hex(p.bg))};opacity:.8"></i></span><strong>${p.name}</strong></button>`).join("")}</div>
+      <div class="field" style="margin-top:14px"><span class="lbl">Цвет карточки <span class="count">текст подбирается автоматически</span></span>${swatchesBG("cardbg", S.card.bg)}</div></div>
+    <div class="sec"><h3>Смайлики и стикеры</h3>
+      <div class="meter-wrap" data-level="${lvl}">
+        <div class="meter-top"><span class="meter-val" aria-hidden="true">${w} <small>/ ${MAX_WEIGHT}</small></span><span class="hint" style="margin:0">${lvl === "full" ? "лимит достигнут" : `свободно ${left}`}</span></div>
+        <div class="meter" role="meter" aria-label="Вес украшений" aria-valuemin="0" aria-valuemax="${MAX_WEIGHT}" aria-valuenow="${w}" aria-valuetext="${w} из ${MAX_WEIGHT}"><i style="width:${(w / MAX_WEIGHT) * 100}%"></i></div>
+        ${lvl === "full" ? `<div class="limit-banner"><span aria-hidden="true">⦸</span><span>Лимит 50 заполнен. Уберите смайлик или стикер, чтобы добавить другой.</span></div>` : ""}
+      </div>
+      <p class="hint">Вес не даёт перегрузить карточку: чем заметнее украшение, тем он больше. Каждое можно добавить один раз.</p>
+      <div class="field" style="margin-top:14px"><span class="lbl">На карточке</span><div class="chosen">${chosen}</div></div>
+      <p class="live ${UI.liveErr ? "err" : ""}" aria-live="polite" id="live">${esc(UI.live)}</p></div>
+    <div class="sec"><h3>Смайлики <span class="count" style="font-weight:500;text-transform:none;letter-spacing:0">число — вес</span></h3><div class="decor-grid">${EMOJI.map(decorBtn).join("")}</div></div>
+    <div class="sec"><h3>Стикеры</h3><div class="sticker-grid">${STICKERS.map(decorBtn).join("")}</div>
+      <p class="hint">Стикеры — это настроение, а не факты. Цену, часы работы и «бесплатно» показывает только проверенная карточка каталога.</p></div>`;
+}
+
+/* ═════════════ Общий рендер ═════════════ */
+const $ = (s, r = document) => r.querySelector(s);
+function render({ inspector = true } = {}) {
+  const fk = document.activeElement?.dataset?.fk;
+  const edit = UI.mode === "edit";
+  $("#workspace").classList.toggle("view", !edit);
+  document.querySelectorAll("[data-tab]").forEach((t) => { t.setAttribute("aria-selected", t.dataset.tab === UI.tab); t.tabIndex = t.dataset.tab === UI.tab ? 0 : -1; });
+  document.querySelectorAll("[data-mode]").forEach((t) => t.setAttribute("aria-pressed", t.dataset.mode === UI.mode));
+  $("#stage").innerHTML = UI.tab === "page" ? renderPage() : renderCardStage();
+  $("#stage").setAttribute("aria-label", UI.tab === "page" ? "Холст страницы места" : "Предпросмотр карточки");
+  const panel = $("#panel");
+  panel.hidden = !edit;
+  panel.classList.toggle("collapsed", UI.sheet !== "open");
+  if (edit && inspector) { panel.innerHTML = UI.tab === "page" ? panelPage() : panelCard(); bindDrop(); }
+  $("#undo").disabled = !past.length; $("#redo").disabled = !future.length;
+  const mod = UI.role === "moderator";
+  const pl = mod ? ["Опубликовать", "Опубликовать"] : UI.reviewed ? ["На проверке", "На проверке"] : ["Отправить на проверку", "Отправить"];
+  $("#publish .publish-long").textContent = pl[0]; $("#publish .publish-short").textContent = pl[1];
+  $("#publish").disabled = !mod && UI.reviewed;
+  const st = $("#status");
+  st.dataset.state = UI.reviewed ? "review" : UI.dirty ? "dirty" : "clean";
+  $("#status-text").textContent = UI.reviewed ? "Отправлено на проверку" : UI.savedAt ? `Черновик · сохранено ${UI.savedAt.toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" })}` : "Черновик";
+  if (fk) document.querySelector(`[data-fk="${CSS.escape(fk)}"]`)?.focus({ preventScroll: true });
+}
+let toastT;
+function toast(msg) { const t = $("#toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("show"), 2800); }
+
+/* ═════════════ Действия ═════════════ */
+function select(id) { UI.selected = id; UI.sheet = "open"; render(); $("#panel .panel-head h2")?.scrollIntoView?.({ block: "nearest" }); }
+function moveBlock(id, dir) {
+  const o = S.page.order, i = o.indexOf(id), j = i + dir;
+  if (j < 0 || j >= o.length) return;
+  commit(() => { [o[i], o[j]] = [o[j], o[i]]; });
+}
+function toggleHidden(id) {
+  if (!BLOCKS[id].hideable) return toast(BLOCKS[id].why);
+  commit(() => { S.page.blocks[id].hidden = !S.page.blocks[id].hidden; });
+  toast(S.page.blocks[id].hidden ? `Блок «${BLOCKS[id].name}» скрыт` : `Блок «${BLOCKS[id].name}» снова виден`);
+}
+function setCard(fn) { commit(fn); }
+function toggleDecor(id) {
+  const d = DECOR[id], on = S.card.items.includes(id), left = MAX_WEIGHT - weight();
+  if (d.mod && UI.role !== "moderator") { UI.live = "«Выбор редакции» ставит только модератор."; UI.liveErr = true; return render(); }
+  if (on) { UI.live = `«${d.l}» убрано, освободилось ${d.w}.`; UI.liveErr = false; return setCard(() => { S.card.items = S.card.items.filter((x) => x !== id); }); }
+  if (d.w > left) { UI.live = `«${d.l}» не помещается: нужно ${d.w}, свободно ${left}. Уберите что-нибудь с карточки.`; UI.liveErr = true; return render(); }
+  UI.live = `«${d.l}» добавлено. ${weight() + d.w} из ${MAX_WEIGHT}.`; UI.liveErr = false;
+  setCard(() => { S.card.items.push(id); });
+}
+function addFiles(files) {
+  UI.uploadErr = "";
+  const list = [...files], room = MAX_PHOTOS - S.place.photos.length;
+  if (room <= 0) { UI.uploadErr = `Уже ${MAX_PHOTOS} фото — удалите лишнее, чтобы добавить новое.`; return render(); }
+  const bad = list.filter((f) => !/^image\/(jpeg|png|webp)$/.test(f.type)), big = list.filter((f) => f.size > MAX_FILE_MB * 1048576);
+  const ok = list.filter((f) => !bad.includes(f) && !big.includes(f)).slice(0, room);
+  const errs = [];
+  if (bad.length) errs.push(`не подходит формат: ${bad.map((f) => f.name).join(", ")}`);
+  if (big.length) errs.push(`больше ${MAX_FILE_MB} МБ: ${big.map((f) => f.name).join(", ")}`);
+  if (list.length - bad.length - big.length > room) errs.push(`поместилось только ${room}`);
+  UI.uploadErr = errs.length ? "Не загружено — " + errs.join("; ") + "." : "";
+  if (!ok.length) return render();
+  Promise.all(ok.map(downscale)).then((srcs) => {
+    commit(() => {
+      srcs.forEach((src, i) => {
+        const id = uid();
+        S.place.photos.push({ id, src, alt: "" });
+        if (!S.place.mainId) S.place.mainId = id;
+        if (i === srcs.length - 1) UI.photoSel = id;
+      });
+    });
+    toast(srcs.length === 1 ? "Фото добавлено. Добавьте описание для незрячих." : `Добавлено фото: ${srcs.length}`);
+  }).catch(() => { UI.uploadErr = "Не удалось прочитать файл. Попробуйте другое фото."; render(); });
+}
+function downscale(file) {
+  return new Promise((res, rej) => {
+    const img = new Image(), url = URL.createObjectURL(file);
+    img.onload = () => {
+      const k = Math.min(1, 1400 / Math.max(img.width, img.height)), c = document.createElement("canvas");
+      c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
+      c.getContext("2d").drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(url);
+      res(c.toDataURL("image/jpeg", 0.82));
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); rej(); };
+    img.src = url;
+  });
+}
+function bindDrop() {
+  const z = $("#drop"); if (!z) return;
+  z.addEventListener("dragover", (e) => { e.preventDefault(); z.classList.add("over"); });
+  z.addEventListener("dragleave", () => z.classList.remove("over"));
+  z.addEventListener("drop", (e) => { e.preventDefault(); z.classList.remove("over"); addFiles(e.dataTransfer.files); });
+}
+
+/* Перетаскивание блоков (мышь, перо, палец) */
+function startDrag(e, id) {
+  if (e.button !== 0) return;
+  e.preventDefault();
+  const el = document.querySelector(`.blk[data-id="${id}"]`), sx = e.clientX, sy = e.clientY;
+  let target = null, pos = null, moved = false;
+  const clear = () => document.querySelectorAll(".drop-before,.drop-after,.drop-left,.drop-right").forEach((n) => n.classList.remove("drop-before", "drop-after", "drop-left", "drop-right"));
+  const move = (ev) => {
+    if (!moved && Math.hypot(ev.clientX - sx, ev.clientY - sy) < 4) return;
+    moved = true; el.classList.add("dragging");
+    el.style.transform = `translate(${ev.clientX - sx}px, ${ev.clientY - sy}px)`;
+    clear(); target = null;
+    const under = document.elementFromPoint(ev.clientX, ev.clientY)?.closest(".blk");
+    if (under && under !== el) {
+      const r = under.getBoundingClientRect(), side = under.classList.contains("half") && UI.viewport !== "mobile" && innerWidth > 560;
+      pos = side ? (ev.clientX > r.left + r.width / 2 ? "right" : "left") : (ev.clientY > r.top + r.height / 2 ? "after" : "before");
+      under.classList.add("drop-" + pos); target = under.dataset.id;
+    }
+  };
+  const up = () => {
+    removeEventListener("pointermove", move); removeEventListener("pointerup", up); removeEventListener("pointercancel", up);
+    clear(); el.classList.remove("dragging"); el.style.transform = "";
+    if (!moved) return select(id);
+    if (!target) return;
+    commit(() => {
+      const o = S.page.order.filter((x) => x !== id), i = o.indexOf(target);
+      o.splice(pos === "after" || pos === "right" ? i + 1 : i, 0, id); S.page.order = o;
+    });
+    UI.selected = id; render(); toast(`Блок «${BLOCKS[id].name}» перемещён`);
+  };
+  addEventListener("pointermove", move); addEventListener("pointerup", up); addEventListener("pointercancel", up);
+}
+
+/* ═════════════ События ═════════════ */
+document.addEventListener("click", (e) => {
+  const t = e.target.closest("button, [data-remove], .blk, label, input");
+  if (!t) return;
+  if (t.classList.contains("blk")) { if (UI.mode === "edit" && UI.tab === "page") select(t.dataset.id); return; }
+  const d = t.dataset;
+  if (t.matches("[aria-disabled='true']") && !d.decor) { if (d.act === "upload") { UI.uploadErr = `Уже ${MAX_PHOTOS} фото — удалите лишнее.`; render(); } return; }
+  if (d.tab) { UI.tab = d.tab; UI.selected = null; UI.live = ""; return render(); }
+  if (d.mode) { UI.mode = d.mode; UI.selected = null; return render(); }
+  if (d.vp) { UI.viewport = d.vp; return render({ inspector: false }); }
+  if (d.react) { UI.reactions = UI.reactions === d.react ? null : d.react; render({ inspector: false }); return toast(UI.mode === "edit" ? "Это предпросмотр: реакция не сохраняется" : "Реакция сохранена (в прототипе — локально)"); }
+  if (d.drag) return;
+  if (d.hide) { e.stopPropagation(); return toggleHidden(d.hide); }
+  if (d.select) return select(d.select);
+  if (d.move) return moveBlock(d.move, +d.dir);
+  if (d.setsize) return commit(() => { S.page.blocks[UI.selected].size = d.setsize; });
+  if (d.width) return commit(() => { S.page.blocks[UI.selected].width = d.width; });
+  if (d.pagepreset) {
+    const p = PAGE_PRESETS[d.pagepreset];
+    commit(() => { S.page.preset = d.pagepreset; S.page.order = [...p.order]; S.page.blocks = structuredClone(p.blocks); });
+    return toast(`Стиль «${p.name}» применён. Отменить — Ctrl+Z`);
+  }
+  if (d.cardpreset) { const p = CARD_PRESETS[d.cardpreset]; return setCard(() => { Object.assign(S.card, { preset: d.cardpreset, bg: p.bg, framed: p.framed }); }); }
+  if (d.decor) return toggleDecor(d.decor);
+  if (d.remove) { const x = DECOR[d.remove]; if (x.mod && UI.role !== "moderator") return toast("Этот стикер поставил модератор"); return toggleDecor(d.remove); }
+  if (d.photo) { UI.photoSel = d.photo; return render(); }
+  if (d.viewphoto) { UI.viewPhoto = d.viewphoto; return render({ inspector: false }); }
+  if (d.phmove) {
+    const a = S.place.photos, i = a.findIndex((p) => p.id === UI.photoSel), j = i + +d.phmove;
+    return commit(() => { [a[i], a[j]] = [a[j], a[i]]; });
+  }
+  switch (d.act) {
+    case "deselect": UI.selected = null; return render();
+    case "sheet": UI.sheet = UI.sheet === "open" ? "closed" : "open"; return render();
+    case "upload": return $("#file").click();
+    case "setmain": commit(() => { S.place.mainId = UI.photoSel; }); return toast("Главное фото обновлено — карточка в ленте тоже");
+    case "delphoto": {
+      const wasMain = UI.photoSel === S.place.mainId;
+      commit(() => {
+        S.place.photos = S.place.photos.filter((p) => p.id !== UI.photoSel);
+        if (wasMain) S.place.mainId = S.place.photos[0]?.id || null;
+        UI.photoSel = S.place.mainId;
+      });
+      return toast(wasMain ? (S.place.mainId ? "Фото удалено. Главным стало следующее — проверьте карточку." : "Фото удалено. Карточка осталась без фото.") : "Фото удалено");
+    }
+    case "gotogallery": UI.tab = "page"; UI.mode = "edit"; return select("gallery");
+    case "resetblock": { const p = PAGE_PRESETS[S.page.preset || "classic"]; return commit(() => { S.page.blocks[UI.selected] = structuredClone(p.blocks[UI.selected]); }); }
+    case "reset": if (confirm("Вернуть демо-данные? Текущие правки пропадут (их можно вернуть через «Отменить»).")) { commit(() => { S = demo(); }); UI.selected = null; render(); } return;
+    case "map": return toast("В прототипе карта не подключена");
+    case "route": return toast("В прототипе маршрут не строится");
+  }
+});
+document.addEventListener("pointerdown", (e) => { const h = e.target.closest("[data-drag]"); if (h && UI.mode === "edit") startDrag(e, h.dataset.drag); });
+document.addEventListener("keydown", (e) => {
+  const t = e.target;
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "z" && !t.matches("input[type=text], textarea")) { e.preventDefault(); return e.shiftKey ? redo() : undo(); }
+  if (e.key === "Escape" && UI.selected) { const id = UI.selected; UI.selected = null; render(); return document.querySelector(`.blk[data-id="${id}"]`)?.focus(); }
+  if (t.dataset?.drag && (e.key === "ArrowUp" || e.key === "ArrowDown")) {
+    e.preventDefault(); const id = t.dataset.drag; moveBlock(id, e.key === "ArrowUp" ? -1 : 1);
+    document.querySelector(`[data-drag="${id}"]`)?.focus(); return;
+  }
+  if (t.classList?.contains("blk") && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); select(t.dataset.id); return $("#panel .panel-head button, #panel input, #panel button")?.focus(); }
+  if (t.dataset?.remove && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); toggleDecor(t.dataset.remove); }
+  if (t.getAttribute("role") === "tab" && (e.key === "ArrowRight" || e.key === "ArrowLeft")) { UI.tab = UI.tab === "page" ? "card" : "page"; UI.selected = null; render(); $(`[data-tab="${UI.tab}"]`).focus(); }
+});
+/* Поля ввода: холст обновляется на каждый символ, история — одна запись на правку */
+let pending = null;
+document.addEventListener("focusin", (e) => { if (e.target.matches("[data-text], [data-alt]")) pending = snap(); });
+document.addEventListener("input", (e) => {
+  const t = e.target;
+  if (t.dataset.text) {
+    const k = t.dataset.text; S.place[k] = t.value;
+    if (k === "name") {
+      const words = t.value.trim().split(/\s+/).filter(Boolean);
+      if (S.place.accent >= words.length) S.place.accent = words.length - 1;
+      const sel = $("#f-accent");
+      if (sel) sel.innerHTML = `<option value="-1">Без акцента</option>` + words.map((w, i) => `<option value="${i}" ${i === S.place.accent ? "selected" : ""}>${esc(w)}</option>`).join("");
+    }
+    const cnt = { name: "#c-name", description: "#c-desc", address: "#c-addr" }[k];
+    if (cnt) $(cnt).textContent = `${t.value.length} / ${LIMITS[k]}`;
+    UI.dirty = true; render({ inspector: false });
+  }
+  if (t.dataset.alt) { const p = S.place.photos.find((x) => x.id === t.dataset.alt); if (p) p.alt = t.value; UI.dirty = true; }
+});
+document.addEventListener("change", (e) => {
+  const t = e.target;
+  if (t.matches("[data-text], [data-alt]")) {
+    if (pending && pending !== snap()) { past.push(pending); future.length = 0; UI.reviewed = false; }
+    pending = snap(); save(); return render({ inspector: false }); // панель не перерисовываем: фокус уже уходит к другому полю
+  }
+  if (t.id === "f-accent") return commit(() => { S.place.accent = +t.value; });
+  if (t.name === "bg") return commit(() => { const c = S.page.blocks[UI.selected]; c.bg = t.value; if (c.text !== "auto" && ratio(TEXT.find((x) => x.id === c.text).hex, hex(t.value)) < 4.5) { c.text = "auto"; toast("Цвет текста переключён на «Авто»: прежний не читался бы на новом фоне"); } });
+  if (t.name === "txt") return commit(() => { S.page.blocks[UI.selected].text = t.value; });
+  if (t.name === "cardbg") return setCard(() => { S.card.bg = t.value; S.card.preset = Object.keys(CARD_PRESETS).find((k) => CARD_PRESETS[k].bg === t.value && CARD_PRESETS[k].framed === S.card.framed) || null; });
+  if (t.dataset.visible) return toggleHidden(t.dataset.visible);
+  if (t.id === "file") { addFiles(t.files); t.value = ""; }
+  if (t.id === "role") {
+    UI.role = t.value; UI.reviewed = false; UI.live = "";
+    render(); toast(UI.role === "moderator" ? "Режим модератора: можно публиковать и ставить «Выбор редакции»" : "Режим владельца: изменения уходят на проверку");
+  }
+});
+$("#undo").addEventListener("click", undo);
+$("#redo").addEventListener("click", redo);
+$("#publish").addEventListener("click", () => {
+  const issues = [];
+  if (!S.place.name.trim()) issues.push("название");
+  if (!S.place.photos.length) issues.push("хотя бы одно фото");
+  if (S.place.photos.some((p) => !p.alt.trim())) issues.push("описания у всех фото");
+  if (issues.length) return toast("Перед отправкой заполните: " + issues.join(", "));
+  if (UI.role === "moderator") { UI.dirty = false; render(); return toast("Опубликовано: изменения видны посетителям"); }
+  UI.reviewed = true; UI.dirty = false; render(); toast("Отправлено модератору. Пока идёт проверка, посетители видят прежнюю версию.");
+});
+new ResizeObserver(([e]) => document.documentElement.style.setProperty("--top-h", Math.ceil(e.target.getBoundingClientRect().height) + "px")).observe($(".topbar"));
+render();
+</script>
+</body>
+</html>

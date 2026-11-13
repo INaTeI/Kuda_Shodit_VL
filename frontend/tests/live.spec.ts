@@ -18,11 +18,18 @@ test("live FastAPI preferences to reaction to refreshed selection", async ({
     await page.getByRole("button", { name: "Пока к подборке" }).click();
     await expect(page.locator(".card").first()).toBeVisible();
     const firstName = await page.locator(".card h3").first().innerText();
-    await page
+    const dislike = page
       .locator(".card")
       .first()
-      .getByRole("button", { name: "× Не подходит" })
-      .click();
+      .getByRole("button", { name: "Не подходит", exact: true });
+    await dislike.click();
+    // The card stays in place; only the button highlights.
+    await expect(dislike).toHaveAttribute("aria-pressed", "true");
+    await expect(
+      page.getByRole("heading", { name: firstName, exact: true }),
+    ).toBeVisible();
+    // The disliked place leaves the selection only on explicit refresh.
+    await page.getByRole("button", { name: "Обновить подборку" }).click();
     await expect(
       page.getByRole("heading", { name: firstName, exact: true }),
     ).toHaveCount(0);

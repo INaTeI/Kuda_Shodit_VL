@@ -1,4 +1,4 @@
-# VDK GID — backend городского гида
+# VDK GID — городской гид
 
 Общий Swagger модели: **http://149.154.70.109/model/docs** — открыть, выбрать
 POST /recommendations → Try it out → Execute. Инструкция: [docs/qwen-server.md](docs/qwen-server.md).
@@ -32,10 +32,14 @@ docker compose ps
 При изменении пароля PostgreSQL в .env обновите также DATABASE_URL. Для существующего
 тома изменение POSTGRES_PASSWORD само по себе пароль базы не меняет.
 
+- Сайт: http://127.0.0.1:8080 (frontend в отдельном образе Nginx)
 - Swagger: http://localhost:8000/docs
 - OpenAPI JSON: http://localhost:8000/openapi.json
 - ReDoc: http://localhost:8000/redoc
 - Проверка готовности БД: http://localhost:8000/health/ready
+
+Frontend входит в `docker compose up -d --build`; Node.js на хосте не требуется.
+Стандартные порты: сайт — 8080, API — 8000. Proxy frontend → API работает внутри Docker.
 
 Миграции выполняются отдельным одноразовым сервисом migrate до старта API.
 Seed запускается явно и повторно не создаёт дубликаты. Он добавляет восемь категорий и

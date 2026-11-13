@@ -590,12 +590,81 @@ input[type="checkbox"] {
 }
 .reaction-row {
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+  align-items: center;
+  gap: 14px;
 }
-.reaction-row button {
-  font-size: 12px;
-  padding: 10px 12px;
+.reaction-row .reaction-icon {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  min-height: 0;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: transparent;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.15s ease;
+}
+.reaction-row .reaction-icon svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.reaction-row .icon-heart {
+  fill: transparent;
+  transition: fill 0.2s ease;
+}
+.reaction-row .icon-slash {
+  transition: stroke 0.2s ease;
+}
+.reaction-row .icon-eye {
+  fill: currentColor;
+  stroke: none;
+}
+.reaction-row .reaction-yes {
+  color: var(--accent);
+}
+.reaction-row .reaction-no {
+  color: #b4513d;
+}
+.reaction-row .reaction-skip {
+  color: #5d6f73;
+}
+.reaction-row .reaction-icon:is(:hover, :focus-visible):not(:disabled) {
+  transform: translateY(-1px);
+}
+/* The active reaction is a highlight, not the global dark pressed slab. */
+.reaction-row .reaction-icon[aria-pressed="true"] {
+  background: transparent;
+  color: inherit;
+  border-color: currentColor;
+}
+.reaction-row .reaction-yes[aria-pressed="true"] {
+  color: var(--accent);
+}
+.reaction-row .reaction-no[aria-pressed="true"] {
+  color: #b4513d;
+}
+.reaction-row :is(.reaction-yes, .reaction-no):is(:hover, :focus-visible):not(:disabled)
+  .icon-heart,
+.reaction-row :is(.reaction-yes, .reaction-no)[aria-pressed="true"] .icon-heart {
+  fill: currentColor;
+}
+.reaction-row .reaction-no:is(:hover, :focus-visible):not(:disabled) .icon-slash,
+.reaction-row .reaction-no[aria-pressed="true"] .icon-slash {
+  stroke: var(--paper);
+}
+.reaction-row .reaction-skip:is(:hover, :focus-visible):not(:disabled),
+.reaction-row .reaction-skip[aria-pressed="true"] {
+  background: #e7efec;
+  color: #3c5a55;
 }
 .reaction-box .known {
   font-size: 13px;
@@ -1022,6 +1091,65 @@ main:focus-visible {
   display: block;
   padding-right: 46px;
 }
+.place-map {
+  margin: 16px 0;
+}
+.map-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.map-controls button {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 8px 12px;
+}
+.map-viewport {
+  overflow: hidden;
+  position: relative;
+  background: #eef1eb;
+  border: 1px solid #c4d1ce;
+  border-radius: 16px;
+  cursor: grab;
+  touch-action: none;
+}
+.map-viewport:active {
+  cursor: grabbing;
+}
+.map-viewport:focus-visible {
+  outline: 3px solid #27717a;
+  outline-offset: 3px;
+}
+.map-layer {
+  position: relative;
+  width: 100%;
+  transform-origin: center;
+}
+.map-layer img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1600 / 2192;
+  user-select: none;
+  pointer-events: none;
+}
+.map-marker {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border: 3px solid white;
+  border-radius: 50%;
+  background: #a82d24;
+  box-shadow:
+    0 0 0 2px #7b221c,
+    0 2px 7px #0006;
+  pointer-events: none;
+}
+.map-message {
+  padding: 16px;
+  background: #eef1eb;
+  border-radius: 12px;
+}
+
 
 /* Optional taste setup: gestures share the same actions as accessible buttons. */
 .taste-invitation {
@@ -1647,3 +1775,8 @@ main:focus-visible {
 .pagination-refresh-label{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 }
 .logo{display:inline-flex;align-items:center;gap:10px}.logo .brand-mark{display:block;width:44px;height:44px;flex:none}.logo .brand-name:first-of-type{font-size:inherit;color:inherit;vertical-align:baseline;margin:0}.footer .brand-mark{width:36px;height:36px}@media(max-width:600px){.header .logo .brand-mark{width:38px;height:38px}.header .logo{gap:7px}}
+.cookie-notice { margin-block: 16px; padding: 20px; border: 1px solid #c4d1ce; border-radius: 16px; background: #eef1eb; }
+.cookie-notice h2 { font-size: 22px; }
+.cookie-notice p { max-width: 900px; line-height: 1.6; }
+.cookie-notice .actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.cookie-settings { padding-bottom: 100px; }

@@ -1,3 +1,5 @@
+import { useGeo } from "./geo";
+import { PlaceMap } from "./PlaceMap";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import {
   Link,
@@ -233,33 +235,11 @@ function LocationFields({
   value: Filters;
   onChange: (v: Filters) => void;
 }) {
-  const [error, setError] = useState(""),
-    [busy, setBusy] = useState(false);
-  function locate() {
-    setError("");
-    if (!navigator.geolocation) {
-      setError("Геолокация недоступна. Вы можете выбирать места без неё.");
-      return;
-    }
-    setBusy(true);
-    navigator.geolocation.getCurrentPosition(
-      (p) => {
-        onChange({
-          ...value,
-          latitude: p.coords.latitude,
-          longitude: p.coords.longitude,
-          radius_km: value.radius_km || 5,
-        });
-        setBusy(false);
-      },
-      () => {
-        setError(
-          "Не получилось определить расположение. Разрешите доступ или продолжайте без него.",
-        );
-        setBusy(false);
-      },
-      { timeout: 10000 },
-    );
+  const geo = useGeo();
+  const { busy, error } = geo;
+  async function locate() {
+    const p = await geo.locate();
+    if (p) onChange({ ...value, latitude: p.latitude, longitude: p.longitude, radius_km: value.radius_km || 5 });
   }
   return (
     <div className="location-fields">
@@ -286,7 +266,7 @@ function LocationFields({
               }
             />
           </label>
-          <button type="button" onClick={() => onChange({})}>
+          <button type="button" onClick={() => { geo.clearPosition(); onChange({}); }}>
             Убрать расположение
           </button>
         </>
@@ -778,12 +758,18 @@ function SelectionResults({ discovery }: { discovery: boolean }) {
                 }}
               >
                 <Card place={place} reasons={reasons}>
+                  {/* Discovery shows one card and loads the next after a reaction.
+                      The grid keeps the card in place: only the button state changes. */}
                   <Reactions
                     id={place.id}
-                    onSaved={() => {
-                      setMessage("Сохранено. Подборка обновлена.");
-                      q.retry();
-                    }}
+                    onSaved={
+                      discovery
+                        ? () => {
+                            setMessage("Сохранено. Загружаем следующее место.");
+                            q.retry();
+                          }
+                        : undefined
+                    }
                   />
                 </Card>
               </div>
@@ -905,6 +891,7 @@ function PlaceDetail() {
                 <hr />
                 <h3>Где находится</h3>
                 <p>{p.address || "Адрес уточняется"}</p>
+                <PlaceMap key={p.id} latitude={p.latitude} longitude={p.longitude} name={p.name} />
                 <h3>Когда прийти</h3>
                 <p>{p.opening_hours || "Часы работы уточняются"}</p>
                 <hr />
