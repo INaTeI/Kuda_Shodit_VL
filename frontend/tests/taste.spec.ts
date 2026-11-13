@@ -348,3 +348,19 @@ test("invitation animation loops and respects reduced motion", async ({
   await page.emulateMedia({ reducedMotion: "reduce" });
   await expect(preview).toHaveCSS("animation-name", "none");
 });
+
+test("swipe IDs work when randomUUID is unavailable on HTTP", async ({
+  page,
+}) => {
+  await mock(page, { count: 3 });
+  await page.addInitScript(() =>
+    Object.defineProperty(crypto, "randomUUID", {
+      value: undefined,
+      configurable: true,
+    }),
+  );
+  await page.goto("/taste");
+  await page.getByRole("button", { name: "Давай попробуем →" }).click();
+  await page.getByRole("button", { name: "Нравится Вправо →" }).click();
+  await expect(page.getByText("Карточка 2 из 3")).toBeVisible();
+});

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type PointerEvent } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   api,
+  eventId,
   ApiError,
   price,
   type CardEvent,
@@ -220,7 +221,7 @@ function TasteDeck() {
   }, [guest.token, filtersKey, reload]);
   function makeEvent(type: CardEvent["event_type"], id = place?.id): CardEvent {
     return {
-      event_id: crypto.randomUUID(),
+      event_id: eventId(),
       recommendation_id: runId,
       place_id: id!,
       event_type: type,
