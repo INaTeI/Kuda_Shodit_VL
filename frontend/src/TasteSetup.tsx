@@ -10,9 +10,10 @@ import {
   type Reaction,
   type Recommendations,
 } from "./api";
-import { Artwork, Dialog, Empty, ErrorBox, Skeleton } from "./components";
+import { Artwork, CostDetails, Dialog, Empty, ErrorBox, Skeleton } from "./components";
 import { useGeo } from "./geo";
 import { useGuest } from "./state";
+import { PlaceMap } from "./PlaceMap";
 
 export const TASTE_CARD_LIMIT = 12;
 
@@ -140,18 +141,28 @@ type ViewAttempt = { event: CardEvent; promise?: Promise<unknown> };
 
 export default function TasteSetup() {
   const guest = useGuest();
+  const [starting, setStarting] = useState(false);
+  const [startError, setStartError] = useState("");
   if (guest.loading && !guest.profile)
     return (
       <section className="wrap page">
         <Skeleton />
       </section>
     );
+  if (guest.error && !guest.profile)
+    return <section className="wrap page"><ErrorBox message={guest.error} retry={guest.refresh} /></section>;
   if (!guest.profile)
     return (
       <section className="wrap page">
         <Empty title="Сначала познакомимся">
-          <p>Выбери интересы, чтобы начать оценивать места карточками.</p>
-          <Link to="/preferences">Настроить предпочтения</Link>
+          <p>Оценивай места, а мы учтём твой выбор в подборке.</p>
+          {startError && <ErrorBox message={startError} />}
+          <button className="primary" disabled={starting} onClick={async () => {
+            setStarting(true);
+            setStartError("");
+            try { await guest.startGuest(); } catch (e) { setStartError((e as Error).message); }
+            finally { setStarting(false); }
+          }}>{starting ? "Подготавливаем…" : "Начать выбор"}</button>
         </Empty>
       </section>
     );
@@ -197,7 +208,6 @@ function TasteDeck() {
   const [exit, setExit] = useState(""),
     [reload, setReload] = useState(0),
     [details, setDetails] = useState(false);
-  const [autoLeave, setAutoLeave] = useState(true);
   const card = useRef<HTMLElement>(null),
     lock = useRef(false),
     mounted = useRef(true);
@@ -316,11 +326,6 @@ function TasteDeck() {
     resetDrag();
     if (place && index > 0) card.current?.focus({ preventScroll: true });
   }, [place?.id]);
-  useEffect(() => {
-    if (!finished || !autoLeave || busy) return;
-    const timer = window.setTimeout(() => leave(), 2200);
-    return () => window.clearTimeout(timer);
-  }, [finished, autoLeave, busy]);
   function leave() {
     navigate("/recommendations", { replace: true, state: { geo } });
   }
@@ -490,10 +495,6 @@ function TasteDeck() {
           Закончить пока
         </button>
       </div>
-      <p className="taste-subtitle">
-        Вправо — нравится, влево — не подходит, по центру — пока не знаю. Новые
-        места подстроятся под твой выбор.
-      </p>
       {loading ? (
         <Skeleton />
       ) : finished ? (
@@ -511,15 +512,11 @@ function TasteDeck() {
             {history.filter((d) => d.reaction === "like").length}. Продолжим
             уточнять твои интересы по мере знакомства с городом.
           </p>
-          {autoLeave && (
-            <p className="taste-finish-auto">Открываем твою подборку…</p>
-          )}
           <button className="primary" onClick={leave} disabled={busy}>
             Посмотреть мою подборку →
           </button>
           <button
             onClick={() => {
-              setAutoLeave(false);
               void undo();
             }}
             disabled={busy || !!retryKind || !history.length}
@@ -556,11 +553,6 @@ function TasteDeck() {
                 ? "Все доступные под твои условия"
                 : "До 12 карточек для начала"}
             </span>
-            <progress
-              value={index}
-              max={deck.length}
-              aria-label="Оценено карточек"
-            />
           </div>
           <div className="taste-arena">
             <div className="taste-stack">
@@ -754,7 +746,7 @@ function TasteDeck() {
           <>
             <address className="taste-details-address">
               <span>Адрес</span>
-              <strong>{place.address || "Адрес уточняется"}</strong>
+              <strong>{place.address && !/^https?:\/\//i.test(place.address.trim()) ? place.address : "Адрес уточняется"}</strong>
             </address>
             <section className="taste-details-section" aria-labelledby="taste-details-description">
               <h3 id="taste-details-description">Описание:</h3>
@@ -762,11 +754,10 @@ function TasteDeck() {
             </section>
             <section className="taste-details-price" aria-label="Стоимость">
               <strong>{price(place)}</strong>
-              <p>{place.price_note}</p>
+              <CostDetails place={place} />
             </section>
-            <button className="taste-details-return" onClick={() => setDetails(false)}>
-              Вернуться к выбору
-            </button>
+            <h3>На карте</h3>
+            <PlaceMap key={place.id} latitude={place.latitude} longitude={place.longitude} name={place.name} />
           </>
         )}
       </Dialog>

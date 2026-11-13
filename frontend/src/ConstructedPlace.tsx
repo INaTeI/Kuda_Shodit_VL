@@ -1,7 +1,7 @@
 import { useState, type CSSProperties } from "react";
 import { price, type Place } from "./api";
 import { PlaceMap } from "./PlaceMap";
-import { Reactions } from "./components";
+import { CostDetails, Dialog, Reactions } from "./components";
 
 const backgrounds: Record<string, string> = {
   paper: "#F6F7F5", white: "#FFFFFF", mist: "#E6F0EF", lagoon: "#D3ECEE",
@@ -51,6 +51,7 @@ function safePhoto(src: string) {
 
 export function ConstructedPlace({ place, state }: { place: Place; state: ConstructorState }) {
   const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
+  const [galleryOpen, setGalleryOpen] = useState(false);
   const order = (state.page?.order || []).filter((id): id is BlockId => blockIds.includes(id as BlockId));
   const uniqueOrder = [...new Set(order)];
   const photos = (state.place?.photos || []).filter((photo) => photo && safePhoto(photo.src));
@@ -70,11 +71,11 @@ export function ConstructedPlace({ place, state }: { place: Place; state: Constr
             {id === "title" && <><div className="constructed-category">{place.categories.map((category) => category.name).join(" · ")}</div>
               <h1>{words.map((word, index) => <span key={index}>{index > 0 ? " " : ""}{index === accent ? <em>{word}</em> : word}</span>)}</h1></>}
             {id === "description" && <><p className="constructed-label">О месте</p>{place.description.split(/\n+/).filter(Boolean).map((paragraph, index) => <p key={index}>{paragraph}</p>)}</>}
-            {id === "address" && <><p className="constructed-label">Адрес</p><p className="constructed-address">{place.address || "Адрес не указан"}</p>
+            {id === "address" && <><p className="constructed-label">Адрес</p><p className="constructed-address">{place.address && !/^https?:\/\//i.test(place.address.trim()) ? place.address : "Адрес уточняется"}</p>
               {place.latitude !== null && place.longitude !== null && <a href="#place-location">Открыть на карте ↗</a>}</>}
             {id === "price" && <><p className="constructed-label">Стоимость</p><div className="constructed-amount">{price(place)}</div>
-              <p className="constructed-note">{place.price_note}{place.checked_at ? ` · проверено ${new Date(place.checked_at + "T00:00:00").toLocaleDateString("ru-RU")}` : ""}</p></>}
-            {id === "gallery" && (shownPhoto ? <><div className="constructed-main-photo"><img src={shownPhoto.src} alt={shownPhoto.alt || place.name} /></div>
+              <CostDetails place={place} />{place.checked_at && <p className="constructed-note">Проверено {new Date(place.checked_at + "T00:00:00").toLocaleDateString("ru-RU")}</p>}</>}
+            {id === "gallery" && (shownPhoto ? <><button className="constructed-main-photo photo-open" type="button" aria-label="Открыть фотографии места" onClick={() => setGalleryOpen(true)}><img src={shownPhoto.src} alt={shownPhoto.alt || place.name} /></button>
               {photos.length > 1 && <div className="constructed-thumbnails" role="group" aria-label="Фотографии места">{photos.map((photo, index) => <button key={photo.id} type="button" aria-label={`Фото ${index + 1} из ${photos.length}`} aria-pressed={photo.id === shownPhoto.id} onClick={() => setSelectedPhoto(photo.id)}><img src={photo.src} alt="" /></button>)}</div>}</> :
               <div className="constructed-photo-empty">Фото пока нет</div>)}
             {(id === "extra1" || id === "extra2") && <><h2>{state.page?.custom?.[id]?.title || "Новый блок"}</h2><p>{state.page?.custom?.[id]?.body || ""}</p></>}
@@ -90,5 +91,9 @@ export function ConstructedPlace({ place, state }: { place: Place; state: Constr
       {place.opening_hours && <p>Часы работы: {place.opening_hours}</p>}
       {place.source_url && /^https?:\/\//i.test(place.source_url) && <a href={place.source_url} target="_blank" rel="noreferrer">Источник сведений ↗</a>}
     </div>
+    <Dialog open={galleryOpen} onClose={() => setGalleryOpen(false)} title="Фотографии места">
+      {shownPhoto && <img className="gallery-large" src={shownPhoto.src} alt={shownPhoto.alt || place.name} />}
+      {photos.length > 1 && <div className="constructed-thumbnails" role="group" aria-label="Выбрать фотографию">{photos.map((photo, index) => <button key={photo.id} type="button" aria-label={`Фото ${index + 1} из ${photos.length}`} aria-pressed={photo.id === shownPhoto?.id} onClick={() => setSelectedPhoto(photo.id)}><img src={photo.src} alt="" /></button>)}</div>}
+    </Dialog>
   </div>;
 }

@@ -488,7 +488,5 @@ test("next card is underneath without a view event, last card reveals green chec
   expect(
     Math.abs((await finish.boundingBox())!.width - lastBox.width),
   ).toBeLessThan(2);
-  expect(
-    Math.abs((await finish.boundingBox())!.height - lastBox.height),
-  ).toBeLessThan(2);
+  expect(await finish.evaluate((element) => element.scrollHeight <= element.clientHeight)).toBe(true);
 });

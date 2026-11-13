@@ -8,6 +8,7 @@ import {
   Routes,
   useLocation,
   useNavigate,
+  useNavigationType,
   useParams,
 } from "react-router-dom";
 import {
@@ -21,6 +22,7 @@ import {
 import {
   Artwork,
   Card,
+  CostDetails,
   CategoryPicker,
   Dialog,
   Empty,
@@ -32,21 +34,23 @@ import {
 import { useGuest } from "./state";
 import { useAdmin } from "./admin";
 import { ConstructedPlace, type ConstructorState } from "./ConstructedPlace";
-import TasteSetup, { TasteInvitation } from "./TasteSetup";
+import TasteSetup, { TasteInvitation, SwipePreview } from "./TasteSetup";
 import Weather from "./Weather";
 import logo from "./assets/logo.svg";
 const nav = [
   ["/catalog", "Каталог"],
+  ["/taste", "Свайпы"],
   ["/recommendations", "Подборка"],
-  ["/preferences", "Предпочтения"],
+  ["/preferences", "Настройки"],
 ];
 export default function App() {
   const location = useLocation();
+  const navigationType = useNavigationType();
   const guest = useGuest();
   useEffect(() => {
-    window.scrollTo(0, 0);
-    document.title = `Куда_Сходить_ВЛ — ${nav.find(([p]) => location.pathname === p)?.[1] || "Владивосток, который подходит тебе"}`;
-    document.querySelector<HTMLElement>("main")?.focus();
+    if (navigationType !== "POP") window.scrollTo(0, 0);
+    document.title = `Куда_Сходить_ВЛ — ${nav.find(([p]) => location.pathname === p)?.[1] || "Один свайп до нового места"}`;
+    document.querySelector<HTMLElement>("main")?.focus({ preventScroll: true });
   }, [location.pathname]);
   return (
     <>
@@ -68,9 +72,9 @@ export default function App() {
         </nav>
         <Link
           className="button primary header-cta"
-          to={guest.profile ? "/recommendations" : "/preferences"}
+          to="/catalog"
         >
-          Подобрать места ↗
+          Смотреть места ↗
         </Link>
       </header>
       <main id="main" tabIndex={-1}>
@@ -113,7 +117,7 @@ export default function App() {
       >
         {nav.map(([p, n], i) => (
           <NavLink key={p} to={p}>
-            <span aria-hidden="true">{["▦", "✳", "☷"][i]}</span>
+            <span aria-hidden="true">{["▦", "♡", "✳", "☷"][i]}</span>
             {n}
           </NavLink>
         ))}
@@ -128,51 +132,39 @@ function Home() {
     <>
       <section className="hero wrap">
         <div className="hero-copy">
-          <div className="eyebrow">Персональный гид по Владивостоку</div>
+          <div className="eyebrow">МЕСТА ВЛАДИВОСТОКА</div>
           <h1>
-            Владивосток,
-            <br />
-            который
-            <br />
-            <em>подходит тебе.</em>
+            Один свайп до <em>нового места.</em>
           </h1>
           <p>
-            Выбирай места по интересам и бюджету. Отмечай, что нравится, —
-            следующие подборки учтут твой выбор.
+            Ищешь, где провести время во Владивостоке? Открой каталог или оценивай места карточками — твой выбор поможет составить подборку.
           </p>
           <div className="actions">
             <Link
-              className="button primary"
-              to={guest.profile ? "/recommendations" : "/preferences"}
+              className="button primary hero-catalog-button"
+              to="/catalog"
             >
-              Подобрать места <span>↗</span>
-            </Link>
-            <Link className="text-link" to="/catalog">
-              Открыть каталог →
+              Смотреть места <span>↗</span>
             </Link>
           </div>
           <div className="hero-note">
-            <span>01 — 03</span> Город начинается с любопытства
+            Выбирай в своём темпе — без регистрации.
           </div>
         </div>
-        <div className="hero-visual">
+        <Link to="/taste" className="hero-visual hero-swipe-link" aria-label="Начать выбирать места свайпами">
           <div className="coordinate">ВЛАДИВОСТОК / ПРИМОРСКИЙ КРАЙ</div>
-          <Artwork hero />
+          <SwipePreview />
           <div className="hero-label">
-            <span>Ближе, чем кажется</span>
+            <span>ВЫБИРАЙ СВАЙПАМИ</span>
             <strong>
-              Маленькое открытие.
-              <br />
-              Большой день.
+              Давай познакомимся
             </strong>
-            <Link to="/catalog" aria-label="Исследовать каталог">
-              ↗
-            </Link>
+            <span className="hero-swipe-arrow" aria-hidden="true">↗</span>
           </div>
           <span className="vertical-note">
             МОРЕ ВОЗМОЖНОСТЕЙ — В ТВОЁМ РИТМЕ
           </span>
-        </div>
+        </Link>
       </section>
       <section className="wrap intro-strip">
         <span className="section-number">01 / ТВОЙ ГОРОД</span>
@@ -183,8 +175,7 @@ function Home() {
         </h2>
         <div>
           <p>
-            Прогулка у воды или тихий вечер в городе? Начни с того, что тебе
-            интересно.
+            Выбирай интересы, чтобы подборка лучше подходила тебе. Можно изменить их в любой момент.
           </p>
           <Link to="/preferences" className="text-link">
             Выбрать интересы ↗
@@ -278,13 +269,37 @@ function LocationFields({
   );
 }
 function Catalog() {
-  const [filters, setFilters] = useState<Filters>({}),
-    [draft, setDraft] = useState<Filters>({}),
-    [offset, setOffset] = useState(0),
+  const navigationType = useNavigationType();
+  const restored = useRef(false);
+  const [saved] = useState(() => {
+    try {
+      const value = JSON.parse(sessionStorage.getItem("vdk-catalog-view") || "{}");
+      return { categories: Array.isArray(value.categories) ? value.categories.filter((x: unknown): x is string => typeof x === "string").slice(0, 8) : [], offset: Number.isSafeInteger(value.offset) && value.offset >= 0 ? value.offset : 0 };
+    } catch { return { categories: [], offset: 0 }; }
+  });
+  const [filters, setFilters] = useState<Filters>({ categories: saved.categories }),
+    [draft, setDraft] = useState<Filters>({ categories: saved.categories }),
+    [offset, setOffset] = useState(saved.offset),
     [open, setOpen] = useState(false);
+  useEffect(() => {
+    try { sessionStorage.setItem("vdk-catalog-view", JSON.stringify({ categories: filters.categories || [], offset })); } catch { /* storage is optional */ }
+  }, [filters, offset]);
   const q = useLoad<Page>(
     `/places?${query({ ...filters, limit: 12, offset })}`,
   );
+  useEffect(() => {
+    const rememberScroll = () => { try { sessionStorage.setItem("vdk-catalog-scroll", String(window.scrollY)); } catch { /* storage is optional */ } };
+    window.addEventListener("scroll", rememberScroll, { passive: true });
+    return () => window.removeEventListener("scroll", rememberScroll);
+  }, []);
+  useEffect(() => {
+    if (navigationType !== "POP" || q.loading || restored.current) return;
+    restored.current = true;
+    try {
+      const y = Number(sessionStorage.getItem("vdk-catalog-scroll"));
+      if (Number.isFinite(y) && y > 0) requestAnimationFrame(() => window.scrollTo(0, y));
+    } catch { /* storage is optional */ }
+  }, [navigationType, q.loading]);
   function apply(e: FormEvent) {
     e.preventDefault();
     setFilters(draft);
@@ -305,40 +320,6 @@ function Catalog() {
           onChange={(categories) => setDraft({ ...draft, categories })}
         />
       </fieldset>
-      <div className="filter-fields">
-        <label>
-          Бюджет на человека, ₽
-          <input
-            type="number"
-            min="0"
-            max="10000000"
-            placeholder="Без ограничения"
-            value={draft.budget_rub ?? ""}
-            onChange={(e) =>
-              setDraft({
-                ...draft,
-                budget_rub:
-                  e.target.value === "" ? null : Number(e.target.value),
-              })
-            }
-          />
-        </label>
-        <LocationFields
-          value={draft}
-          onChange={(v) =>
-            setDraft(({ latitude, longitude, radius_km, ...rest }) => ({
-              ...rest,
-              ...(v.latitude !== undefined
-                ? {
-                    latitude: v.latitude,
-                    longitude: v.longitude,
-                    radius_km: v.radius_km,
-                  }
-                : {}),
-            }))
-          }
-        />
-      </div>
       <div className="actions">
         <button className="primary" type="submit">
           Показать места
@@ -354,11 +335,11 @@ function Catalog() {
       <div className="eyebrow">ГОРОД / КАТАЛОГ</div>
       <h1>Куда пойдём?</h1>
       <p className="lede">
-        Знакомые улицы. Неожиданные открытия. Выбирай свой повод выйти.
+        Выбери категории и посмотри места Владивостока в удобной сетке.
       </p>
       <div className="desktop-filters panel">{form}</div>
       <button className="mobile-filter primary" onClick={() => setOpen(true)}>
-        Фильтры и расположение
+        Фильтры
       </button>
       <Dialog open={open} onClose={() => setOpen(false)} title="Выбрать места">
         {form}
@@ -369,14 +350,6 @@ function Catalog() {
           {filters.categories?.length ? (
             <span className="tag">Категорий: {filters.categories.length}</span>
           ) : null}
-          {filters.budget_rub != null && (
-            <span className="tag">
-              До {filters.budget_rub.toLocaleString("ru-RU")} ₽
-            </span>
-          )}
-          {filters.latitude !== undefined && (
-            <span className="tag">В радиусе {filters.radius_km} км</span>
-          )}
         </div>
       </div>
       {q.loading ? (
@@ -409,8 +382,7 @@ function Catalog() {
       ) : (
         <Empty title="Пока ничего не нашлось">
           <p>
-            Попробуйте изменить категории, бюджет или радиус. Мы не меняем ваши
-            условия автоматически.
+            Попробуйте изменить категории или сбросить фильтры.
           </p>
           <button onClick={reset}>Сбросить фильтры</button>
         </Empty>
@@ -448,9 +420,7 @@ function Preferences() {
     try {
       const firstVisit = !g.profile;
       await g.save(interests, budget === "" ? null : Number(budget));
-      navigate("/recommendations", {
-        state: { geo, offerTasteSetup: firstVisit },
-      });
+      navigate(firstVisit ? "/taste" : "/recommendations", { state: { geo } });
     } catch (e) {
       setError((e as Error).message);
     } finally {
@@ -547,7 +517,7 @@ function Preferences() {
           {error && <ErrorBox message={error} />}
           <div className="actions">
             <button className="primary" disabled={busy || resetting}>
-              {busy ? "Сохраняем…" : "Сохранить и подобрать ↗"}
+              {busy ? "Сохраняем…" : g.profile ? "Сохранить и открыть подборку →" : "Сохранить и перейти к карточкам →"}
             </button>
             <Link to="/catalog">Пока посмотреть каталог</Link>
           </div>
@@ -561,8 +531,7 @@ function Preferences() {
         <section className="panel">
           <h2>Начать подбор заново</h2>
           <p>
-            Очистим любимые категории и все оценки мест, включая свайпы. Бюджет
-            и отметки «Уже знакомо» сохранятся.
+            Удалим выбранные категории и оценки мест. Бюджет сохранится.
           </p>
           <button
             disabled={busy || resetting}
@@ -591,20 +560,20 @@ function Preferences() {
       )}
       {g.profile && (
         <button className="danger" onClick={() => setConfirm(true)}>
-          Удалить гостевой профиль
+          Удалить мои данные
         </button>
       )}
       <Dialog
         open={confirm}
         onClose={() => setConfirm(false)}
-        title="Удалить профиль?"
+        title="Удалить данные?"
       >
         <p>
-          Интересы и все реакции будут удалены. Отменить это действие нельзя.
+          Интересы и оценки будут удалены. Восстановить их не получится.
         </p>
         {error && <ErrorBox message={error} />}
         <div className="actions">
-          <button onClick={() => setConfirm(false)}>Оставить профиль</button>
+          <button onClick={() => setConfirm(false)}>Отмена</button>
           <button
             className="danger"
             disabled={busy}
@@ -621,7 +590,7 @@ function Preferences() {
               }
             }}
           >
-            Удалить навсегда
+            Удалить данные
           </button>
         </div>
       </Dialog>
@@ -633,10 +602,10 @@ function Selection({ discovery = false }: { discovery?: boolean }) {
   return (
     <section className="wrap page">
       <div className="eyebrow">
-        {discovery ? "НОВЫЙ ВЗГЛЯД / DISCOVERY" : "ЛИЧНЫЙ МАРШРУТ ВЫБОРА"}
+        {discovery ? "ВЫБОР МЕСТ" : "ПОДБОРКА ДЛЯ ТЕБЯ"}
       </div>
       <div className="section-heading">
-        <h1>{discovery ? "А что, если сюда?" : "Это может быть твоим."}</h1>
+        <h1>{discovery ? "Оцени место" : "Моя подборка"}</h1>
         <Link to="/preferences">Изменить предпочтения ↗</Link>
       </div>
       {g.loading ? (
@@ -646,10 +615,10 @@ function Selection({ discovery = false }: { discovery?: boolean }) {
       ) : !g.profile ? (
         <Empty title="Сначала познакомимся">
           <p>
-            Расскажи, что тебе интересно, и мы соберём персональную подборку.
+            Оцени несколько мест карточками — твой выбор поможет собрать подборку.
           </p>
-          <Link className="button primary" to="/preferences">
-            Настроить предпочтения
+          <Link className="button primary" to="/taste">
+            Начать выбирать места
           </Link>
         </Empty>
       ) : (
@@ -695,21 +664,16 @@ function SelectionResults({ discovery }: { discovery: boolean }) {
       {!discovery && <TasteInvitation />}
       {!discovery && (
         <Link className="button taste-reentry" to="/taste" state={{ geo }}>
-          Уточнить мой вкус ♡
+          Выбрать ещё карточки ♡
         </Link>
       )}
       <div className="selection-toolbar">
         <p>
           {discovery
             ? "Новые места — по одному. Оценивай и открывай следующее."
-            : "Причины подбора — рядом с каждым местом. Твой выбор меняет следующие рекомендации."}
+            : "Здесь места с учётом твоих интересов и оценок. Продолжай оценивать карточки, чтобы уточнить подборку."}
         </p>
-        <Link
-          className="button"
-          to={discovery ? "/recommendations" : "/discovery"}
-        >
-          {discovery ? "Вся подборка" : "Открыть discovery ↗"}
-        </Link>
+        {discovery && <Link className="button" to="/recommendations">Вся подборка</Link>}
       </div>
       {discovery && (
         <p className="notice">
@@ -866,13 +830,17 @@ function SelectionResults({ discovery }: { discovery: boolean }) {
 function PlaceDetail() {
   const { isAdmin } = useAdmin();
   const { id } = useParams();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const from = ["/catalog", "/recommendations", "/"].includes(location.state?.from) ? location.state.from as string : null;
+  const [photoOpen, setPhotoOpen] = useState(false);
   const q = useLoad<Place>(`/places/${encodeURIComponent(id || "")}`);
   const design = useLoad<{ state: ConstructorState | null }>(`/constructor-state/${encodeURIComponent(id || "")}`);
   const p = q.data;
   return (
     <section className="wrap page">
-      <Link className="back-link" to="/catalog">
-        ← В каталог
+      <Link className="back-link" to={from || "/catalog"} onClick={(event) => { if (from) { event.preventDefault(); navigate(-1); } }}>
+        ← Назад к местам
       </Link>
       {q.loading || design.loading ? (
         <Skeleton />
@@ -889,8 +857,11 @@ function PlaceDetail() {
               <ConstructedPlace key={p.id} place={p} state={design.data.state} />
             </> : <>
             <div className="detail-art">
-              <Artwork place={p} hero />
+              {p.photo_url ? <button className="photo-open" onClick={() => setPhotoOpen(true)} aria-label="Открыть фотографию места"><Artwork place={p} hero /></button> : <Artwork place={p} hero />}
             </div>
+            <Dialog open={photoOpen} onClose={() => setPhotoOpen(false)} title="Фотография места">
+              {p.photo_url && <img className="gallery-large" src={p.photo_url} alt={p.name} />}
+            </Dialog>
             <div className="detail-layout">
               <div>
                 <div className="eyebrow">
@@ -921,10 +892,10 @@ function PlaceDetail() {
               <aside className="panel visit-info">
                 <div className="eyebrow">ПОЛЕЗНО ЗНАТЬ</div>
                 <h2>{price(p)}</h2>
-                <p>{p.price_note}</p>
+                <CostDetails place={p} />
                 <hr />
                 <h3>Где находится</h3>
-                <p>{p.address || "Адрес уточняется"}</p>
+                <p>{p.address && !/^https?:\/\//i.test(p.address.trim()) ? p.address : "Адрес уточняется"}</p>
                 <PlaceMap key={p.id} latitude={p.latitude} longitude={p.longitude} name={p.name} />
                 <h3>Когда прийти</h3>
                 <p>{p.opening_hours || "Часы работы уточняются"}</p>

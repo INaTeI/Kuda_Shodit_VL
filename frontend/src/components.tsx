@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { api, price, type Category, type Place, type Reaction } from "./api";
 import { useGuest } from "./state";
 import { useAdmin } from "./admin";
@@ -8,15 +8,20 @@ export const HEART_PATH =
   "M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 " +
   "3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 " +
   "3.78-3.4 6.86-8.55 11.54L12 21.35z";
+const catalogCache = new Map<string, unknown>();
 export function useLoad<T>(path: string, body?: unknown, token?: string) {
-  const [data, setData] = useState<T>(),
+  const cacheable = body === undefined && !token && path.startsWith("/places?");
+  const cached = cacheable ? catalogCache.get(path) as T | undefined : undefined;
+  const [data, setData] = useState<T | undefined>(cached),
     [error, setError] = useState(""),
-    [loading, setLoading] = useState(true),
+    [loading, setLoading] = useState(cached === undefined),
     [version, reload] = useState(0);
   const serialized = JSON.stringify(body);
   useEffect(() => {
     const ctrl = new AbortController();
-    setLoading(true);
+    const previous = cacheable ? catalogCache.get(path) as T | undefined : undefined;
+    setData(previous);
+    setLoading(previous === undefined || version > 0);
     setError("");
     api<T>(path, {
       signal: ctrl.signal,
@@ -24,7 +29,7 @@ export function useLoad<T>(path: string, body?: unknown, token?: string) {
       method: body === undefined ? "GET" : "POST",
       body,
     })
-      .then(setData)
+      .then((result) => { if (cacheable) catalogCache.set(path, result); setData(result); })
       .catch((e) => {
         if (!ctrl.signal.aborted) setError(e.message);
       })
@@ -148,9 +153,10 @@ export function Card({
   children?: ReactNode;
 }) {
   const { isAdmin } = useAdmin();
+  const location = useLocation();
   return (
     <article className="card">
-      <Link to={`/places/${place.id}`} className="card-link">
+      <Link to={`/places/${place.id}`} state={{ from: location.pathname }} className="card-link">
         <Artwork place={place} />
         <div className="card-body">
           <div className="eyebrow">
@@ -160,13 +166,13 @@ export function Card({
           <p>{place.activity}</p>
           <div className="price">{price(place)}</div>
           <small>{place.price_note}</small>
-          {place.address && <p className="address">↗ {place.address}</p>}
+          {place.address && !/^https?:\/\//i.test(place.address.trim()) && <p className="address">{place.address}</p>}
         </div>
       </Link>
       {isAdmin && <a className="button" href={`/constructor/?place_id=${encodeURIComponent(place.id)}`}>Конструктор</a>}
-      {reasons && reasons.length > 0 && (
+      {reasons && reasons.filter((r) => !/совпадает с интересами/i.test(r)).length > 0 && (
         <ul className="reasons">
-          {reasons.map((r) => (
+          {reasons.filter((r) => !/совпадает с интересами/i.test(r)).map((r) => (
             <li key={r}>{r}</li>
           ))}
         </ul>
@@ -174,6 +180,25 @@ export function Card({
       {children}
     </article>
   );
+}
+export function CostDetails({ place }: { place: Place }) {
+  const details = place.cost_details;
+  if (!details) return <p>{place.price_note}</p>;
+  const amount = (min: unknown, max: unknown) => {
+    if (typeof min !== "number" || typeof max !== "number") return null;
+    if (min === 0 && max === 0) return "Бесплатно";
+    const format = (value: number) => value.toLocaleString("ru-RU");
+    return min === max ? `${format(min)} ₽` : `${format(min)}–${format(max)} ₽`;
+  };
+  const entry = amount(details.entry_min_rub, details.entry_max_rub);
+  const spending = amount(details.per_person_min_rub, details.per_person_max_rub);
+  const includes = typeof details.includes === "string" ? details.includes.trim() : "";
+  return <div className="cost-details">
+    {entry && <p><strong>Вход:</strong> {entry}</p>}
+    {spending && <p><strong>Расходы на человека:</strong> {spending}</p>}
+    {includes && <p><strong>Что входит:</strong> {includes}</p>}
+    {place.price_note && <p>{place.price_note}</p>}
+  </div>;
 }
 export function Reactions({
   id,
@@ -190,8 +215,13 @@ export function Reactions({
   if (!guest.profile)
     return (
       <p className="reaction-login">
-        <Link to="/preferences">Настройте предпочтения</Link>, чтобы оценить
-        место.
+        <button disabled={busy} onClick={async () => {
+          setBusy(true);
+          setError("");
+          try { await guest.startGuest(); } catch (e) { setError((e as Error).message); }
+          finally { setBusy(false); }
+        }}>{busy ? "Подготавливаем…" : "Начать оценивать места"}</button>
+        {error && <span role="alert">{error}</span>}
       </p>
     );
   async function update(action: () => Promise<void>) {
@@ -256,15 +286,6 @@ export function Reactions({
           </svg>
         </button>
       </div>
-      <label className="known">
-        <input
-          type="checkbox"
-          checked={state?.is_known || false}
-          disabled={busy}
-          onChange={(e) => void update(() => guest.known(id, e.target.checked))}
-        />{" "}
-        Уже знакомо
-      </label>
       <p role="status" className="save-status">
         {busy ? "Сохраняем…" : message}
       </p>

@@ -66,6 +66,14 @@ function useSession() {
   useEffect(() => {
     if (createdToken.current !== token) void refresh();
   }, [token]);
+  async function startGuest() {
+    if (tokenRef.current) throw new Error("Не удалось загрузить сохранённый профиль. Попробуйте обновить страницу.");
+    const created = await api<{ access_token: string; profile: Profile }>("/profiles", { method: "POST" });
+    createdToken.current = created.access_token;
+    remember(created.access_token);
+    setProfile(created.profile);
+    setError("");
+  }
   async function save(interests: string[], budget_rub: number | null) {
     let t = token;
     if (!t) {
@@ -172,6 +180,7 @@ function useSession() {
     notice,
     refresh,
     save,
+    startGuest,
     react,
     known,
     recordEvent,

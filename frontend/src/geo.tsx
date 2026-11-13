@@ -88,7 +88,7 @@ function useGeoState() {
     setError("");
     if (!window.isSecureContext || !navigator.geolocation) {
       setError(
-        "Геолокация доступна через HTTPS или localhost. Можно продолжить без неё.",
+        "Не удалось определить расположение. Можно продолжить без него.",
       );
       return Promise.resolve(null);
     }

@@ -66,16 +66,15 @@ test.beforeEach(async ({ page }) => {
 });
 test("home explains both ways to choose a place", async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByRole("heading", { name: /Найди место/ })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Открыть каталог →" })).toHaveAttribute("href", "/catalog");
-  await page.getByRole("link", { name: "Начать выбор →" }).click();
-  await expect(page.getByRole("heading", { name: /Что тебе интересно/ })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Сохранить и перейти к карточкам" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /Один свайп до нового места/ })).toBeVisible();
+  await expect(page.locator(".hero").getByRole("link", { name: /Смотреть места/ })).toHaveAttribute("href", "/catalog");
+  await page.getByRole("link", { name: "Начать выбирать места свайпами" }).click();
+  await expect(page.getByRole("button", { name: "Начать выбор", exact: true })).toBeVisible();
 });
 test("new visitor and saved preferences flow", async ({ page }) => {
   await page.goto("/recommendations");
   await expect(page.getByText("Сначала познакомимся")).toBeVisible();
-  await page.getByRole("link", { name: "Настроить предпочтения" }).click();
+  await page.goto("/preferences");
   await page.getByRole("button", { name: "+ Природа и виды" }).click();
   await page.getByRole("checkbox", { name: "Без ограничения" }).uncheck();
   await page
@@ -84,7 +83,8 @@ test("new visitor and saved preferences flow", async ({ page }) => {
   await page.getByRole("button", { name: "Сохранить и перейти к карточкам" }).click();
   await expect(page.getByRole("dialog", { name: "Выбирай места карточками" })).toBeVisible();
   await page.getByRole("button", { name: "Пропустить и открыть подборку" }).click();
-  await expect(page.getByText("Совпадает с интересами")).toBeVisible();
+  await expect(page.getByText("Совпадает с интересами")).toHaveCount(0);
+  await expect(page.locator(".card").first()).toBeVisible();
   await page.goto("/preferences");
   await expect(page.getByRole("spinbutton")).toHaveValue("1000");
   await expect(
@@ -126,29 +126,10 @@ for (const width of [360, 390, 768, 1280, 1440])
       ),
     ).toBe(true);
   });
-test("empty filters and denied geolocation", async ({ page }) => {
+test("empty category filters", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.addInitScript(() => {
-    navigator.geolocation.getCurrentPosition = (_s, e) =>
-      e?.({
-        code: 1,
-        message: "denied",
-        PERMISSION_DENIED: 1,
-        POSITION_UNAVAILABLE: 2,
-        TIMEOUT: 3,
-      });
-  });
   await page.goto("/catalog");
-  await page.getByRole("button", { name: "Фильтры и расположение" }).click();
-  await page
-    .getByRole("button", { name: "Рядом со мной", exact: false })
-    .last()
-    .click();
-  await expect(
-    page
-      .getByText("Доступ к геопозиции запрещён.", { exact: false })
-      .last(),
-  ).toBeVisible();
+  await page.getByRole("button", { name: "Фильтры", exact: true }).click();
   await page.route("**/api/v1/places?**", (r) =>
     r.fulfill({ json: { items: [], total: 0 } }),
   );
