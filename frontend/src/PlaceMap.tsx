@@ -1,3 +1,4 @@
+import { useGeo } from "./geo";
 import { useRef, useState, type PointerEvent } from "react";
 
 // Bounds of the bundled, north-up EPSG:3857 image (WGS84 degrees).
@@ -28,6 +29,7 @@ export function PlaceMap({
   longitude: number | null;
   name: string;
 }) {
+  const geo = useGeo();
   const [view, setView] = useState({ scale: 1, x: 0, y: 0 });
   const layer = useRef<HTMLDivElement>(null);
   const [failed, setFailed] = useState(false);
@@ -61,10 +63,36 @@ export function PlaceMap({
       </p>
     );
   const point = project(latitude, longitude);
-  const centeredView = (scale: number) => ({
+  const userPoint = geo.position
+    ? project(geo.position.latitude, geo.position.longitude)
+    : null;
+  const userOnMap =
+    userPoint &&
+    userPoint.x >= 0 &&
+    userPoint.x <= 100 &&
+    userPoint.y >= 0 &&
+    userPoint.y <= 100;
+  let distance = "";
+  if (geo.position) {
+    const radians = (n: number) => (n * Math.PI) / 180;
+    const dLat = radians(latitude - geo.position.latitude),
+      dLon = radians(longitude - geo.position.longitude);
+    const a =
+      Math.sin(dLat / 2) ** 2 +
+      Math.cos(radians(latitude)) *
+        Math.cos(radians(geo.position.latitude)) *
+        Math.sin(dLon / 2) ** 2;
+    const meters =
+      6371000 * 2 * Math.asin(Math.sqrt(Math.min(1, Math.max(0, a))));
+    distance =
+      meters < 1000
+        ? `${Math.round(meters)} м`
+        : `${(meters / 1000).toLocaleString("ru-RU", { maximumFractionDigits: 1, minimumFractionDigits: 1 })} км`;
+  }
+  const centeredView = (scale: number, target = point) => ({
     scale,
-    x: (0.5 - point.x / 100) * (layer.current?.offsetWidth ?? 0) * scale,
-    y: (0.5 - point.y / 100) * (layer.current?.offsetHeight ?? 0) * scale,
+    x: (0.5 - target.x / 100) * (layer.current?.offsetWidth ?? 0) * scale,
+    y: (0.5 - target.y / 100) * (layer.current?.offsetHeight ?? 0) * scale,
   });
   const zoom = (factor: number) =>
     setView((v) => centeredView(Math.min(6, Math.max(1, v.scale * factor))));
@@ -101,7 +129,58 @@ export function PlaceMap({
         <button type="button" onClick={() => setView({ scale: 1, x: 0, y: 0 })}>
           Сбросить карту
         </button>
+        <button
+          type="button"
+          disabled={geo.busy}
+          onClick={() => {
+            void geo.locate();
+          }}
+        >
+          {geo.busy
+            ? "Определяем…"
+            : geo.position
+              ? "Обновить геопозицию"
+              : "Моё расположение"}
+        </button>
+        {userOnMap && userPoint && (
+          <button
+            type="button"
+            onClick={() => {
+              const scale = Math.max(
+                1,
+                Math.min(
+                  6,
+                  80 / Math.max(1, Math.abs(point.x - userPoint.x)),
+                  80 / Math.max(1, Math.abs(point.y - userPoint.y)),
+                ),
+              );
+              setView(
+                centeredView(scale, {
+                  x: (point.x + userPoint.x) / 2,
+                  y: (point.y + userPoint.y) / 2,
+                }),
+              );
+            }}
+          >
+            Показать обе точки
+          </button>
+        )}
       </div>
+      {geo.error && <p role="status">{geo.error}</p>}
+      {geo.position && (
+        <p className="map-distance">
+          От вас до места: <strong>{distance}</strong> по прямой. Это не длина
+          маршрута. Геопозиция получена в{" "}
+          {new Date(geo.position.savedAt).toLocaleTimeString("ru-RU", {
+            hour: "2-digit",
+            minute: "2-digit",
+          })}
+          .
+        </p>
+      )}
+      {geo.position && !userOnMap && (
+        <p>Ваша геопозиция за пределами локальной карты Владивостока.</p>
+      )}
       <p className="fine-print" id="map-help">
         «Приблизить к месту» показывает точку крупнее в центре карты.
         Перетаскивайте карту. С клавиатуры: стрелки для перемещения, + и − для
@@ -183,6 +262,20 @@ export function PlaceMap({
               transform: `translate(-50%, -50%) scale(${1 / view.scale})`,
             }}
           />
+          {userOnMap && userPoint && (
+            <span
+              className="map-user-marker"
+              role="img"
+              aria-label={`Вы: ${distance} до места`}
+              style={{
+                left: `${userPoint.x}%`,
+                top: `${userPoint.y}%`,
+                transform: `translate(-50%, -50%) scale(${1 / view.scale})`,
+              }}
+            >
+              <span className="map-user-label">Вы · {distance}</span>
+            </span>
+          )}
         </div>
       </div>
       <p className="fine-print">
