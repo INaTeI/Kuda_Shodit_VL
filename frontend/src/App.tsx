@@ -30,7 +30,7 @@ import {
 import { useGuest } from "./state";
 import TasteSetup, { TasteInvitation } from "./TasteSetup";
 import Weather from "./Weather";
-import logo from "./assets/logo-light.svg";
+import logo from "./assets/logo.svg";
 const nav = [
   ["/catalog", "Каталог"],
   ["/recommendations", "Подборка"],
@@ -710,6 +710,23 @@ function SelectionResults({ discovery }: { discovery: boolean }) {
           карточкой. На карточке работают и стрелки клавиатуры.
         </p>
       )}
+      {!q.loading && !q.error && !!q.data?.total && (
+        <p className="selection-count" role="status">
+          {discovery ? (
+            <>
+              Новых мест для тебя: <strong>{q.data.total}</strong>
+            </>
+          ) : (
+            <>
+              Показываем{" "}
+              <strong>
+                {offset + 1}–{offset + q.data.items.length}
+              </strong>{" "}
+              из <strong>{q.data.total}</strong> подходящих мест
+            </>
+          )}
+        </p>
+      )}
       <p role="status">{message}</p>
       {error && <ErrorBox message={error} />}
       {q.loading ? (
@@ -774,18 +791,33 @@ function SelectionResults({ discovery }: { discovery: boolean }) {
           </div>
           {!discovery && (
             <nav className="pagination" aria-label="Страницы подборки">
+              <div className="pagination-steps">
+                <button
+                  disabled={offset === 0}
+                  onClick={() => setOffset(Math.max(0, offset - 6))}
+                >
+                  ← Назад
+                </button>
+                <button
+                  disabled={offset + 6 >= q.data.total}
+                  onClick={() => setOffset(offset + 6)}
+                >
+                  Далее →
+                </button>
+              </div>
               <button
-                disabled={offset === 0}
-                onClick={() => setOffset(Math.max(0, offset - 6))}
+                className="pagination-refresh"
+                onClick={q.retry}
+                aria-label="Обновить подборку"
+                title="Обновить подборку"
               >
-                ← Назад
-              </button>
-              <button onClick={q.retry}>Обновить подборку</button>
-              <button
-                disabled={offset + 6 >= q.data.total}
-                onClick={() => setOffset(offset + 6)}
-              >
-                Далее →
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                  <path d="M20.5 14.2A8.5 8.5 0 1 1 18.2 6.2" />
+                  <polyline points="20.6 2.6 20.6 8.2 15 8.2" />
+                </svg>
+                <span className="pagination-refresh-label">
+                  Обновить подборку
+                </span>
               </button>
             </nav>
           )}

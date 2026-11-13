@@ -1632,4 +1632,18 @@ main:focus-visible {
 @media(max-width:600px) { .header .weather-wind { max-width:110px; } .forecast-astro { grid-column:1 / -1; } }
 @media(max-width:600px){.header .weather-wind{white-space:normal;line-height:1.2;overflow-wrap:anywhere}}
 @media(max-width:600px){.header .logo{font-size:clamp(13px,3.6vw,18px);letter-spacing:-.5px}}
+.selection-count{margin:18px 0 4px;font-size:14px;color:var(--muted)}
+.selection-count strong{color:var(--ink);font-weight:650}
+.taste-finish-auto{font-size:13px;color:var(--muted);margin:0}
+.pagination-steps{display:flex;align-items:center;gap:20px}
+.pagination-refresh{gap:10px}
+.pagination-refresh svg{width:18px;height:18px;display:block;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+@media(max-width:600px){
+.pagination{flex-wrap:nowrap;justify-content:space-between;gap:10px}
+.pagination-steps{flex:1;gap:8px}
+.pagination-steps button{flex:1;padding:12px 8px;white-space:nowrap}
+.pagination-refresh{flex:none;width:48px;height:48px;min-width:48px;padding:0;border-radius:50%;gap:0}
+.pagination-refresh svg{width:20px;height:20px}
+.pagination-refresh-label{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+}
 .logo{display:inline-flex;align-items:center;gap:10px}.logo .brand-mark{display:block;width:44px;height:44px;flex:none}.logo .brand-name:first-of-type{font-size:inherit;color:inherit;vertical-align:baseline;margin:0}.footer .brand-mark{width:36px;height:36px}@media(max-width:600px){.header .logo .brand-mark{width:38px;height:38px}.header .logo{gap:7px}}
