@@ -42,13 +42,18 @@ def current_editor(request: Request) -> security.EditorSession | None:
     return security.read_session(request.cookies.get(security.COOKIE_NAME))
 
 
+def require_csrf(request: Request) -> None:
+    if request.headers.get(CSRF_HEADER) != "1":
+        raise HTTPException(403, f"Нет заголовка {CSRF_HEADER}")
+
+
 async def require_editor(request: Request) -> security.EditorSession:
     session = current_editor(request)
     if session is None:
         raise HTTPException(401, "Нужен вход в конструктор")
     # Изменения только с собственным заголовком: чужой сайт не отправит его без CORS-разрешения.
-    if request.method not in ("GET", "HEAD") and request.headers.get(CSRF_HEADER) != "1":
-        raise HTTPException(403, f"Нет заголовка {CSRF_HEADER}")
+    if request.method not in ("GET", "HEAD"):
+        require_csrf(request)
     return session
 
 
@@ -58,8 +63,7 @@ editor = APIRouter(prefix="/editor", tags=["Конструктор"], dependenci
 
 @auth.post("/login", response_model=SessionOut, summary="Вход в конструктор")
 async def login(data: LoginIn, request: Request, response: Response):
-    if request.headers.get(CSRF_HEADER) != "1":
-        raise HTTPException(403, f"Нет заголовка {CSRF_HEADER}")
+    require_csrf(request)
     settings = get_settings()
     if not security.login_configured():
         raise HTTPException(503, "Вход в конструктор не настроен: задайте EDITOR_PASSWORD_HASH")
@@ -83,12 +87,14 @@ async def login(data: LoginIn, request: Request, response: Response):
 
 
 @auth.post("/logout", status_code=204, summary="Выход из конструктора")
-async def logout():
+async def logout(request: Request):
+    require_csrf(request)
     response = Response(status_code=204)
     response.delete_cookie(
         security.COOKIE_NAME, path=security.COOKIE_PATH, httponly=True, samesite="strict",
         secure=get_settings().editor_cookie_secure,
     )
+    response.headers["Cache-Control"] = "no-store"
     return response
 
 

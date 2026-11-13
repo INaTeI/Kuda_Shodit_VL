@@ -69,7 +69,9 @@ async def test_login_session_logout(client):
     cookie = response.headers["set-cookie"]
     assert "HttpOnly" in cookie and "samesite=strict" in cookie.lower() and "Path=/api/v1" in cookie
     assert (await client.get("/api/v1/editor/session")).json()["username"] == "admin"
-    assert (await client.post("/api/v1/editor/logout")).status_code == 204
+    assert (await client.post("/api/v1/editor/logout")).status_code == 403
+    assert (await client.get("/api/v1/editor/session")).status_code == 200
+    assert (await client.post("/api/v1/editor/logout", headers=CSRF)).status_code == 204
     assert (await client.get("/api/v1/editor/session")).status_code == 401
 
 
@@ -120,7 +122,7 @@ async def test_save_publishes_design_for_everyone(client, place, guest):
     )
     assert saved.status_code == 200, saved.text
     assert saved.json()["revision"] == 1
-    await client.post("/api/v1/editor/logout")
+    await client.post("/api/v1/editor/logout", headers=CSRF)
 
     design = (await client.get(f"/api/v1/places/{pid}/design")).json()
     assert design["revision"] == 1 and design["title_accent"] == 2
@@ -149,7 +151,7 @@ async def test_removed_and_pending_photos_are_not_public(client, place):
     dropped = (await client.post(f"/api/v1/editor/places/{pid}/photos", content=PNG, headers=CSRF)).json()["id"]
     await client.put(f"/api/v1/editor/places/{pid}", json=body(photos=[{"id": kept}]), headers=CSRF)
     pending = (await client.post(f"/api/v1/editor/places/{pid}/photos", content=PNG, headers=CSRF)).json()["id"]
-    await client.post("/api/v1/editor/logout")
+    await client.post("/api/v1/editor/logout", headers=CSRF)
     assert (await client.get(f"/api/v1/photos/{kept}")).status_code == 200
     assert (await client.get(f"/api/v1/photos/{dropped}")).status_code == 404
     assert (await client.get(f"/api/v1/photos/{pending}")).status_code == 404
@@ -220,6 +222,6 @@ async def test_draft_place_design_hidden(client, admin, place_payload):
         f"/api/v1/editor/places/{draft['id']}", json=body(photos=[{"id": photo["id"]}]), headers=CSRF
     )
     assert saved.status_code == 200
-    await client.post("/api/v1/editor/logout")
+    await client.post("/api/v1/editor/logout", headers=CSRF)
     assert (await client.get(f"/api/v1/places/{draft['id']}/design")).status_code == 404
     assert (await client.get(f"/api/v1/photos/{photo['id']}")).status_code == 404

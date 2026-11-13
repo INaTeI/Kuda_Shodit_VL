@@ -17,8 +17,8 @@ def main() -> None:
         password = getpass.getpass("Пароль редактора: ")
         if getpass.getpass("Повторите пароль: ") != password:
             sys.exit("Пароли не совпадают")
-    if len(password) < 8:
-        sys.exit("Пароль должен быть не короче 8 символов")
+    if len(password) < 12:
+        sys.exit("Пароль должен быть не короче 12 символов")
     print(hash_password(password))
 
 

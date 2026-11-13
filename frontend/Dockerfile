@@ -1,10 +1,11 @@
 FROM node:22-alpine AS build
 WORKDIR /app
-COPY package.json package-lock.json ./
+COPY frontend/package.json frontend/package-lock.json ./
 RUN npm ci --no-audit --no-fund
-COPY index.html tsconfig.json vite.config.ts ./
-COPY src ./src
-COPY public ./public
+COPY frontend/index.html frontend/tsconfig.json frontend/vite.config.ts ./
+COPY frontend/src ./src
+COPY frontend/public ./public
+COPY design/place-constructor/index.html ./public/constructor/index.html
 RUN npm run build
 
 FROM nginx:1.28-alpine AS runtime
