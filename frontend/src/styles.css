@@ -1094,15 +1094,42 @@ main:focus-visible {
 .place-map {
   margin: 16px 0;
 }
-.map-controls {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+.map-frame {
+  position: relative;
 }
-.map-controls button {
-  min-height: 44px;
-  min-width: 44px;
-  padding: 8px 12px;
+.map-controls,
+.map-location-controls {
+  position: absolute;
+  right: 8px;
+  display: grid;
+  grid-template-columns: 44px;
+  gap: 4px;
+}
+.map-controls {
+  top: 50%;
+  transform: translateY(-50%);
+}
+.map-location-controls {
+  top: 8px;
+}
+.map-controls button,
+.map-location-controls button {
+  height: 44px;
+  padding: 0;
+  background: #fff;
+  color: #16343b;
+  font-size: 20px;
+  line-height: 1;
+  box-shadow: 0 1px 4px #16343b33;
+}
+.map-controls button:disabled,
+.map-location-icon {
+  display: block;
+  width: 24px;
+  height: 24px;
+}
+.map-location-controls button:disabled {
+  opacity: 0.65;
 }
 .map-viewport {
   overflow: hidden;
@@ -1884,7 +1911,29 @@ main:focus-visible {
   .taste-page .taste-complete-card { height: 420px; }
 }
 
-@media (max-width: 600px) {
-  .taste-stack,
-  .taste-page .taste-complete-card { height: 420px; }
+.map-user-marker {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border: 3px solid white;
+  border-radius: 50%;
+  background: #1769d2;
+  box-shadow: 0 0 0 2px #1553a0;
+  pointer-events: none;
+}
+.map-user-label {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  padding: 5px 8px;
+  border-radius: 8px;
+  color: #fff;
+  background: #1553a0;
+  font-size: 12px;
+}
+.map-distance {
+  font-size: 14px;
+  line-height: 1.6;
 }

@@ -1,20 +1,79 @@
-import json, math, gzip
+import gzip
+import json
+import math
+from collections import defaultdict
+from html import escape
 from pathlib import Path
-B=(131.75,42.95,132.10,43.30)
-W=1600
-merc=lambda lat:math.log(math.tan(math.pi/4+math.radians(lat)/2))
-H=round(W*(merc(B[3])-merc(B[1]))/math.radians(B[2]-B[0]))
-def xy(p):return ((p['lon']-B[0])/(B[2]-B[0])*W,(merc(B[3])-merc(p['lat']))/(merc(B[3])-merc(B[1]))*H)
-data=json.loads(gzip.decompress(Path('frontend/scripts/map-source.json.gz').read_bytes()))
-parts=[f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}"><title>Владивосток: береговая линия и основные дороги — OpenStreetMap</title><rect width="{W}" height="{H}" fill="#eef1eb"/>']
-for coast in [True,False]:
- for e in data['elements']:
-  tags=e.get('tags',{})
-  if (tags.get('natural')=='coastline')!=coast:continue
-  pts=' '.join(f'{x:.2f},{y:.2f}' for x,y in map(xy,e['geometry']))
-  color='#70aeb5' if coast else '#c49f74'
-  width=4 if coast else (3 if tags.get('highway') in ['primary','trunk','motorway'] else 1.6)
-  parts.append(f'<polyline points="{pts}" fill="none" stroke="{color}" stroke-width="{width}" stroke-linejoin="round"/>')
-parts.append('</svg>')
-Path('frontend/public/maps/vladivostok.svg').write_text(''.join(parts),encoding='utf-8')
-print(f'{len(data["elements"])} ways; {W}x{H}')
+
+FRONTEND = Path(__file__).resolve().parents[1]
+WEST, SOUTH, EAST, NORTH = 131.75, 42.95, 132.10, 43.30
+WIDTH = 1600
+
+
+def mercator(latitude):
+    return math.log(math.tan(math.pi / 4 + math.radians(latitude) / 2))
+
+
+northing = mercator(NORTH)
+span = northing - mercator(SOUTH)
+HEIGHT = round(WIDTH * span / math.radians(EAST - WEST))
+
+
+def project(longitude, latitude):
+    return (
+        round(WIDTH * (longitude - WEST) / (EAST - WEST), 1),
+        round(HEIGHT * (northing - mercator(latitude)) / span, 1),
+    )
+
+
+def shape(points, closed=False):
+    points = [f'{x:g} {y:g}' for x, y in points]
+    return f'M{"L".join(points)}' + ('Z' if closed else '')
+
+
+scripts = FRONTEND / 'scripts'
+base = json.loads(gzip.decompress((scripts / 'map-source.json.gz').read_bytes()))
+detail = json.loads(gzip.decompress((scripts / 'map-detail.json.gz').read_bytes()))
+paths = defaultdict(list)
+labels = []
+areas = {'water': '#b8dde7', 'wood': '#dce9d4', 'park': '#cce4c3'}
+roads = {
+    'service': ('#c7c6bc', .35), 'minor': ('#a8a89b', .63),
+    'tertiary': ('#b8a076', 1.05), 'secondary': ('#be935f', 1.5),
+    'primary': ('#aa7447', 2.05), 'coastline': ('#70aeb5', 1.75),
+}
+
+
+def road_group(kind):
+    kind = kind.removesuffix('_link')
+    if kind in {'trunk', 'motorway', 'primary'}:
+        return 'primary'
+    return kind if kind in roads else 'minor'
+
+
+for element in base['elements']:
+    tags = element['tags']
+    kind = 'coastline' if tags.get('natural') == 'coastline' else road_group(tags['highway'])
+    paths[kind].append(shape([project(p['lon'], p['lat']) for p in element['geometry']]))
+for kind, *data in detail['features']:
+    if kind == 'label':
+        name, rank, longitude, latitude = data
+        x, y = project(longitude, latitude)
+        size = 18 if rank in {'city', 'town'} else 11
+        labels.append(f'<text x="{x:g}" y="{y:g}" font-size="{size}">{escape(name)}</text>')
+    else:
+        group = kind if kind in areas else road_group(kind)
+        paths[group].append(shape([project(*point) for point in data[0]], kind in areas))
+
+svg = [f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {WIDTH} {HEIGHT}">',
+       '<title>Владивосток — данные OpenStreetMap</title>',
+       f'<rect width="{WIDTH}" height="{HEIGHT}" fill="#f2f0e9"/>']
+for kind, color in areas.items():
+    svg.append(f'<path fill="{color}" d="{"".join(paths[kind])}"/>')
+for kind, (color, width) in roads.items():
+    svg.append(f'<path fill="none" stroke="{color}" stroke-width="{width}" stroke-linejoin="round" d="{"".join(paths[kind])}"/>')
+svg.append('<g text-anchor="middle" font-family="sans-serif" font-weight="600" fill="#29434b" stroke="#f2f0e9" stroke-width="2" paint-order="stroke">')
+svg.extend(labels)
+svg.append('</g></svg>')
+(FRONTEND / 'public/maps/vladivostok.svg').write_text('\n'.join(svg) + '\n', encoding='utf-8')
+print(f'{WIDTH} × {HEIGHT}, {len(detail["features"])} additional features')
