@@ -3,7 +3,10 @@
 services:
   api:
     image: vdk-gid-api:${VDK_RELEASE_ID:?Set release ID}
+    environment:
+      PUBLIC_SITE_URL: ${PUBLIC_SITE_URL:-https://kudaskhoditvl.ru}
   nginx:
     volumes:
       - ./nginx.web.conf:/etc/nginx/nginx.conf:ro
+      - ${VDK_RELEASE_DIR:?Set absolute release directory}/frontend/nginx-web.locations:/etc/nginx/nginx-web.locations:ro
       - ${VDK_RELEASE_DIR:?Set absolute release directory}/frontend/dist:/usr/share/nginx/html:ro

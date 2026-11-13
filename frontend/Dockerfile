@@ -9,6 +9,7 @@ RUN npm run build
 
 FROM nginx:1.28-alpine AS runtime
 COPY nginx.conf /etc/nginx/nginx.conf
+COPY nginx-web.locations /etc/nginx/nginx-web.locations
 COPY --from=build /app/dist /usr/share/nginx/html
 USER nginx
 EXPOSE 8080
