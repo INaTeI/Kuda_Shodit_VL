@@ -1,0 +1,942 @@
+[
+  {
+    "place_id": "place_d3bebf32e65810402db9",
+    "name": "Supra",
+    "source_row": 2
+  },
+  {
+    "place_id": "place_83c98771ab6b99b87000",
+    "name": "Studio",
+    "source_row": 3
+  },
+  {
+    "place_id": "place_bed0d69b214201fce4cd",
+    "name": "Дело в мясе (Delo V Myase)",
+    "source_row": 4
+  },
+  {
+    "place_id": "place_32ac6df3f354687b31bc",
+    "name": "Миллионка",
+    "source_row": 5
+  },
+  {
+    "place_id": "place_da61e761a871c002d236",
+    "name": "Токио (Tokio), сеть ресторанов японской кухни",
+    "source_row": 6
+  },
+  {
+    "place_id": "place_d91ff6d28cc80ca2b08c",
+    "name": "Акватория (Aquatoria)",
+    "source_row": 7
+  },
+  {
+    "place_id": "place_7ff8c842f98a3ce54621",
+    "name": "Gusto gastrobar",
+    "source_row": 8
+  },
+  {
+    "place_id": "place_d588b80afdf4acbb44b3",
+    "name": "Бармузей «Вася Ложкин» (Vasya Lozhkin Barmuseum)",
+    "source_row": 9
+  },
+  {
+    "place_id": "place_7a7071625097cb7947db",
+    "name": "Pizza Prosto (Пицца Просто)",
+    "source_row": 10
+  },
+  {
+    "place_id": "place_d8541eb51f95b6ad0bd5",
+    "name": "Sicilian (Сицилиан)",
+    "source_row": 11
+  },
+  {
+    "place_id": "place_4217ec6ad30cf77c80b8",
+    "name": "More (Море)",
+    "source_row": 12
+  },
+  {
+    "place_id": "place_9f599bf1a1dd9b0441d0",
+    "name": "Kafema (Кафема)",
+    "source_row": 13
+  },
+  {
+    "place_id": "place_d25a9a5c9251c28ffa0d",
+    "name": "Сплетни",
+    "source_row": 14
+  },
+  {
+    "place_id": "place_3137b9927a10d333e4c0",
+    "name": "Iz Brasserie",
+    "source_row": 15
+  },
+  {
+    "place_id": "place_b2f31391962f50df09f1",
+    "name": "Jimmy Jimmy",
+    "source_row": 16
+  },
+  {
+    "place_id": "place_695a3da125a8143062ff",
+    "name": "Tbilissimo (Тбилиссимо)",
+    "source_row": 17
+  },
+  {
+    "place_id": "place_a217712f9fb10ee1353d",
+    "name": "Огонёк (Ogonek)",
+    "source_row": 18
+  },
+  {
+    "place_id": "place_44ad92603211fa8d0fc0",
+    "name": "Токио (Tokio) на Острякова",
+    "source_row": 19
+  },
+  {
+    "place_id": "place_78f3cd13b50b94abcb31",
+    "name": "Супра Романи (Supra Romani)",
+    "source_row": 20
+  },
+  {
+    "place_id": "place_ed5d7af7ba091c391dfe",
+    "name": "Trinity Irish Pub",
+    "source_row": 21
+  },
+  {
+    "place_id": "place_36983d702a9c0579c2fa",
+    "name": "HookahPlace (ХукаПлейс)",
+    "source_row": 22
+  },
+  {
+    "place_id": "place_efb8d2066ee34ac29349",
+    "name": "Кавказская пленница",
+    "source_row": 23
+  },
+  {
+    "place_id": "place_7cdf2f9fbf4968b3e9df",
+    "name": "Чача дом",
+    "source_row": 24
+  },
+  {
+    "place_id": "place_40fb09bce560180ccab5",
+    "name": "Chill Zone (Чилл Зон)",
+    "source_row": 25
+  },
+  {
+    "place_id": "place_cd86e87eb67b1a248e8b",
+    "name": "Umami ramen club (Умами рамен клаб)",
+    "source_row": 26
+  },
+  {
+    "place_id": "place_3a0e952bb918a346a82e",
+    "name": "Ozzy Bar (Оззи бар)",
+    "source_row": 27
+  },
+  {
+    "place_id": "place_8ae808495720ce325bde",
+    "name": "Sky Love (Скай Лав)",
+    "source_row": 28
+  },
+  {
+    "place_id": "place_ef6c054c2c8df8ad53f5",
+    "name": "Brugge (Брюгге)",
+    "source_row": 29
+  },
+  {
+    "place_id": "place_199d53c8d0c48f546995",
+    "name": "Сыроварня",
+    "source_row": 30
+  },
+  {
+    "place_id": "place_18a9850a0e8aec71b038",
+    "name": "Dakara (Дакара)",
+    "source_row": 31
+  },
+  {
+    "place_id": "place_06a36f87c86e912e6dd3",
+    "name": "Добрыня и Аня",
+    "source_row": 32
+  },
+  {
+    "place_id": "place_f0057038676141b22e6f",
+    "name": "Восточная Жемчужина",
+    "source_row": 33
+  },
+  {
+    "place_id": "place_426fd917c798b8ac0611",
+    "name": "Золотой век (Zolotoy vek)",
+    "source_row": 34
+  },
+  {
+    "place_id": "place_87dd76f448771eebf20c",
+    "name": "Кофемолка (Coffeemolka)",
+    "source_row": 35
+  },
+  {
+    "place_id": "place_4ce51108bac11d7c88a6",
+    "name": "Пекинская утка",
+    "source_row": 36
+  },
+  {
+    "place_id": "place_b0e2f902d30e0868df54",
+    "name": "Zuma (Зума)",
+    "source_row": 37
+  },
+  {
+    "place_id": "place_c7920413ae2dfdd2da50",
+    "name": "Мирине (Mirine)",
+    "source_row": 38
+  },
+  {
+    "place_id": "place_42677d9a06c1a8318faa",
+    "name": "Billy's Pub (Биллис Паб)",
+    "source_row": 39
+  },
+  {
+    "place_id": "place_d989292f22a2178d8df3",
+    "name": "Камбей (Kambey)",
+    "source_row": 40
+  },
+  {
+    "place_id": "place_6bff8ea2e09db6fad40a",
+    "name": "Диди Супра (Didi Supra)",
+    "source_row": 41
+  },
+  {
+    "place_id": "place_2d6b6aef09c6517429ce",
+    "name": "Hinkali (Хинкали)",
+    "source_row": 42
+  },
+  {
+    "place_id": "place_1a1656df1b098d9a17e9",
+    "name": "ЛаоБан (LaoBan)",
+    "source_row": 43
+  },
+  {
+    "place_id": "place_f1bb9e66fd96c0dabb78",
+    "name": "Севан (Sevan)",
+    "source_row": 44
+  },
+  {
+    "place_id": "place_f6cde6ad28f8f71adbf6",
+    "name": "Лесная заимка",
+    "source_row": 45
+  },
+  {
+    "place_id": "place_06fec50ec5d87eac83a3",
+    "name": "Limoncello (Лимончелло)",
+    "source_row": 46
+  },
+  {
+    "place_id": "place_d0e6bce9ee1d1c6e9db3",
+    "name": "Fabrika Bowling (Фабрика Боулинг) на Светланской",
+    "source_row": 47
+  },
+  {
+    "place_id": "place_7bf098de3068ba94d3aa",
+    "name": "Fabrika (Фабрика) на 100-летия Владивостока",
+    "source_row": 48
+  },
+  {
+    "place_id": "place_3ca99560b8b8708e8b20",
+    "name": "Hunter (Охотник)",
+    "source_row": 49
+  },
+  {
+    "place_id": "place_d5daf26e89c83c0aed41",
+    "name": "Sektor (Сектор), компьютерный клуб",
+    "source_row": 50
+  },
+  {
+    "place_id": "place_2afdd021efe9261ef1b5",
+    "name": "Играй (Igray), компьютерный клуб",
+    "source_row": 51
+  },
+  {
+    "place_id": "place_eaa38fc7823f4a7d968b",
+    "name": "Fame (Фейм), компьютерный клуб",
+    "source_row": 52
+  },
+  {
+    "place_id": "place_705aaeb064cc85550d15",
+    "name": "Cybermg (Cybergym), компьютерный клуб",
+    "source_row": 53
+  },
+  {
+    "place_id": "place_19e3b54fd53a568ddccd",
+    "name": "VR-Lab (ВР-Лаб), клуб виртуальной реальности",
+    "source_row": 54
+  },
+  {
+    "place_id": "place_bd25e58f9065f39287a3",
+    "name": "TiAMA (Тиама)",
+    "source_row": 55
+  },
+  {
+    "place_id": "place_57ae04a5b500bc63af27",
+    "name": "Vinil (Винил)",
+    "source_row": 56
+  },
+  {
+    "place_id": "place_ab30e5f8609c74a93a44",
+    "name": "Cabinet (Кабинет)",
+    "source_row": 57
+  },
+  {
+    "place_id": "place_e69eb21b3cf280079849",
+    "name": "Зажигалка",
+    "source_row": 58
+  },
+  {
+    "place_id": "place_76d672fb9bb006432756",
+    "name": "Философия",
+    "source_row": 59
+  },
+  {
+    "place_id": "place_5528748b9b71f5c1129b",
+    "name": "Клуб Москва",
+    "source_row": 60
+  },
+  {
+    "place_id": "place_83966a871228865b2e04",
+    "name": "Пазл групп",
+    "source_row": 61
+  },
+  {
+    "place_id": "place_87da9ce6e113d874b3e3",
+    "name": "Ku2 (Ку2)",
+    "source_row": 62
+  },
+  {
+    "place_id": "place_91906175b3d9f6eb3240",
+    "name": "Sibumi (Сибуми)",
+    "source_row": 63
+  },
+  {
+    "place_id": "place_91b5580c2ec0f02b400b",
+    "name": "Tigerpizza (Тайгерпицца)",
+    "source_row": 64
+  },
+  {
+    "place_id": "place_d705fc9c579bd24b5bbd",
+    "name": "Rakushka (Ракушка)",
+    "source_row": 65
+  },
+  {
+    "place_id": "place_5c83572feee7feb0be2b",
+    "name": "Пятый океан",
+    "source_row": 66
+  },
+  {
+    "place_id": "place_04ad6d978dc15b1d465a",
+    "name": "Не рыдай!",
+    "source_row": 67
+  },
+  {
+    "place_id": "place_357f42c7549f11be91fa",
+    "name": "Бурный",
+    "source_row": 68
+  },
+  {
+    "place_id": "place_45778e28a32d9fcba6dc",
+    "name": "Gangnam (Гангнам)",
+    "source_row": 69
+  },
+  {
+    "place_id": "place_215e33ec43cb1fa7ac67",
+    "name": "Вспышка",
+    "source_row": 70
+  },
+  {
+    "place_id": "place_09860b936d65ff2589e9",
+    "name": "Марков на Спортивной",
+    "source_row": 71
+  },
+  {
+    "place_id": "place_aa74bca3dafeaafe55fc",
+    "name": "Coffee Point на 100-летия",
+    "source_row": 72
+  },
+  {
+    "place_id": "place_4e3c43fe80b62d7b40a4",
+    "name": "Пекарня Мишеля в ГУМе",
+    "source_row": 73
+  },
+  {
+    "place_id": "place_ac68df0398abdf98c99a",
+    "name": "Порто-Франко",
+    "source_row": 74
+  },
+  {
+    "place_id": "place_37412062ece9d10cecec",
+    "name": "Молоко и Мёд",
+    "source_row": 75
+  },
+  {
+    "place_id": "place_ea6d489845bf6c86f7a2",
+    "name": "Высота",
+    "source_row": 76
+  },
+  {
+    "place_id": "place_36ada4c94cb87ee27bc3",
+    "name": "CRUST Pizza & Wine",
+    "source_row": 77
+  },
+  {
+    "place_id": "place_c49c807a1082cae5de2f",
+    "name": "Кондитория",
+    "source_row": 78
+  },
+  {
+    "place_id": "place_64d763ffbb525ef9cfcd",
+    "name": "Лима",
+    "source_row": 79
+  },
+  {
+    "place_id": "place_172e77b0d3ac62243a0a",
+    "name": "Lotus Room",
+    "source_row": 80
+  },
+  {
+    "place_id": "place_4eae697b286d28fcad5c",
+    "name": "MIYAKO (Мияко)",
+    "source_row": 81
+  },
+  {
+    "place_id": "place_fe3cf6edde653b2405d8",
+    "name": "Dumpling Republic (Дамплинг Репаблик)",
+    "source_row": 82
+  },
+  {
+    "place_id": "place_6d829f3012892b76525c",
+    "name": "САГРА (Sagra)",
+    "source_row": 83
+  },
+  {
+    "place_id": "place_17e8e693e98ab435627a",
+    "name": "Да, Шеф!!!",
+    "source_row": 84
+  },
+  {
+    "place_id": "place_4f23a7f613bd4c2463ab",
+    "name": "Holy Hop",
+    "source_row": 85
+  },
+  {
+    "place_id": "place_292bd18c56f6cf774c11",
+    "name": "Redneck Pub",
+    "source_row": 86
+  },
+  {
+    "place_id": "place_06ca0b918f705c947c0f",
+    "name": "BURO (Бюро)",
+    "source_row": 87
+  },
+  {
+    "place_id": "place_25c779965d3cbfa7f1c7",
+    "name": "Девочки не плачут",
+    "source_row": 88
+  },
+  {
+    "place_id": "place_98e98fad3185d0c68e2c",
+    "name": "Икра и водки",
+    "source_row": 89
+  },
+  {
+    "place_id": "place_59188f852e9769472649",
+    "name": "Что-то с чем-то",
+    "source_row": 90
+  },
+  {
+    "place_id": "place_5ac9a7dfda95776bd8f0",
+    "name": "Это Бар",
+    "source_row": 91
+  },
+  {
+    "place_id": "place_ce9b5d146d95b97dc6dc",
+    "name": "Жуклевичъ",
+    "source_row": 92
+  },
+  {
+    "place_id": "place_efb0d5dec631426d2ebb",
+    "name": "Chinoaru (Чиноару)",
+    "source_row": 93
+  },
+  {
+    "place_id": "place_5abc8df0c3b640c847c8",
+    "name": "Контрабанда (Contrabanda. Club)",
+    "source_row": 94
+  },
+  {
+    "place_id": "place_89542deda015c2fbefe4",
+    "name": "Бункер 28",
+    "source_row": 95
+  },
+  {
+    "place_id": "place_442453d9218301ede629",
+    "name": "RISE",
+    "source_row": 96
+  },
+  {
+    "place_id": "place_14d7814a2fcc62e4a61a",
+    "name": "True Gamers на Русской",
+    "source_row": 97
+  },
+  {
+    "place_id": "place_9b6b88f0938cbbb43600",
+    "name": "COLIZEUM на Сельской",
+    "source_row": 98
+  },
+  {
+    "place_id": "place_52628b35c56daa0a8d01",
+    "name": "COLIZEUM на Достоевского",
+    "source_row": 99
+  },
+  {
+    "place_id": "place_d906374b245dddd69e31",
+    "name": "Шторм (Storm)",
+    "source_row": 100
+  },
+  {
+    "place_id": "place_92ade75b585df57c9f28",
+    "name": "PlayGround",
+    "source_row": 101
+  },
+  {
+    "place_id": "place_9d7196a12d11faa97990",
+    "name": "Cyber Lab (Кибер Лаб)",
+    "source_row": 102
+  },
+  {
+    "place_id": "place_8f9d68e7638e7065e7e2",
+    "name": "Cybermg (Cybergym) на Русской",
+    "source_row": 103
+  },
+  {
+    "place_id": "place_e4e6a56276f09285ce73",
+    "name": "SEKTOR на Баляева",
+    "source_row": 104
+  },
+  {
+    "place_id": "place_f8e64cfd99f19b0f9022",
+    "name": "SEKTOR в ТЦ «Первомай»",
+    "source_row": 105
+  },
+  {
+    "place_id": "place_6eee8ed0deca59cefc15",
+    "name": "SEKTOR на Металлургической",
+    "source_row": 106
+  },
+  {
+    "place_id": "place_a7f1b8821cb3a4fe5690",
+    "name": "Боулинг на Тунгусской (Bouling1)",
+    "source_row": 107
+  },
+  {
+    "place_id": "place_608309fd8da9ff3d269c",
+    "name": "Chester (Честер)",
+    "source_row": 108
+  },
+  {
+    "place_id": "place_d08980f2ef601b82ce6f",
+    "name": "Картинг на Калинина (KartKlub)",
+    "source_row": 109
+  },
+  {
+    "place_id": "place_86ebc010a5f89744841d",
+    "name": "WARPOINT",
+    "source_row": 110
+  },
+  {
+    "place_id": "place_7be37b932a39ae824022",
+    "name": "Pandoroom на Нижнепортовой",
+    "source_row": 111
+  },
+  {
+    "place_id": "place_9c5d97d6f17c75a5bda0",
+    "name": "Pixel Quest (Пиксель Квест)",
+    "source_row": 112
+  },
+  {
+    "place_id": "place_2382227aad06cb3d183d",
+    "name": "Квесты «Иллюзион» в ТЦ «Черёмушки»",
+    "source_row": 113
+  },
+  {
+    "place_id": "place_c02b010169c02c6550ab",
+    "name": "Нёрф Арена",
+    "source_row": 114
+  },
+  {
+    "place_id": "place_12946e101f617e9cde71",
+    "name": "Кинотеатр «Океан»",
+    "source_row": 115
+  },
+  {
+    "place_id": "place_c0d3871088e612195ced",
+    "name": "Кинотеатр «Уссури»",
+    "source_row": 116
+  },
+  {
+    "place_id": "place_08df1881be0b1e82311e",
+    "name": "Кинотеатр «Иллюзион»",
+    "source_row": 117
+  },
+  {
+    "place_id": "place_281d1b2d20febf8d6486",
+    "name": "Кинотеатр «Черёмушки» — Иллюзион Парк",
+    "source_row": 118
+  },
+  {
+    "place_id": "place_a4d32c3c938806c2bbfe",
+    "name": "Киномакс-Сапфир",
+    "source_row": 119
+  },
+  {
+    "place_id": "place_5a6e49550191f79d026e",
+    "name": "Кинотеатр «Владивосток»",
+    "source_row": 120
+  },
+  {
+    "place_id": "place_de823cf2ac3d4248e850",
+    "name": "Зоопарк «Садгород»",
+    "source_row": 121
+  },
+  {
+    "place_id": "place_209e795b7d37085b9a5e",
+    "name": "Приморский океанариум",
+    "source_row": 122
+  },
+  {
+    "place_id": "place_5e12eed1c775164f0d78",
+    "name": "Скалодром «Типография»",
+    "source_row": 123
+  },
+  {
+    "place_id": "place_2ecc58c833760d702d59",
+    "name": "Jump Town",
+    "source_row": 124
+  },
+  {
+    "place_id": "place_67a60bf8b7d5b4fe42b2",
+    "name": "Квесткафе",
+    "source_row": 125
+  },
+  {
+    "place_id": "place_f0d15c2d46e5901164a4",
+    "name": "Пейнтбольный клуб «Аскольд»",
+    "source_row": 126
+  },
+  {
+    "place_id": "place_35254aa9322c79291754",
+    "name": "LaserWar25 / ЛазерВор25",
+    "source_row": 127
+  },
+  {
+    "place_id": "place_a8ec5b40971cad6eacaa",
+    "name": "Gogi Korean BBQ",
+    "source_row": 128
+  },
+  {
+    "place_id": "place_d893357d43db3b42fbf4",
+    "name": "ЭН",
+    "source_row": 129
+  },
+  {
+    "place_id": "place_032971e97a68df5d6201",
+    "name": "Palau Fish",
+    "source_row": 130
+  },
+  {
+    "place_id": "place_fc85da33a9ab2ec2173e",
+    "name": "Шибер",
+    "source_row": 131
+  },
+  {
+    "place_id": "place_2ab9df5fdb8addbfaf51",
+    "name": "Парк аттракционов «Карусель»",
+    "source_row": 132
+  },
+  {
+    "place_id": "place_9b57fad7821cd084f050",
+    "name": "Molokai — прокат SUP-досок",
+    "source_row": 133
+  },
+  {
+    "place_id": "place_5b84b04a2eff6492eeb4",
+    "name": "Sup Up — прокат на Русском острове",
+    "source_row": 134
+  },
+  {
+    "place_id": "place_7746eaf8860c9d4874bf",
+    "name": "Поэма вкуса",
+    "source_row": 135
+  },
+  {
+    "place_id": "place_197804fb7348708eb090",
+    "name": "Набережная Цесаревича",
+    "source_row": 136
+  },
+  {
+    "place_id": "place_4810c311dbaf360b19ed",
+    "name": "Сквер Надибаидзе",
+    "source_row": 137
+  },
+  {
+    "place_id": "place_8bdf1a9659ebe0692b65",
+    "name": "Некрасовский сквер",
+    "source_row": 138
+  },
+  {
+    "place_id": "place_74b9255d4e80eba578e2",
+    "name": "Сквер Депутатская аллея",
+    "source_row": 139
+  },
+  {
+    "place_id": "place_d72964438815b47e805a",
+    "name": "Корабельная набережная",
+    "source_row": 140
+  },
+  {
+    "place_id": "place_13fa47bdf1ea51b0bdbc",
+    "name": "Парк Минного городка",
+    "source_row": 141
+  },
+  {
+    "place_id": "place_bd00ebadd678066264af",
+    "name": "Сквер Анны Щетининой",
+    "source_row": 142
+  },
+  {
+    "place_id": "place_573770ed8bfdc688f69e",
+    "name": "Университетская набережная",
+    "source_row": 143
+  },
+  {
+    "place_id": "place_e8dd2951e55954f74594",
+    "name": "Озеро на ул. Сафонова",
+    "source_row": 144
+  },
+  {
+    "place_id": "place_177f491d9f2b19f4ded1",
+    "name": "Сквер Первой маёвки",
+    "source_row": 145
+  },
+  {
+    "place_id": "place_006f891f5ca06d1f14c4",
+    "name": "Набережная Ахлёстышева",
+    "source_row": 146
+  },
+  {
+    "place_id": "place_b44592c1e53f35cac239",
+    "name": "Озеро Чан",
+    "source_row": 147
+  },
+  {
+    "place_id": "place_1303f8dfbf10e61e51a3",
+    "name": "Стадион МГУ",
+    "source_row": 148
+  },
+  {
+    "place_id": "place_ec488953994a552f2ce4",
+    "name": "Бухта Фёдорова",
+    "source_row": 149
+  },
+  {
+    "place_id": "place_04ce3ad7995ad5e8bfda",
+    "name": "Кунгасный парк, пляж",
+    "source_row": 150
+  },
+  {
+    "place_id": "place_ad8f4d5f4a74771ff5ac",
+    "name": "Набережная им. Арсеньева",
+    "source_row": 151
+  },
+  {
+    "place_id": "place_0111543227c3eaea15b5",
+    "name": "Набережная на Татарской",
+    "source_row": 152
+  },
+  {
+    "place_id": "place_2dc79f3e3c7c75562215",
+    "name": "Пианино на Русском",
+    "source_row": 153
+  },
+  {
+    "place_id": "place_50fb19c6949a9109c6c3",
+    "name": "Владивостокская крепость, форт №7",
+    "source_row": 154
+  },
+  {
+    "place_id": "place_b14b7b54bd35315480bc",
+    "name": "Маяк Токаревского",
+    "source_row": 155
+  },
+  {
+    "place_id": "place_584fb8ea4602f885b0df",
+    "name": "Сопка Бурачка",
+    "source_row": 156
+  },
+  {
+    "place_id": "place_0cd71ad90b46eed82ad6",
+    "name": "Береговая батарея Уссурийская",
+    "source_row": 157
+  },
+  {
+    "place_id": "place_028e8e5ffac5e17ee1ac",
+    "name": "Пляж мыса Поспелова",
+    "source_row": 158
+  },
+  {
+    "place_id": "place_ac0117a6d093391b6dc6",
+    "name": "Новосильцевская береговая батарея",
+    "source_row": 159
+  },
+  {
+    "place_id": "place_016b7f29ee55b75a39c4",
+    "name": "Мыс Тихий",
+    "source_row": 160
+  },
+  {
+    "place_id": "place_ab552babfefd9cec531a",
+    "name": "Агатовый сквер",
+    "source_row": 161
+  },
+  {
+    "place_id": "place_c806bf547474e631aeba",
+    "name": "Царские конюшни",
+    "source_row": 162
+  },
+  {
+    "place_id": "place_ddea4a27c8b89eb2e9cb",
+    "name": "Курсантский сквер",
+    "source_row": 163
+  },
+  {
+    "place_id": "place_2187cdd90f7b92b05927",
+    "name": "Три пещеры",
+    "source_row": 164
+  },
+  {
+    "place_id": "place_6e1118f93da689f8af94",
+    "name": "Сквер им. Суханова",
+    "source_row": 165
+  },
+  {
+    "place_id": "place_5bd2968542d35ecf5739",
+    "name": "Аллея на Кирова",
+    "source_row": 166
+  },
+  {
+    "place_id": "place_a79b656d477c5e28ce55",
+    "name": "Парк на Кирова",
+    "source_row": 167
+  },
+  {
+    "place_id": "place_1d2ab450f1055502f3c6",
+    "name": "Сосновая тропа",
+    "source_row": 168
+  },
+  {
+    "place_id": "place_0c13ed86f98a927966e9",
+    "name": "Парк Снеговая падь",
+    "source_row": 169
+  },
+  {
+    "place_id": "place_5a06039994bd9f759101",
+    "name": "Парк Орлиное гнездо",
+    "source_row": 170
+  },
+  {
+    "place_id": "place_58ff708e1d0fee5fc02e",
+    "name": "Сквер на Окатовой",
+    "source_row": 171
+  },
+  {
+    "place_id": "place_4b87d4b9fd27148337af",
+    "name": "Сквер путешественников",
+    "source_row": 172
+  },
+  {
+    "place_id": "place_54f0035fe19cc23a6362",
+    "name": "Сквер Героев-Даманцев",
+    "source_row": 173
+  },
+  {
+    "place_id": "place_3330ca9ba8a659144cff",
+    "name": "Дендропарк ВВГУ",
+    "source_row": 174
+  },
+  {
+    "place_id": "place_16ab0199cf05df577720",
+    "name": "Сквер им. Пушкина",
+    "source_row": 175
+  },
+  {
+    "place_id": "place_8cace77636f2558a1b47",
+    "name": "Сквер им. Ленина",
+    "source_row": 176
+  },
+  {
+    "place_id": "place_1b60c85916aa4c393720",
+    "name": "Театральный сквер",
+    "source_row": 177
+  },
+  {
+    "place_id": "place_4154041a7faf8deb3992",
+    "name": "Сквер им. Муравьёва-Амурского",
+    "source_row": 178
+  },
+  {
+    "place_id": "place_4acb3e0d29f583de7da7",
+    "name": "Сквер им. Игнатьева",
+    "source_row": 179
+  },
+  {
+    "place_id": "place_de8117ae8bd71193213d",
+    "name": "Парк на торфяном озере",
+    "source_row": 180
+  },
+  {
+    "place_id": "place_cbc1108fe96f046625f9",
+    "name": "Седанка парк",
+    "source_row": 181
+  },
+  {
+    "place_id": "place_55903ca17a7c9ccdfbbe",
+    "name": "Парк Победы",
+    "source_row": 182
+  },
+  {
+    "place_id": "place_e830b035b6a852d6ff56",
+    "name": "Парк культуры и отдыха им. Лазо",
+    "source_row": 183
+  },
+  {
+    "place_id": "place_bb7146a83b795b267cc4",
+    "name": "Роял Парк",
+    "source_row": 184
+  },
+  {
+    "place_id": "place_f88b7ee057405f7935c5",
+    "name": "Покровский парк",
+    "source_row": 185
+  },
+  {
+    "place_id": "place_6fcaf63c13882a93924d",
+    "name": "Леопардовая набережная",
+    "source_row": 186
+  },
+  {
+    "place_id": "place_d14bee7854727c07e121",
+    "name": "Набережная Патрокла",
+    "source_row": 187
+  },
+  {
+    "place_id": "place_ca36d8ca26e644441a91",
+    "name": "Смотровой мостик",
+    "source_row": 188
+  },
+  {
+    "place_id": "place_5fe7da6e51b7740c183b",
+    "name": "Смотровая площадка с сердцем",
+    "source_row": 189
+  }
+]

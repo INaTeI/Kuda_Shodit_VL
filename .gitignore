@@ -10,3 +10,7 @@ htmlcov/
 backups/
 data/imports/
 import-report*.json
+recommender/models/
+recommender/cache/
+recommender/.python/
+.DS_Store

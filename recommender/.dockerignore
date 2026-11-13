@@ -1,0 +1,6 @@
+models/
+.python/
+cache/
+.venv/
+__pycache__/
+*.zip

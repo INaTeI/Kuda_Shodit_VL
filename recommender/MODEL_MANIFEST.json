@@ -1,0 +1,57 @@
+[
+  {
+    "path": "models/qwen/1_Pooling/config.json",
+    "bytes": 100,
+    "sha256": "baa685c5fa97c7dc40d1821ff126401c92b2014222b9742066cc4ae27ea0332e"
+  },
+  {
+    "path": "models/qwen/2_Normalize/config.json",
+    "bytes": 100,
+    "sha256": "46465f75bf7d0b90617a5f2cf64e9489d7da46d492a33a19340821899f004881"
+  },
+  {
+    "path": "models/qwen/chat_template.jinja",
+    "bytes": 4200,
+    "sha256": "bfbcd7bf3f08041bdcff4afb09f83677fe4f7e5b8b9c07e6be43651d88696aab"
+  },
+  {
+    "path": "models/qwen/config.json",
+    "bytes": 1475,
+    "sha256": "7e143f5c7f5f96733142d7d2f639239df78c39b3e42af9a70ea276ab9b487ed7"
+  },
+  {
+    "path": "models/qwen/config_sentence_transformers.json",
+    "bytes": 389,
+    "sha256": "5472f32c6f8584e0401b07bd55b55c0ce086ea0a2a2874924531a63a3a89bd98"
+  },
+  {
+    "path": "models/qwen/model.safetensors",
+    "bytes": 1191586416,
+    "sha256": "0437e45c94563b09e13cb7a64478fc406947a93cb34a7e05870fc8dcd48e23fd"
+  },
+  {
+    "path": "models/qwen/modules.json",
+    "bytes": 432,
+    "sha256": "5861cc45c276c15a212ad0a21a5a8664bb8ee0f70b1857d92a7f3e94df0f5d0e"
+  },
+  {
+    "path": "models/qwen/README.md",
+    "bytes": 17528,
+    "sha256": "8be10445e7ddb595e6ffe3d001156e7b0835d71b9a98a91120b9adcb140f9024"
+  },
+  {
+    "path": "models/qwen/sentence_bert_config.json",
+    "bytes": 250,
+    "sha256": "5fee3fcdc4a727fad422f0fed0c867b0921eefa9051de221521956ed42eb4c19"
+  },
+  {
+    "path": "models/qwen/tokenizer.json",
+    "bytes": 11423701,
+    "sha256": "93623af029cdc69b87f2864d3b2cc2424fdf16684f15e139b5b9d08ec34ced91"
+  },
+  {
+    "path": "models/qwen/tokenizer_config.json",
+    "bytes": 722,
+    "sha256": "421faf34672feeb6c6129dbf011e81bd55780f959dca41e45ed1a2c261559f1e"
+  }
+]

@@ -1,0 +1,12 @@
+name: vdk-recommender
+services:
+  recommender:
+    build: .
+    environment:
+      DEVICE: ${DEVICE:-cpu}
+    ports:
+      - "127.0.0.1:8001:8000"
+    volumes:
+      - ./models:/app/models:ro
+      - ./cache:/app/cache
+    restart: unless-stopped

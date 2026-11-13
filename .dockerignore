@@ -13,3 +13,4 @@ import-report*.json
 
 **/__pycache__
 **/*.pyc
+recommender/
