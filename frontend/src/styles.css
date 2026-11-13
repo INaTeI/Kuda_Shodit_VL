@@ -1632,3 +1632,4 @@ main:focus-visible {
 @media(max-width:600px) { .header .weather-wind { max-width:110px; } .forecast-astro { grid-column:1 / -1; } }
 @media(max-width:600px){.header .weather-wind{white-space:normal;line-height:1.2;overflow-wrap:anywhere}}
 @media(max-width:600px){.header .logo{font-size:clamp(13px,3.6vw,18px);letter-spacing:-.5px}}
+.logo{display:inline-flex;align-items:center;gap:10px}.logo .brand-mark{display:block;width:44px;height:44px;flex:none}.logo .brand-name:first-of-type{font-size:inherit;color:inherit;vertical-align:baseline;margin:0}.footer .brand-mark{width:36px;height:36px}@media(max-width:600px){.header .logo .brand-mark{width:38px;height:38px}.header .logo{gap:7px}}
