@@ -1,0 +1,34 @@
+{
+  "base_url": "http://149.154.70.109/model",
+  "checks": [
+    {
+      "path": "/docs",
+      "status": 200
+    },
+    {
+      "path": "/health",
+      "status": 200
+    },
+    {
+      "path": "/openapi.json",
+      "status": 200
+    },
+    {
+      "path": "/recommendations",
+      "status": 200,
+      "places": [
+        "Sup Up — прокат на Русском острове",
+        "Molokai — прокат SUP-досок"
+      ]
+    },
+    {
+      "path": "/places/place_7746eaf8860c9d4874bf/similar",
+      "status": 200,
+      "places": [
+        "Coffee Point на 100-летия",
+        "Вспышка",
+        "Кофемолка (Coffeemolka)"
+      ]
+    }
+  ]
+}

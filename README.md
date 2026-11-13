@@ -1,5 +1,8 @@
 # VDK GID — backend городского гида
 
+Общий Swagger модели: **http://149.154.70.109/model/docs** — открыть, выбрать
+POST /recommendations → Try it out → Execute. Инструкция: [docs/qwen-server.md](docs/qwen-server.md).
+
 Сбор статистики карточек: [docs/analytics.md](docs/analytics.md). Подборки получают
 `recommendation_id`; `/api/v1/me/events` принимает показы, открытия, свайпы и отмены.
 Сводка редактора: `/api/v1/admin/analytics/summary`. Требуется миграция `0004`.

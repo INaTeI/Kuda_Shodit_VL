@@ -1,0 +1,125 @@
+{
+  "health": {
+    "status": "ready",
+    "model": "qwen",
+    "device": "cpu",
+    "places_count": 188,
+    "query_adapter_enabled": false,
+    "adapter_mode": "base"
+  },
+  "checks": [
+    {
+      "path": "/health",
+      "status": 200,
+      "seconds": 0.028,
+      "places": []
+    },
+    {
+      "path": "/recommendations",
+      "status": 200,
+      "seconds": 3.229,
+      "places": [
+        "Покровский парк",
+        "Сквер путешественников",
+        "Агатовый сквер",
+        "Смотровая площадка с сердцем",
+        "Дендропарк ВВГУ"
+      ]
+    },
+    {
+      "path": "/recommendations",
+      "status": 200,
+      "seconds": 0.722,
+      "places": [
+        "Sup Up — прокат на Русском острове",
+        "Molokai — прокат SUP-досок"
+      ]
+    },
+    {
+      "path": "/recommendations",
+      "status": 200,
+      "seconds": 0.711,
+      "places": [
+        "Акватория (Aquatoria)"
+      ]
+    },
+    {
+      "path": "/recommendations",
+      "status": 200,
+      "seconds": 0.698,
+      "places": [
+        "Мирине (Mirine)",
+        "Не рыдай!",
+        "Coffee Point на 100-летия"
+      ]
+    },
+    {
+      "path": "/recommendations",
+      "status": 200,
+      "seconds": 0.629,
+      "places": [
+        "Высота",
+        "Владивостокская крепость, форт №7",
+        "Sky Love (Скай Лав)",
+        "Fabrika (Фабрика) на 100-летия Владивостока",
+        "Дендропарк ВВГУ"
+      ]
+    },
+    {
+      "path": "/recommendations",
+      "status": 200,
+      "seconds": 0.642,
+      "places": [
+        "PlayGround",
+        "Парк Победы",
+        "Скалодром «Типография»",
+        "Дендропарк ВВГУ",
+        "Смотровая площадка с сердцем"
+      ]
+    },
+    {
+      "path": "/recommendations",
+      "status": 200,
+      "seconds": 0.648,
+      "places": [
+        "Fabrika (Фабрика) на 100-летия Владивостока",
+        "Боулинг на Тунгусской (Bouling1)",
+        "Fabrika Bowling (Фабрика Боулинг) на Светланской",
+        "Hunter (Охотник)"
+      ]
+    },
+    {
+      "path": "/recommendations",
+      "status": 200,
+      "seconds": 0.004,
+      "places": []
+    },
+    {
+      "path": "/recommendations",
+      "status": 200,
+      "seconds": 0.003,
+      "places": []
+    },
+    {
+      "path": "/recommendations",
+      "status": 422,
+      "seconds": 0.003,
+      "places": []
+    },
+    {
+      "path": "/places/place_7746eaf8860c9d4874bf/similar",
+      "status": 200,
+      "seconds": 0.005,
+      "places": [
+        "Coffee Point на 100-летия",
+        "Вспышка",
+        "Кофемолка (Coffeemolka)",
+        "Сплетни",
+        "Kafema (Кафема)"
+      ]
+    }
+  ],
+  "existing_backend": {
+    "status": "ready"
+  }
+}
