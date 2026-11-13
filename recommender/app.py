@@ -61,6 +61,38 @@ class SimilarPlacesRequest(SearchFilters):
     same_type: bool = True
 
 
+class RankCandidate(BaseModel):
+    model_config = ConfigDict(extra='forbid', allow_inf_nan=False)
+    id: str = Field(min_length=1, max_length=80)
+    name: str = Field(min_length=1, max_length=300)
+    description: str = Field(default='', max_length=5000)
+    activity: str = Field(default='', max_length=3000)
+    categories: list[str] = Field(default_factory=list, max_length=30)
+    interest_tags: list[str] = Field(default_factory=list, max_length=50)
+
+
+class RankRequest(BaseModel):
+    model_config = ConfigDict(extra='forbid', allow_inf_nan=False)
+    interests: list[str] = Field(default_factory=list, max_length=50)
+    liked_places: list[str] = Field(default_factory=list, max_length=30)
+    disliked_places: list[str] = Field(default_factory=list, max_length=30)
+    weather: str = Field(default='', max_length=1000)
+    budget_rub: int | None = Field(default=None, ge=0)
+    candidates: list[RankCandidate] = Field(min_length=1, max_length=500)
+
+    @model_validator(mode='after')
+    def unique_ids(self):
+        ids = [candidate.id for candidate in self.candidates]
+        if len(ids) != len(set(ids)):
+            raise ValueError('Candidate IDs must be unique')
+        return self
+
+
+class RankResponse(BaseModel):
+    place_ids: list[str]
+    algorithm_version: str
+
+
 class PlaceResult(BaseModel):
     place_id: str
     name: str
@@ -132,6 +164,12 @@ class Recommender:
             np.savez_compressed(temp,vectors=self.vectors)
             temp.replace(target)
         self.lock=threading.Lock()
+        self.rank_document_vectors = {}
+        names = {}
+        for index, place in enumerate(self.catalog):
+            names.setdefault(normalize_name(place['values'][0]), []).append(index)
+        self.rank_catalog_vectors = {name: self.vectors[indices[0]] for name, indices in names.items()
+                                     if len(indices) == 1}
         self.query_adapter = None
         self.adapter_mode = os.getenv('QUERY_ADAPTER_MODE', 'base')
         if self.adapter_mode not in {'base', 'experimental'}:
@@ -143,6 +181,50 @@ class Recommender:
             self.query_adapter = QueryAdapter.load(
                 adapter_path, self.embedding_signature, self.vectors.shape[1]
             )
+
+    def rank_candidates(self, request: RankRequest):
+        interest_text = ', '.join(request.interests) or 'любые интересы'
+        budget_text = f"бюджет до {request.budget_rub} рублей на человека" if request.budget_rub is not None else 'без ограничения бюджета'
+        liked_text = '; '.join(request.liked_places) or 'пока нет понравившихся мест'
+        weather_text = f"Погода сегодня: {request.weather}." if request.weather else ''
+        query = f"Места для отдыха во Владивостоке. Интересы: {interest_text}. Понравившиеся места: {liked_text}. {budget_text}. {weather_text}"
+        docs = [
+            f"Название: {c.name}\nОписание: {c.description}\nАктивности: {c.activity}\n"
+            f"Категории: {'; '.join(c.categories)}\nТеги интересов: {'; '.join(c.interest_tags)}"
+            for c in request.candidates
+        ]
+        with self.lock:
+            vectors = self.model.encode([query], prompt=self.query_prompt, normalize_embeddings=True,
+                                        show_progress_bar=False)
+            missing = list(dict.fromkeys(
+                doc for candidate, doc in zip(request.candidates, docs)
+                if normalize_name(candidate.name) not in self.rank_catalog_vectors
+                and doc not in self.rank_document_vectors
+            ))
+            if missing:
+                encoded = self.model.encode(missing, normalize_embeddings=True, batch_size=16,
+                                            show_progress_bar=False)
+                self.rank_document_vectors.update(zip(missing, encoded))
+            place_vectors = np.stack([
+                self.rank_catalog_vectors.get(normalize_name(candidate.name), self.rank_document_vectors.get(doc))
+                for candidate, doc in zip(request.candidates, docs)
+            ])
+        scores = (vectors @ place_vectors.T)[0]
+        if request.disliked_places:
+            with self.lock:
+                unmatched = [place for place in request.disliked_places
+                             if normalize_name(place.split(':', 1)[0]) not in self.rank_catalog_vectors]
+                encoded = self.model.encode(unmatched, normalize_embeddings=True,
+                                            batch_size=16, show_progress_bar=False) if unmatched else []
+                unmatched_vectors = dict(zip(unmatched, encoded))
+                negative_vectors = np.stack([
+                    self.rank_catalog_vectors.get(normalize_name(place.split(':', 1)[0]), unmatched_vectors.get(place))
+                    for place in request.disliked_places
+                ])
+            scores = scores - 0.15 * (negative_vectors @ place_vectors.T).max(axis=0)
+        ordered = sorted(range(len(request.candidates)), key=lambda i: (-float(scores[i]), request.candidates[i].id))
+        return RankResponse(place_ids=[request.candidates[i].id for i in ordered],
+                            algorithm_version='qwen3-embedding-0.6b-v1')
 
     def recommend(self,request):
         named_place = any(normalize_name(place['values'][0]) == normalize_name(request.query)
@@ -243,6 +325,11 @@ def categories():
 @app.post('/recommendations',response_model=RecommendationResponse)
 def recommendations(request:RecommendationRequest):
     return app.state.recommender.recommend(request)
+
+
+@app.post('/rank', response_model=RankResponse)
+def rank_candidates(request: RankRequest):
+    return app.state.recommender.rank_candidates(request)
 
 
 @app.post('/places/{place_id}/similar',response_model=SimilarPlacesResponse)

@@ -11,7 +11,8 @@ flowchart LR
     React[Будущий клиент React] --> Routes[REST API и Swagger]
     Routes --> Catalog[Каталог и правила публикации]
     Routes --> Profiles[Гостевой профиль и реакции]
-    Routes --> Ranking[Рекомендации rules-v1]
+    Routes --> Ranking[Фильтры и rules-v1]
+    Ranking --> Qwen[Qwen: порядок допустимых мест]
     Ranking --> Catalog
     Ranking --> Profiles
     Catalog --> DB[(PostgreSQL)]

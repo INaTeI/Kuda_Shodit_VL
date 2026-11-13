@@ -4,6 +4,8 @@ from sqlalchemy import select
 from app.catalog.service import candidates, distance_km
 from app.db.models import PlaceState, Place
 from app.analytics.service import record_run
+from app.weather.routes import today_forecast
+from fastapi import HTTPException
 from app.recommendations.ranking import (
     RankingCandidate,
     RankingContext,
@@ -28,7 +30,10 @@ async def recommend(db, request, profile, exploration=False, ranker=None):
     }
     # Aggregate affinity from likes only. Dislikes exclude a place, not an entire category.
     liked_ids = [s.place_id for s in states.values() if s.reaction == "like"]
+    disliked_ids = [s.place_id for s in states.values() if s.reaction == "dislike"]
     affinity = defaultdict(int)
+    liked_summaries = []
+    disliked_summaries = []
     if liked_ids:
         liked = (
             await db.scalars(
@@ -38,8 +43,15 @@ async def recommend(db, request, profile, exploration=False, ranker=None):
             )
         ).all()
         for place in liked:
+            liked_summaries.append(f"{place.name}: {place.activity[:100]}; {', '.join(c.name for c in place.categories)}; {place.description[:150]}")
             for category in place.categories:
                 affinity[category.slug] += 1
+    if disliked_ids:
+        disliked = (await db.scalars(select(Place).where(Place.id.in_(disliked_ids), Place.status == "published"))).all()
+        disliked_summaries = [
+            f"{place.name}: {place.activity[:100]}; {', '.join(c.name for c in place.categories)}; {place.description[:150]}"
+            for place in disliked
+        ]
     results = []
     for place in places:
         state = states.get(place.id)
@@ -93,6 +105,17 @@ async def recommend(db, request, profile, exploration=False, ranker=None):
     if exploration:
         random.SystemRandom().shuffle(results)
     elif results:
+        weather = ""
+        if get_ranker().__class__.__name__ == "QwenRanker":
+            try:
+                forecast = await today_forecast()
+                weather = "; ".join(
+                    f"{period['period'].lower()}: {period['condition']}, {period['temperature_c']} °C, "
+                    f"дождь {period.get('chance_of_rain') or 0}%, ветер {period.get('wind_kph') or 0} км/ч"
+                    for period in forecast['periods']
+                )
+            except HTTPException:
+                pass
         ranking_candidates = tuple(
             RankingCandidate(
                 id=item["place"].id,
@@ -108,7 +131,8 @@ async def recommend(db, request, profile, exploration=False, ranker=None):
         order = await rank_safely(
             ranker or get_ranker(),
             ranking_candidates,
-            RankingContext(tuple(profile.interests), effective.budget_rub),
+            RankingContext(tuple(profile.interests), effective.budget_rub,
+                           tuple(liked_summaries[:5]), tuple(disliked_summaries[:5]), weather),
         )
         by_id = {item["place"].id: item for item in results}
         results = [by_id[place_id] for place_id in order.place_ids]
