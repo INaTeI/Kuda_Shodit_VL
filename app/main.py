@@ -8,6 +8,8 @@ from app.db.session import engine
 from app.api.dependencies import DB
 from app.catalog.routes import router as catalog, admin
 from app.profiles.routes import router as profiles
+from app.importing.routes import router as imports
+from app.importing.middleware import ImportBodyLimitMiddleware
 from app.recommendations.routes import router as recommendations
 
 
@@ -18,19 +20,20 @@ async def lifespan(app):
 
 
 app = FastAPI(
-    title="VDK GID API",
+    title="Kuda_Shodit_VL",
     version="0.1.0",
     lifespan=lifespan,
     description="Городской гид Владивостока. MVP: каталог, подбор, гостевой профиль и реакции. "
     "Данные seed демонстрационные. Влево → like, вправо → dislike, вверх → neutral.",
 )
+app.add_middleware(ImportBodyLimitMiddleware)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=get_settings().cors_origins,
     allow_methods=["GET", "POST", "PUT", "DELETE"],
     allow_headers=["Authorization", "Content-Type", "X-Admin-Key"],
 )
-for router in [catalog, admin, profiles, recommendations]:
+for router in [catalog, admin, profiles, recommendations, imports]:
     app.include_router(router, prefix="/api/v1")
 
 

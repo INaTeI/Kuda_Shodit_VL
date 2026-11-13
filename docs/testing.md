@@ -49,3 +49,24 @@ docker compose --profile test run --rm tests ruff check --no-cache app tests
 Публикация импортированных карточек не выполнялась.
 Отчёты: docs/import-preview.json, docs/import-result.json, docs/import-rerun.json,
 docs/import-verification.json. Резервная копия до изменений — backups/before-excel-import-2026-11-13.dump.
+
+
+## HTTP-импорт и интерфейс LLM 13 ноября 2026
+
+- 81 тест прошёл в Docker на PostgreSQL: 55 прежних + 26 новых, 18.39 с.
+- Покрытие строк приложения 79% по pytest-cov.
+- HTTP-импорт: настоящий multipart, доступы, пустые/битые файлы, ошибки строк,
+  лимиты файла и ZIP, CORS, preview/apply, параллельные повторы, срок действия и откат.
+- Ranker: текущий порядок, разрешённые кандидаты, неизвестные и повторные ID,
+  неполный список, ошибки/таймаут и возврат к rules-v1.
+- TypeScript clients/imports.ts прошёл tsc --noEmit --strict с DOM/ES2022.
+- Миграция 0003 применена, alembic check: No new upgrade operations detected.
+- Живой HTTP-прогон оригинального XLSM: preview 0.534 с, 54 уникальных места,
+  apply создал 0 записей и пропустил 54 существующие. Повторное подтверждение совпадает.
+- Количество мест до/после осталось 62. Рекомендации продолжают отвечать rules-v1.
+- Реальная LLM не подключалась; проверка адаптера выполнена тестовыми ранжировщиками.
+- Время preview — один локальный замер, не p95 и не нагрузочное испытание.
+- Backup до изменения схемы: backups/before-import-api-2026-11-13.dump.
+
+Результат HTTP-проверки: docs/import-api-verification.json.
+Проверка DTO для импорта дополнена ограничениями длины полей; полный XLSM не изменён.

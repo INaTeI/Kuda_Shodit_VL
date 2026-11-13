@@ -1,7 +1,7 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "VDK GID API",
+    "title": "Kuda_Shodit_VL",
     "description": "Городской гид Владивостока. MVP: каталог, подбор, гостевой профиль и реакции. Данные seed демонстрационные. Влево → like, вправо → dislike, вверх → neutral.",
     "version": "0.1.0"
   },
@@ -804,6 +804,150 @@
         ]
       }
     },
+    "/api/v1/admin/imports/preview": {
+      "post": {
+        "tags": [
+          "Импорт Excel"
+        ],
+        "summary": "Загрузить Excel и проверить без записи мест",
+        "description": "Выберите .xlsx/.xlsm до 5 МБ. Места не создаются. Если status=ready, подтвердите загрузку по id в течение часа. Если status=invalid, смотрите report.errors и исправьте Excel.",
+        "operationId": "preview_api_v1_admin_imports_preview_post",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_preview_api_v1_admin_imports_preview_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImportBatchOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ]
+      }
+    },
+    "/api/v1/admin/imports/{import_id}": {
+      "get": {
+        "tags": [
+          "Импорт Excel"
+        ],
+        "summary": "Получить отчёт загрузки",
+        "operationId": "detail_api_v1_admin_imports__import_id__get",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "import_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Import Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImportBatchOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/imports/{import_id}/apply": {
+      "post": {
+        "tags": [
+          "Импорт Excel"
+        ],
+        "summary": "Подтвердить импорт проверенного Excel",
+        "description": "Создаёт только новые черновики одной транзакцией. Существующие места пропускаются. Повторное подтверждение возвращает сохранённый результат и не повторяет запись.",
+        "operationId": "apply_api_v1_admin_imports__import_id__apply_post",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "import_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Import Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImportBatchOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/health/live": {
       "get": {
         "tags": [
@@ -1091,6 +1235,21 @@
         ],
         "title": "AdminPlacePage"
       },
+      "Body_preview_api_v1_admin_imports_preview_post": {
+        "properties": {
+          "file": {
+            "type": "string",
+            "format": "binary",
+            "title": "File",
+            "description": "Книга с листом Места"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file"
+        ],
+        "title": "Body_preview_api_v1_admin_imports_preview_post"
+      },
       "CategoryOut": {
         "properties": {
           "slug": {
@@ -1109,6 +1268,34 @@
         ],
         "title": "CategoryOut"
       },
+      "DuplicateRow": {
+        "properties": {
+          "row": {
+            "type": "integer",
+            "title": "Row"
+          },
+          "same_as_row": {
+            "type": "integer",
+            "title": "Same As Row"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "key": {
+            "type": "string",
+            "title": "Key"
+          }
+        },
+        "type": "object",
+        "required": [
+          "row",
+          "same_as_row",
+          "name",
+          "key"
+        ],
+        "title": "DuplicateRow"
+      },
       "HTTPValidationError": {
         "properties": {
           "detail": {
@@ -1121,6 +1308,209 @@
         },
         "type": "object",
         "title": "HTTPValidationError"
+      },
+      "ImportBatchOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id",
+            "description": "ID загрузки; используйте в GET и POST /{import_id}/apply"
+          },
+          "file_name": {
+            "type": "string",
+            "title": "File Name"
+          },
+          "sha256": {
+            "type": "string",
+            "title": "Sha256"
+          },
+          "size_bytes": {
+            "type": "integer",
+            "title": "Size Bytes"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ready",
+              "invalid",
+              "applied"
+            ],
+            "title": "Status"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Expires At"
+          },
+          "applied_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Applied At"
+          },
+          "report": {
+            "$ref": "#/components/schemas/ImportReport"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "file_name",
+          "sha256",
+          "size_bytes",
+          "status",
+          "created_at",
+          "expires_at",
+          "applied_at",
+          "report"
+        ],
+        "title": "ImportBatchOut"
+      },
+      "ImportPlaceResult": {
+        "properties": {
+          "row": {
+            "type": "integer",
+            "title": "Row"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "key": {
+            "type": "string",
+            "title": "Key"
+          },
+          "place_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Place Id"
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "created",
+              "would_create",
+              "skipped_existing"
+            ],
+            "title": "Action"
+          },
+          "categories": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Categories"
+          },
+          "warnings": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Warnings"
+          }
+        },
+        "type": "object",
+        "required": [
+          "row",
+          "name",
+          "key",
+          "place_id",
+          "action",
+          "categories",
+          "warnings"
+        ],
+        "title": "ImportPlaceResult"
+      },
+      "ImportReport": {
+        "properties": {
+          "file": {
+            "type": "string",
+            "title": "File"
+          },
+          "sha256": {
+            "type": "string",
+            "title": "Sha256"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "dry-run",
+              "apply",
+              "rejected"
+            ],
+            "title": "Mode"
+          },
+          "filled_rows": {
+            "type": "integer",
+            "title": "Filled Rows"
+          },
+          "blank_rows": {
+            "type": "integer",
+            "title": "Blank Rows",
+            "default": 0
+          },
+          "unique_places": {
+            "type": "integer",
+            "title": "Unique Places",
+            "default": 0
+          },
+          "duplicates_in_file": {
+            "items": {
+              "$ref": "#/components/schemas/DuplicateRow"
+            },
+            "type": "array",
+            "title": "Duplicates In File"
+          },
+          "errors": {
+            "items": {
+              "$ref": "#/components/schemas/RowError"
+            },
+            "type": "array",
+            "title": "Errors"
+          },
+          "created": {
+            "type": "integer",
+            "title": "Created",
+            "default": 0
+          },
+          "would_create": {
+            "type": "integer",
+            "title": "Would Create",
+            "default": 0
+          },
+          "skipped_existing": {
+            "type": "integer",
+            "title": "Skipped Existing",
+            "default": 0
+          },
+          "places": {
+            "items": {
+              "$ref": "#/components/schemas/ImportPlaceResult"
+            },
+            "type": "array",
+            "title": "Places"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file",
+          "sha256",
+          "mode",
+          "filled_rows"
+        ],
+        "title": "ImportReport"
       },
       "KnownIn": {
         "properties": {
@@ -1774,6 +2164,24 @@
         "additionalProperties": false,
         "type": "object",
         "title": "RecommendationRequest"
+      },
+      "RowError": {
+        "properties": {
+          "row": {
+            "type": "integer",
+            "title": "Row"
+          },
+          "error": {
+            "type": "string",
+            "title": "Error"
+          }
+        },
+        "type": "object",
+        "required": [
+          "row",
+          "error"
+        ],
+        "title": "RowError"
       },
       "StateOut": {
         "properties": {

@@ -15,7 +15,9 @@ from app.seed import seed_categories
 def migrate_test_database():
     url = os.environ["DATABASE_URL"]
     if "vdk_test" not in url:
-        raise RuntimeError("Tests only run against a database explicitly named vdk_test")
+        raise RuntimeError(
+            "Tests only run against a database explicitly named vdk_test"
+        )
     subprocess.run([sys.executable, "-m", "alembic", "upgrade", "head"], check=True)
 
 
@@ -26,7 +28,9 @@ async def client():
     factory = async_sessionmaker(engine, expire_on_commit=False)
     async with factory() as session:
         await session.execute(
-            text("TRUNCATE place_states, profiles, place_categories, places, categories CASCADE")
+            text(
+                "TRUNCATE import_batches, place_states, profiles, place_categories, places, categories CASCADE"
+            )
         )
         await session.commit()
         await seed_categories(session)
@@ -36,7 +40,9 @@ async def client():
             yield session
 
     app.dependency_overrides[get_db] = override
-    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+    async with AsyncClient(
+        transport=ASGITransport(app=app), base_url="http://test"
+    ) as client:
         yield client
     app.dependency_overrides.clear()
     await engine.dispose()
@@ -73,6 +79,8 @@ async def guest(client):
 
 @pytest_asyncio.fixture
 async def place(client, admin, place_payload):
-    response = await client.post("/api/v1/admin/places", json=place_payload, headers=admin)
+    response = await client.post(
+        "/api/v1/admin/places", json=place_payload, headers=admin
+    )
     assert response.status_code == 201, response.text
     return response.json()
