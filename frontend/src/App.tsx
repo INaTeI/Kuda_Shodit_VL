@@ -759,12 +759,18 @@ function SelectionResults({ discovery }: { discovery: boolean }) {
                 }}
               >
                 <Card place={place} reasons={reasons}>
+                  {/* Discovery shows one card and loads the next after a reaction.
+                      The grid keeps the card in place: only the button state changes. */}
                   <Reactions
                     id={place.id}
-                    onSaved={() => {
-                      setMessage("Сохранено. Подборка обновлена.");
-                      q.retry();
-                    }}
+                    onSaved={
+                      discovery
+                        ? () => {
+                            setMessage("Сохранено. Загружаем следующее место.");
+                            q.retry();
+                          }
+                        : undefined
+                    }
                   />
                 </Card>
               </div>
