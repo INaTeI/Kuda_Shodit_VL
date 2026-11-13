@@ -145,6 +145,7 @@ function useGeoState() {
     clearPosition,
     showNotice,
     openNotice: () => setShowNotice(true),
+    closeNotice: () => setShowNotice(false),
   };
 }
 const GeoContext = createContext<ReturnType<typeof useGeoState> | null>(null);
@@ -159,11 +160,27 @@ export function useGeo() {
 }
 export function CookieNotice() {
   const geo = useGeo();
-  if (!geo.showNotice) return null;
+  const dialog = useRef<HTMLDialogElement>(null);
+
+  useEffect(() => {
+    const element = dialog.current;
+    if (geo.showNotice && !element?.open) element?.showModal();
+    else if (!geo.showNotice && element?.open) element.close();
+  }, [geo.showNotice]);
+
   return (
-    <section className="cookie-notice wrap" aria-label="Настройки cookie">
-      <h2>Cookie и ваше расположение</h2>
-      <p>
+    <dialog
+      ref={dialog}
+      className="cookie-notice"
+      aria-labelledby="cookie-notice-title"
+      aria-describedby="cookie-notice-description"
+      onCancel={(event) => {
+        event.preventDefault();
+        if (geo.consent) geo.closeNotice();
+      }}
+    >
+      <h2 id="cookie-notice-title">Настройки cookie</h2>
+      <p id="cookie-notice-description">
         Мы запомним выбор cookie на 90 дней. С вашего согласия сохраним
         координаты на один час, чтобы показывать вас на карте и расстояние до
         мест. Браузер отдельно запросит доступ к геопозиции. Cookie этого сайта
@@ -171,6 +188,9 @@ export function CookieNotice() {
         localStorage.
       </p>
       <div className="actions">
+        <button type="button" onClick={() => geo.choose("necessary")}>
+          Только необходимые
+        </button>
         <button
           type="button"
           onClick={() => {
@@ -180,11 +200,8 @@ export function CookieNotice() {
         >
           Принять и определить расположение
         </button>
-        <button type="button" onClick={() => geo.choose("necessary")}>
-          Только необходимые
-        </button>
         {geo.consent && (
-          <button type="button" onClick={() => geo.choose(geo.consent!)}>
+          <button type="button" onClick={geo.closeNotice}>
             Закрыть
           </button>
         )}
@@ -193,7 +210,7 @@ export function CookieNotice() {
         При отказе координаты можно использовать до перезагрузки страницы без
         сохранения. Изменить выбор можно через «Настройки cookie».
       </p>
-    </section>
+    </dialog>
   );
 }
 export function CookieSettings() {

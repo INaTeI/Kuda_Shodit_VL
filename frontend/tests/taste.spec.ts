@@ -9,15 +9,6 @@ async function mock(
     conflict?: boolean;
   } = {},
 ) {
-  await page
-    .context()
-    .addCookies([
-      {
-        name: "vdk-cookie-choice",
-        value: "necessary",
-        url: "http://127.0.0.1:5173",
-      },
-    ]);
   const events: any[] = [],
     receipts = new Map<string, any>(),
     revisions = new Map<string, number>();

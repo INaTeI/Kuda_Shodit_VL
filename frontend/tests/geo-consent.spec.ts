@@ -16,6 +16,8 @@ test("consent stores coordinates only after accepting and can be revoked", async
   await context.grantPermissions(["geolocation"]);
   await context.setGeolocation({ latitude: 43.12, longitude: 131.9 });
   await page.goto("/");
+  const dialog = page.getByRole("dialog", { name: "Настройки cookie" });
+  await expect(dialog).toBeVisible();
   expect(
     (await context.cookies()).find((c) => c.name === "vdk-location"),
   ).toBeUndefined();
@@ -35,9 +37,13 @@ test("consent stores coordinates only after accepting and can be revoked", async
   expect(cookie.sameSite).toBe("Lax");
   expect(cookie.expires - Date.now() / 1000).toBeLessThanOrEqual(3600);
   await page.reload();
-  await expect(
-    page.getByRole("region", { name: "Настройки cookie" }),
-  ).toHaveCount(0);
+  await expect(dialog).toBeHidden();
+  await page
+    .getByRole("button", { name: "Настройки cookie", exact: true })
+    .click();
+  await page.getByRole("button", { name: "Закрыть", exact: true }).click();
+  await expect(dialog).toBeHidden();
+  expect(await context.cookies()).toContainEqual(cookie);
   await page
     .getByRole("button", { name: "Настройки cookie", exact: true })
     .click();
@@ -52,11 +58,27 @@ test("decline and denied permission do not save coordinates", async ({
 }) => {
   await mock(page);
   await context.clearPermissions();
-  await page.goto("/");
+  await page.setViewportSize({ width: 320, height: 568 });
+  await page.goto("/catalog");
+  const dialog = page.getByRole("dialog", { name: "Настройки cookie" });
+  await expect(dialog).toBeVisible();
+  expect(await dialog.evaluate((element) => element.matches(":modal"))).toBe(
+    true,
+  );
+  await expect(dialog.getByRole("button", { name: "Закрыть" })).toHaveCount(0);
+  await page.keyboard.press("Escape");
+  await page.mouse.click(4, 4);
+  await expect(dialog).toBeVisible();
+  expect(await context.cookies()).toEqual([]);
+  await page.reload();
+  await expect(dialog).toBeVisible();
   await page.getByRole("button", { name: "Только необходимые" }).click();
+  await expect(dialog).toBeHidden();
   expect((await context.cookies()).map((c) => c.name)).toEqual([
     "vdk-cookie-choice",
   ]);
+  await page.reload();
+  await expect(dialog).toBeHidden();
   await page
     .getByRole("button", { name: "Настройки cookie", exact: true })
     .click();

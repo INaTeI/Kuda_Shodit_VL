@@ -11,6 +11,7 @@ import {
   type Recommendations,
 } from "./api";
 import { Artwork, Dialog, Empty, ErrorBox, Skeleton } from "./components";
+import { useGeo } from "./geo";
 import { useGuest } from "./state";
 
 export const TASTE_CARD_LIMIT = 12;
@@ -73,13 +74,14 @@ export function TasteInvitation({
     location = useLocation(),
     navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const { showNotice } = useGeo();
   const entering = useRef(false);
   const requested = always || !!location.state?.offerTasteSetup;
   useEffect(() => {
-    if (!requested || !guest.profile) return;
+    if (!requested || !guest.profile || showNotice) return;
     const timer = window.setTimeout(() => setOpen(true), 350);
     return () => window.clearTimeout(timer);
-  }, [requested, guest.profile?.id]);
+  }, [requested, guest.profile?.id, showNotice]);
   function dismiss() {
     if (entering.current) return;
     setOpen(false);
