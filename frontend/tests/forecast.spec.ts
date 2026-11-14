@@ -6,22 +6,36 @@ const periods = [
 ];
 test('forecast opens on click, shows conditions, wind and closes with Escape',async({page})=>{
  await page.setViewportSize({width:390,height:844});
+ await page.clock.setFixedTime(new Date('2026-11-13T00:00:00Z'));
  await page.route('**/api/v1/weather/current',r=>r.fulfill({json:{temperature_c:4,wind_kph:18,wind_dir:'N'}}));
- await page.route('**/api/v1/weather/forecast',r=>r.fulfill({json:{date:'2026-11-13',sunrise:'07:58',sunset:'17:48',periods}}));
+ await page.route('**/api/v1/weather/forecast',r=>r.fulfill({json:{date:'2026-11-13',sunrise:'07:58',sunset:'17:48',periods,hours:periods}}));
  await page.goto('/');
  await expect(page.getByText('5 м/с', {exact:false})).toContainText('Северный');
  await page.getByRole('button',{name:'Открыть прогноз на сегодня'}).click();
  const dialog=page.getByRole('dialog',{name:'Погода на сегодня'});
  await expect(dialog).toBeVisible();
- for(const text of ['Утро','День','Вечер','09:00','15:00','21:00','Ясно','Дождь','Снег'])await expect(dialog.getByText(text,{exact:true})).toBeVisible();
+ for(const text of ['Утро','День','Вечер','09:00','15:00','21:00','Ясно','Дождь','Снег'])await expect(dialog.locator('.forecast-grid').getByText(text,{exact:true})).toBeVisible();
  await expect(dialog.getByText('Рассвет 07:58',{exact:false})).toBeVisible();
  await expect(dialog.getByText('Закат 17:48',{exact:false})).toBeVisible();
- await expect(dialog.getByText('Ветер 6 м/с',{exact:false})).toBeVisible();
- await expect(dialog.getByText('Дождь 80%',{exact:false})).toBeVisible();
- await expect(dialog.getByText('Снег 60%',{exact:false})).toBeVisible();
+ await expect(dialog.locator('.forecast-grid').getByText('Ветер 6 м/с',{exact:false})).toBeVisible();
+ await expect(dialog.locator('.forecast-grid').getByText('Дождь 80%',{exact:false})).toBeVisible();
+ await expect(dialog.locator('.forecast-grid').getByText('Снег 60%',{exact:false})).toBeVisible();
+ await expect(dialog.getByRole('region',{name:'Почасовой прогноз на сегодня'}).getByText('Снег 60%')).toBeVisible();
+ await expect(dialog.getByRole('region',{name:'Почасовой прогноз на сегодня'}).locator('.hourly-item')).toHaveCount(3);
+ await expect(dialog.locator('.weather-tip')).toContainText('15:00');
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
  await page.keyboard.press('Escape');await expect(dialog).not.toBeVisible();
  await expect(page.getByRole('button',{name:'Открыть прогноз на сегодня'})).toBeFocused();
+});
+test('outside click closes forecast without triggering controls',async({page})=>{
+ await page.setViewportSize({width:1280,height:800});
+ await page.route('**/api/v1/weather/current',r=>r.fulfill({json:{temperature_c:4,wind_kph:18,wind_dir:'N'}}));
+ await page.route('**/api/v1/weather/forecast',r=>r.fulfill({json:{date:'2026-11-13',sunrise:null,sunset:null,periods,hours:periods}}));
+ await page.goto('/'); await page.getByRole('button',{name:'Открыть прогноз на сегодня'}).click();
+ const dialog=page.getByRole('dialog',{name:'Погода на сегодня'}); await expect(dialog).toBeVisible();
+ await expect(dialog.getByRole('region',{name:'Почасовой прогноз на сегодня'})).toBeVisible();
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+ await page.mouse.click(2,2); await expect(dialog).not.toBeVisible();
 });
 test('forecast errors remain retryable when current weather is unavailable',async({page})=>{
  await page.route('**/api/v1/weather/current',r=>r.fulfill({status:503,json:{detail:'Нет погоды'}}));

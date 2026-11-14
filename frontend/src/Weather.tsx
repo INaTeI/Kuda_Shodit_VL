@@ -83,6 +83,7 @@ export default function Weather() {
         open={open}
         onClose={() => setOpen(false)}
         title="Погода на сегодня"
+        className="weather-dialog"
       >
         {open && <Forecast />}
       </Dialog>
@@ -106,6 +107,7 @@ interface ForecastData {
   sunrise: string | null;
   sunset: string | null;
   periods: ForecastPeriod[];
+  hours?: ForecastPeriod[];
 }
 function weatherIcon(code: number, day: boolean): string {
   if (code === 1000) return day ? "☀" : "☾";
@@ -162,6 +164,11 @@ function WeatherIcon({ code, day }: { code: number; day: boolean }) {
 }
 function Forecast() {
   const q = useLoad<ForecastData>("/weather/forecast");
+  const local = new Intl.DateTimeFormat("sv-SE", { timeZone: "Asia/Vladivostok", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", hourCycle: "h23" }).formatToParts(new Date());
+  const part = (type: string) => local.find((item) => item.type === type)?.value || "";
+  const today = `${part("year")}-${part("month")}-${part("day")}`;
+  const currentHour = Number(part("hour"));
+  const rainyHour = q.data?.date === today ? q.data.hours?.find((hour) => Number(hour.time.slice(0, 2)) >= currentHour && ((hour.chance_of_rain ?? 0) >= 60 || (hour.chance_of_snow ?? 0) >= 60)) : undefined;
   return (
     <div className="forecast">
       {q.loading ? (
@@ -177,6 +184,7 @@ function Forecast() {
             Владивосток · {q.data.date.split("-").reverse().join(".")} · время
             местное
           </p>
+          {rainyHour && <p className="weather-tip"><strong>Планируешь прогулку?</strong> В {rainyHour.time} высокая вероятность {((rainyHour.chance_of_snow ?? 0) > (rainyHour.chance_of_rain ?? 0)) ? "снега" : "дождя"} — проверь прогноз перед выходом.</p>}
           <div className="forecast-grid">
             {q.data.periods.map((item) => (
               <article className="forecast-period" key={item.period}>
@@ -219,6 +227,20 @@ function Forecast() {
           {q.data.periods.length < 3 && (
             <p>Данные доступны не для всех периодов дня.</p>
           )}
+          {!!q.data.hours?.length && <section className="hourly-forecast" aria-labelledby="hourly-title">
+            <h3 id="hourly-title">Почасовой прогноз</h3>
+            <p>Местное время · пролистай, чтобы увидеть весь день</p>
+            <div className="hourly-list" tabIndex={0} role="region" aria-label="Почасовой прогноз на сегодня">
+              {q.data.hours.map((hour) => <div className="hourly-item" key={hour.time}>
+                <strong>{hour.time}</strong><WeatherIcon code={hour.condition_code} day={hour.is_day} />
+                <span className="hourly-temp">{hour.temperature_c > 0 ? "+" : ""}{Math.round(hour.temperature_c)}°</span>
+                <span>{hour.condition}</span>
+                {hour.wind_kph != null && <span>Ветер {Math.round(hour.wind_kph / 3.6)} м/с</span>}
+                {hour.chance_of_rain != null && <span>Дождь {hour.chance_of_rain}%</span>}
+                {hour.chance_of_snow != null && hour.chance_of_snow > 0 && <span>Снег {hour.chance_of_snow}%</span>}
+              </div>)}
+            </div>
+          </section>}
         </>
       )}
     </div>

@@ -176,7 +176,12 @@ export function CookieNotice() {
       aria-describedby="cookie-notice-description"
       onCancel={(event) => {
         event.preventDefault();
-        if (geo.consent) geo.closeNotice();
+        geo.closeNotice();
+      }}
+      onClick={(event) => {
+        if (event.target !== event.currentTarget) return;
+        const rect = event.currentTarget.getBoundingClientRect();
+        if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) geo.closeNotice();
       }}
     >
       <h2 id="cookie-notice-title">Настройки cookie</h2>

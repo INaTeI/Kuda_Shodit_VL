@@ -104,12 +104,11 @@ export default function App() {
         </Routes>
       </main>
       <footer className="wrap footer">
-        <Link className="logo" to="/">
-          <img className="brand-mark" src={logo} alt="" />
-          <span className="brand-name">КСВЛ</span>
-        </Link>
-        <p>Свой ритм. Свои места. Свой Владивосток.</p>
-        <span>43°07′ с. ш. / 131°53′ в. д.</span>
+        <div className="footer-brand"><Link className="logo" to="/">
+          <img className="brand-mark" src={logo} alt="" /><span className="brand-name">КСВЛ</span>
+        </Link><p>Места Владивостока для твоего свободного времени.</p></div>
+        <nav className="footer-links" aria-label="Навигация внизу страницы"><Link to="/catalog">Каталог мест</Link><Link to="/taste">Выбрать свайпами</Link><Link to="/recommendations">Моя подборка</Link><Link to="/preferences">Настройки</Link></nav>
+        <div className="footer-meta"><strong>Один свайп до нового места.</strong><span>Владивосток · 43°07′ с. ш.</span></div>
       </footer>
       <nav
         className={`mobile-nav ${location.pathname === "/taste" ? "taste-nav-hidden" : ""}`}
@@ -159,6 +158,7 @@ function Home() {
             <strong>
               Давай познакомимся
             </strong>
+            <small className="hero-swipe-prompt">Нажми и начни выбирать</small>
             <span className="hero-swipe-arrow" aria-hidden="true">↗</span>
           </div>
           <span className="vertical-note">
@@ -181,6 +181,10 @@ function Home() {
             Выбрать интересы ↗
           </Link>
         </div>
+      </section>
+      <section className="wrap how-it-works" aria-labelledby="how-it-works-title">
+        <div><span className="section-number">КАК ЭТО РАБОТАЕТ</span><h2 id="how-it-works-title">Найти место проще, чем выбирать весь вечер</h2></div>
+        <ol><li><span>01</span><div><strong>Открой карточки</strong><p>Покажем места Владивостока по одному.</p></div></li><li><span>02</span><div><strong>Отметь, что нравится</strong><p>Смахивай или используй кнопки под карточкой.</p></div></li><li><span>03</span><div><strong>Посмотри подборку</strong><p>Выбор поможет предложить подходящие места.</p></div></li></ol>
       </section>
       {guest.profile && (
         <section className="wrap section">
@@ -320,7 +324,7 @@ function Catalog() {
           onChange={(categories) => setDraft({ ...draft, categories })}
         />
       </fieldset>
-      <div className="actions">
+      <div className="actions catalog-actions">
         <button className="primary" type="submit">
           Показать места
         </button>

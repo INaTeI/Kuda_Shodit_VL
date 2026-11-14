@@ -67,8 +67,12 @@ test("decline and denied permission do not save coordinates", async ({
   );
   await expect(dialog.getByRole("button", { name: "Закрыть" })).toHaveCount(0);
   await page.keyboard.press("Escape");
-  await page.mouse.click(4, 4);
+  await expect(dialog).toBeHidden();
+  expect(await context.cookies()).toEqual([]);
+  await page.reload();
   await expect(dialog).toBeVisible();
+  await page.mouse.click(4, 4);
+  await expect(dialog).toBeHidden();
   expect(await context.cookies()).toEqual([]);
   await page.reload();
   await expect(dialog).toBeVisible();

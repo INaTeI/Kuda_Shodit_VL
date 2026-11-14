@@ -6,7 +6,7 @@ from urllib.request import urlopen
 import json
 import math
 from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from app.core.config import get_settings
 
 router = APIRouter(tags=["Погода"])
@@ -67,6 +67,7 @@ class ForecastOut(BaseModel):
     sunrise: str | None = None
     sunset: str | None = None
     periods: list[ForecastPeriod]
+    hours: list[ForecastPeriod] = Field(default_factory=list)
 
 
 _forecast_cache: tuple[float, dict] | None = None
@@ -79,28 +80,42 @@ def fetch_forecast(key: str) -> dict:
     day = data["forecast"]["forecastday"][0]
     hours = {str(hour["time"])[-5:]: hour for hour in day["hour"]}
     periods = []
-    for label, hour in (("Утро", "09:00"), ("День", "15:00"), ("Вечер", "21:00")):
-        if hour not in hours:
-            continue
-        item = hours[hour]
+    hourly = []
+    labels = {"09:00": "Утро", "15:00": "День", "21:00": "Вечер"}
+    for hour, item in sorted(hours.items()):
+        label = labels.get(hour, "")
         def probability(name):
             value = item.get(name)
             if value is None:
                 return None
-            value = int(value)
+            try:
+                value = int(value)
+            except (TypeError, ValueError):
+                return None
             return value if 0 <= value <= 100 else None
-        temperature = float(item["temp_c"])
+        try:
+            temperature = float(item["temp_c"])
+            condition = item["condition"]["text"]
+            condition_code = item["condition"]["code"]
+        except (KeyError, TypeError, ValueError):
+            continue
         if not math.isfinite(temperature):
-            raise ValueError("Invalid temperature")
+            continue
         wind = item.get("wind_kph")
-        wind = float(wind) if wind is not None else None
+        try:
+            wind = float(wind) if wind is not None else None
+        except (TypeError, ValueError):
+            wind = None
         if wind is not None and (not math.isfinite(wind) or wind < 0):
             wind = None
-        periods.append({"period": label, "time": hour, "temperature_c": temperature,
-                        "condition": item["condition"]["text"], "condition_code": item["condition"]["code"],
+        forecast = {"period": label, "time": hour, "temperature_c": temperature,
+                        "condition": condition, "condition_code": condition_code,
                         "is_day": item.get("is_day") == 1, "wind_kph": wind,
-                        "chance_of_rain": probability("chance_of_rain"), "chance_of_snow": probability("chance_of_snow")})
-    if not periods:
+                        "chance_of_rain": probability("chance_of_rain"), "chance_of_snow": probability("chance_of_snow")}
+        hourly.append(forecast)
+        if label:
+            periods.append(forecast)
+    if not hourly:
         raise ValueError("No forecast hours")
     def astro_time(field):
         value = day.get("astro", {}).get(field)
@@ -112,7 +127,7 @@ def fetch_forecast(key: str) -> dict:
             except ValueError:
                 continue
         return None
-    return {"date": day["date"], "sunrise": astro_time("sunrise"), "sunset": astro_time("sunset"), "periods": periods}
+    return {"date": day["date"], "sunrise": astro_time("sunrise"), "sunset": astro_time("sunset"), "periods": periods, "hours": hourly}
 
 
 @router.get("/weather/forecast", response_model=ForecastOut, summary="Прогноз на сегодня во Владивостоке")
