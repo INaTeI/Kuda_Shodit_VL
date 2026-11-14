@@ -2072,19 +2072,22 @@ main:focus-visible {
 .hero-label .hero-swipe-arrow { position: absolute; right: 25px; bottom: 26px; display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid var(--line); border-radius: 50%; font-size: 20px; line-height: 1; margin: 0; color: var(--ink); }
 .taste-page .taste-complete-card { height: auto; min-height: 420px; overflow: visible; }
 .taste-details .place-map { width: min(100%, 360px); }
-.taste-stack { height: 540px; min-height: 0; }
-.taste-card { position: absolute; inset: 0; height: 100%; min-height: 0; box-sizing: border-box; }
-.taste-card-body { display: grid; grid-template-rows: 32px 87px 60px 44px 32px; gap: 6px; padding: 16px 20px; overflow: hidden; }
+.taste-page { overflow-anchor: none; }
+.taste-stack { --swipe-height: 540px; --swipe-photo-height: 175px; height: var(--swipe-height); min-height: var(--swipe-height); max-height: var(--swipe-height); contain: layout size; }
+.taste-card { position: absolute; inset: 0; display: grid; grid-template-rows: var(--swipe-photo-height) minmax(0, 1fr); height: var(--swipe-height); min-height: var(--swipe-height); max-height: var(--swipe-height); box-sizing: border-box; contain: layout size; }
+.taste-card > .art { height: 100%; min-height: 0; max-height: 100%; aspect-ratio: auto; }
+.taste-card-body { display: grid; min-width: 0; min-height: 0; grid-template-rows: 32px 87px 60px 44px 32px; align-content: start; gap: 6px; padding: 16px 20px; overflow: hidden; }
 .taste-card-body :is(.eyebrow,h2,p,small) { display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; margin: 0; }
 .taste-card-body :is(.eyebrow,small) { -webkit-line-clamp: 2; line-height: 16px; }
 .taste-card-body h2 { -webkit-line-clamp: 3; line-height: 29px; }
 .taste-card-body p { -webkit-line-clamp: 3; line-height: 20px; }
 .taste-card-price { min-width: 0; }
-.taste-card-price strong { font-size: 16px; }
+.taste-card-price strong { min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 16px; }
 .taste-card-price button { flex-shrink: 0; }
 .cost-details p { margin: 6px 0; }
 @media (max-width: 600px) { .mobile-nav a { min-width: 0; flex: 1 1 0; } .hero-visual > .swipe-preview { min-height: 220px; } }
-@media (max-width: 600px) { .taste-stack { height: 500px; min-height: 0; } .taste-card { min-height: 0; } }
+.taste-saving { height: 44px; min-height: 44px; max-height: 44px; overflow: hidden; }
+@media (max-width: 600px) { .taste-stack { --swipe-height: 500px; --swipe-photo-height: 145px; } }
 
 .recommendation-loading { min-height: 360px; padding: 40px 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; border: 1px solid var(--line); border-radius: 24px; background: #edf5f1; }
 .recommendation-loading svg { width: 180px; height: 140px; color: #167d8d; }

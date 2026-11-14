@@ -109,12 +109,13 @@ async function begin(page: Page) {
   await expect(modal).toBeVisible();
   return modal;
 }
-for (const width of [390, 1280]) test(`prepared deck keeps nodes and dimensions ${width}`, async ({ page }) => {
+for (const width of [360, 390, 1280]) test(`prepared deck keeps nodes and dimensions ${width}`, async ({ page }) => {
   const { places } = await mock(page, { count: 3 });
   places[1].name = 'Очень длинное название места '.repeat(12);
   places[1].activity = 'Подробное описание занятия '.repeat(30);
+  places[1].price_note = 'Очень длинное пояснение стоимости '.repeat(40);
   for (const place of places) (place as any).photo_url = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"><rect width="40" height="40" fill="teal"/></svg>');
-  await page.setViewportSize({ width, height: 900 });
+  await page.setViewportSize({ width, height: width < 600 ? 640 : 900 });
   await page.emulateMedia({ reducedMotion: 'no-preference' });
   await page.goto('/taste');
   await page.getByRole('button', { name: 'Начать выбор →' }).click();
@@ -122,17 +123,26 @@ for (const width of [390, 1280]) test(`prepared deck keeps nodes and dimensions 
   const next = await page.locator('.taste-card').nth(1).elementHandle();
   await expect(page.locator('.taste-card').nth(1).locator('h2')).toHaveText(places[1].name.trim());
   await expect.poll(() => page.locator('.taste-card img').evaluateAll((images) => images.every((image) => (image as HTMLImageElement).complete))).toBe(true);
+  await page.getByRole('button', { name: 'Нравится — вправо' }).scrollIntoViewIfNeeded();
   const before = await page.locator('.taste-card').first().boundingBox();
+  const dockBefore = await page.locator('.taste-reaction-dock').boundingBox();
+  const scrollBefore = await page.evaluate(() => scrollY);
   await page.getByRole('button', { name: 'Нравится — вправо' }).click();
   await expect(page.getByText('Карточка 2 из 3')).toBeVisible();
   expect(await next!.evaluate((node) => node === document.querySelector('.taste-card'))).toBe(true);
   const after = await page.locator('.taste-card').first().boundingBox();
   expect(after!.height).toBe(before!.height);
   expect(after!.width).toBe(before!.width);
+  expect(after!.y).toBeCloseTo(before!.y, 0);
+  expect((await page.locator('.taste-reaction-dock').boundingBox())!.y).toBeCloseTo(dockBefore!.y, 0);
+  expect(await page.evaluate(() => scrollY)).toBeCloseTo(scrollBefore, 0);
   await page.screenshot({ path: `test-results/prepared-deck-${width}.png` });
+  await page.getByRole('button', { name: 'Нравится — вправо' }).click();
+  await expect(page.getByText('Карточка 3 из 3')).toBeVisible();
+  expect((await page.locator('.taste-card').first().boundingBox())!.y).toBeCloseTo(before!.y, 0);
   if (width > 600) {
     await page.getByRole('button', { name: '↶ Отменить', exact: true }).click();
-    await expect(page.getByText('Карточка 1 из 3')).toBeVisible();
+    await expect(page.getByText('Карточка 2 из 3')).toBeVisible();
   }
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });
