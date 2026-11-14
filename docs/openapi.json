@@ -1305,13 +1305,13 @@
         }
       }
     },
-    "/api/v1/constructor-photo/{place_id}": {
+    "/api/v1/places/{place_id}/design": {
       "get": {
         "tags": [
-          "Конструктор карточки"
+          "Оформление мест"
         ],
-        "summary": "Главное фото места из конструктора",
-        "operationId": "constructor_photo_api_v1_constructor_photo__place_id__get",
+        "summary": "Опубликованное оформление места",
+        "operationId": "public_design_api_v1_places__place_id__design_get",
         "parameters": [
           {
             "name": "place_id",
@@ -1329,9 +1329,14 @@
             "description": "Successful Response",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/PublicDesign"
+                }
               }
             }
+          },
+          "404": {
+            "description": "Место не опубликовано или оформление не настроено"
           },
           "422": {
             "description": "Validation Error",
@@ -1346,103 +1351,28 @@
         }
       }
     },
-    "/api/v1/constructor-state/{place_id}": {
+    "/api/v1/photos/{photo_id}": {
       "get": {
         "tags": [
-          "Конструктор карточки"
+          "Оформление мест"
         ],
-        "summary": "Конструктор выбранного места",
-        "operationId": "get_place_constructor_api_v1_constructor_state__place_id__get",
+        "summary": "Фото места",
+        "operationId": "photo_api_v1_photos__photo_id__get",
         "parameters": [
           {
-            "name": "place_id",
+            "name": "photo_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
               "format": "uuid",
-              "title": "Place Id"
+              "title": "Photo Id"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "Конструктор карточки"
-        ],
-        "summary": "Сохранить выбранное место",
-        "operationId": "put_place_constructor_api_v1_constructor_state__place_id__put",
-        "security": [
-          {
-            "APIKeyHeader": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "place_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid",
-              "title": "Place Id"
-            }
-          },
-          {
-            "name": "vdk_admin",
-            "in": "cookie",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Vdk Admin"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ConstructorWrite"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            }
+            "description": "Successful Response"
           },
           "422": {
             "description": "Validation Error",
@@ -1457,98 +1387,174 @@
         }
       }
     },
-    "/api/v1/constructor-state": {
-      "get": {
-        "tags": [
-          "Конструктор карточки"
-        ],
-        "summary": "Общее состояние конструктора карточек",
-        "operationId": "get_constructor_state_api_v1_constructor_state_get",
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "Конструктор карточки"
-        ],
-        "summary": "Сохранить общее состояние конструктора карточек",
-        "operationId": "put_constructor_state_api_v1_constructor_state_put",
-        "security": [
-          {
-            "APIKeyHeader": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "vdk_admin",
-            "in": "cookie",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Vdk Admin"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ConstructorWrite"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/admin/session": {
+    "/api/v1/editor/login": {
       "post": {
         "tags": [
-          "Администратор"
+          "Конструктор"
         ],
-        "summary": "Войти администратором",
-        "operationId": "login_api_v1_admin_session_post",
+        "summary": "Вход в конструктор",
+        "operationId": "login_api_v1_editor_login_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/editor/logout": {
+      "post": {
+        "tags": [
+          "Конструктор"
+        ],
+        "summary": "Выход из конструктора",
+        "operationId": "logout_api_v1_editor_logout_post",
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          }
+        }
+      }
+    },
+    "/api/v1/editor/session": {
+      "get": {
+        "tags": [
+          "Конструктор"
+        ],
+        "summary": "Текущая сессия редактора",
+        "operationId": "session_api_v1_editor_session_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionOut"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/editor/places": {
+      "get": {
+        "tags": [
+          "Конструктор"
+        ],
+        "summary": "Места для оформления",
+        "operationId": "places_api_v1_editor_places_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/EditorPlaceSummary"
+                  },
+                  "type": "array",
+                  "title": "Response Places Api V1 Editor Places Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/editor/places/{place_id}": {
+      "get": {
+        "tags": [
+          "Конструктор"
+        ],
+        "summary": "Место и его оформление",
+        "operationId": "place_api_v1_editor_places__place_id__get",
+        "parameters": [
+          {
+            "name": "place_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Place Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EditorPlace"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Конструктор"
+        ],
+        "summary": "Сохранить и опубликовать оформление",
+        "description": "Меняет название, описание и адрес места, порядок и подписи фото, стиль страницы и карточки. expected_revision защищает от затирания чужого сохранения (409).",
+        "operationId": "save_api_v1_editor_places__place_id__put",
+        "parameters": [
+          {
+            "name": "place_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Place Id"
+            }
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/AdminLogin"
+                "$ref": "#/components/schemas/DesignSave"
               }
             }
           }
@@ -1558,7 +1564,9 @@
             "description": "Successful Response",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/EditorPlace"
+                }
               }
             }
           },
@@ -1573,37 +1581,36 @@
             }
           }
         }
-      },
-      "get": {
+      }
+    },
+    "/api/v1/editor/places/{place_id}/photos": {
+      "post": {
         "tags": [
-          "Администратор"
+          "Конструктор"
         ],
-        "summary": "Проверить вход администратора",
-        "operationId": "session_status_api_v1_admin_session_get",
+        "summary": "Загрузить фото (тело — байты JPEG/PNG/WebP до 4 МБ)",
+        "description": "Фото станет видно посетителям только после сохранения оформления.",
+        "operationId": "upload_photo_api_v1_editor_places__place_id__photos_post",
         "parameters": [
           {
-            "name": "vdk_admin",
-            "in": "cookie",
-            "required": false,
+            "name": "place_id",
+            "in": "path",
+            "required": true,
             "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Vdk Admin"
+              "type": "string",
+              "format": "uuid",
+              "title": "Place Id"
             }
           }
         ],
         "responses": {
-          "200": {
+          "201": {
             "description": "Successful Response",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/PhotoOut"
+                }
               }
             }
           },
@@ -1614,23 +1621,6 @@
                 "schema": {
                   "$ref": "#/components/schemas/HTTPValidationError"
                 }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "Администратор"
-        ],
-        "summary": "Выйти из панели администратора",
-        "operationId": "logout_api_v1_admin_session_delete",
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {}
               }
             }
           }
@@ -1678,21 +1668,6 @@
   },
   "components": {
     "schemas": {
-      "AdminLogin": {
-        "properties": {
-          "key": {
-            "type": "string",
-            "maxLength": 512,
-            "minLength": 12,
-            "title": "Key"
-          }
-        },
-        "type": "object",
-        "required": [
-          "key"
-        ],
-        "title": "AdminLogin"
-      },
       "AdminPlaceOut": {
         "properties": {
           "id": {
@@ -1825,7 +1800,32 @@
                 "type": "null"
               }
             ],
-            "title": "Photo Url"
+            "title": "Photo Url",
+            "description": "Главное фото из опубликованного оформления конструктора"
+          },
+          "card_style": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Card Style",
+            "description": "Оформление карточки в ленте: bg, framed, items (см. /places/{id}/design)"
+          },
+          "title_accent": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title Accent"
           },
           "place_type": {
             "anyOf": [
@@ -2007,6 +2007,69 @@
         ],
         "title": "AnalyticsSummary"
       },
+      "BlockStyle": {
+        "properties": {
+          "bg": {
+            "type": "string",
+            "enum": [
+              "paper",
+              "white",
+              "mist",
+              "lagoon",
+              "sand",
+              "dawn",
+              "teal",
+              "pine",
+              "deep",
+              "night"
+            ],
+            "title": "Bg"
+          },
+          "text": {
+            "type": "string",
+            "enum": [
+              "auto",
+              "ink",
+              "graphite",
+              "teal",
+              "white",
+              "sand"
+            ],
+            "title": "Text"
+          },
+          "size": {
+            "type": "string",
+            "enum": [
+              "S",
+              "M",
+              "L"
+            ],
+            "title": "Size"
+          },
+          "width": {
+            "type": "string",
+            "enum": [
+              "full",
+              "half"
+            ],
+            "title": "Width"
+          },
+          "hidden": {
+            "type": "boolean",
+            "title": "Hidden",
+            "default": false
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "bg",
+          "text",
+          "size",
+          "width"
+        ],
+        "title": "BlockStyle"
+      },
       "Body_preview_api_v1_admin_imports_preview_post": {
         "properties": {
           "file": {
@@ -2021,6 +2084,84 @@
           "file"
         ],
         "title": "Body_preview_api_v1_admin_imports_preview_post"
+      },
+      "CardDesign": {
+        "properties": {
+          "preset": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "light",
+                  "teal",
+                  "sand",
+                  "night",
+                  "polaroid"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Preset"
+          },
+          "bg": {
+            "type": "string",
+            "enum": [
+              "paper",
+              "white",
+              "mist",
+              "lagoon",
+              "sand",
+              "dawn",
+              "teal",
+              "pine",
+              "deep",
+              "night"
+            ],
+            "title": "Bg"
+          },
+          "framed": {
+            "type": "boolean",
+            "title": "Framed",
+            "default": false
+          },
+          "items": {
+            "items": {
+              "type": "string",
+              "enum": [
+                "smile",
+                "grin",
+                "wave",
+                "coffee",
+                "art",
+                "music",
+                "love",
+                "fire",
+                "sunset",
+                "star",
+                "gem",
+                "trophy",
+                "new",
+                "seaview",
+                "cozy",
+                "kids",
+                "date",
+                "hit",
+                "editor"
+              ]
+            },
+            "type": "array",
+            "maxItems": 19,
+            "title": "Items"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "bg"
+        ],
+        "title": "CardDesign"
       },
       "CategoryOut": {
         "properties": {
@@ -2040,19 +2181,88 @@
         ],
         "title": "CategoryOut"
       },
-      "ConstructorWrite": {
+      "DesignSave": {
         "properties": {
-          "state": {
-            "additionalProperties": true,
-            "type": "object",
-            "title": "State"
+          "expected_revision": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Expected Revision",
+            "description": "0 — оформления ещё нет"
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Name"
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 10000,
+            "minLength": 1,
+            "title": "Description"
+          },
+          "address": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Address"
+          },
+          "title_accent": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 60.0,
+                "minimum": -1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title Accent"
+          },
+          "page": {
+            "$ref": "#/components/schemas/PageDesign"
+          },
+          "card": {
+            "$ref": "#/components/schemas/CardDesign"
+          },
+          "photos": {
+            "items": {
+              "$ref": "#/components/schemas/PhotoRef"
+            },
+            "type": "array",
+            "maxItems": 12,
+            "title": "Photos"
+          },
+          "main_photo_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Main Photo Id"
           }
         },
+        "additionalProperties": false,
         "type": "object",
         "required": [
-          "state"
+          "expected_revision",
+          "name",
+          "description",
+          "page",
+          "card"
         ],
-        "title": "ConstructorWrite"
+        "title": "DesignSave"
       },
       "DuplicateRow": {
         "properties": {
@@ -2081,6 +2291,155 @@
           "key"
         ],
         "title": "DuplicateRow"
+      },
+      "EditorPlace": {
+        "properties": {
+          "place": {
+            "$ref": "#/components/schemas/EditorPlaceFields"
+          },
+          "revision": {
+            "type": "integer",
+            "title": "Revision"
+          },
+          "design": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PublicDesign"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "place",
+          "revision",
+          "design"
+        ],
+        "title": "EditorPlace"
+      },
+      "EditorPlaceFields": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description"
+          },
+          "address": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Address"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "price_rub": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Price Rub"
+          },
+          "price_note": {
+            "type": "string",
+            "title": "Price Note"
+          },
+          "checked_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Checked At"
+          },
+          "categories": {
+            "items": {
+              "$ref": "#/components/schemas/CategoryOut"
+            },
+            "type": "array",
+            "title": "Categories"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "description",
+          "address",
+          "status",
+          "price_rub",
+          "price_note",
+          "checked_at",
+          "categories"
+        ],
+        "title": "EditorPlaceFields"
+      },
+      "EditorPlaceSummary": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "has_design": {
+            "type": "boolean",
+            "title": "Has Design"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "status",
+          "has_design",
+          "updated_at"
+        ],
+        "title": "EditorPlaceSummary"
       },
       "EventIn": {
         "properties": {
@@ -2573,6 +2932,135 @@
         ],
         "title": "KnownIn"
       },
+      "LoginIn": {
+        "properties": {
+          "username": {
+            "type": "string",
+            "maxLength": 60,
+            "minLength": 1,
+            "title": "Username"
+          },
+          "password": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Password"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "username",
+          "password"
+        ],
+        "title": "LoginIn"
+      },
+      "PageDesign": {
+        "properties": {
+          "preset": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "classic",
+                  "sea",
+                  "magazine",
+                  "night",
+                  "warm"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Preset"
+          },
+          "order": {
+            "items": {
+              "type": "string",
+              "enum": [
+                "gallery",
+                "title",
+                "price",
+                "address",
+                "description"
+              ]
+            },
+            "type": "array",
+            "maxItems": 5,
+            "minItems": 5,
+            "title": "Order"
+          },
+          "blocks": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/BlockStyle"
+            },
+            "propertyNames": {
+              "enum": [
+                "gallery",
+                "title",
+                "price",
+                "address",
+                "description"
+              ]
+            },
+            "type": "object",
+            "title": "Blocks"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "order",
+          "blocks"
+        ],
+        "title": "PageDesign"
+      },
+      "PhotoOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "url": {
+            "type": "string",
+            "title": "Url"
+          },
+          "alt": {
+            "type": "string",
+            "title": "Alt"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "url",
+          "alt"
+        ],
+        "title": "PhotoOut"
+      },
+      "PhotoRef": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "alt": {
+            "type": "string",
+            "maxLength": 140,
+            "title": "Alt",
+            "default": ""
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id"
+        ],
+        "title": "PhotoRef"
+      },
       "PlaceOut": {
         "properties": {
           "id": {
@@ -2705,7 +3193,32 @@
                 "type": "null"
               }
             ],
-            "title": "Photo Url"
+            "title": "Photo Url",
+            "description": "Главное фото из опубликованного оформления конструктора"
+          },
+          "card_style": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Card Style",
+            "description": "Оформление карточки в ленте: bg, framed, items (см. /places/{id}/design)"
+          },
+          "title_accent": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title Accent"
           },
           "place_type": {
             "anyOf": [
@@ -3040,6 +3553,72 @@
         ],
         "title": "ProfileOut"
       },
+      "PublicDesign": {
+        "properties": {
+          "place_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Place Id"
+          },
+          "revision": {
+            "type": "integer",
+            "title": "Revision"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          },
+          "title_accent": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title Accent"
+          },
+          "page": {
+            "$ref": "#/components/schemas/PageDesign"
+          },
+          "card": {
+            "$ref": "#/components/schemas/CardDesign"
+          },
+          "photos": {
+            "items": {
+              "$ref": "#/components/schemas/PhotoOut"
+            },
+            "type": "array",
+            "title": "Photos"
+          },
+          "main_photo_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Main Photo Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "place_id",
+          "revision",
+          "updated_at",
+          "title_accent",
+          "page",
+          "card",
+          "photos",
+          "main_photo_id"
+        ],
+        "title": "PublicDesign"
+      },
       "ReactionIn": {
         "properties": {
           "reaction": {
@@ -3235,6 +3814,25 @@
           "error"
         ],
         "title": "RowError"
+      },
+      "SessionOut": {
+        "properties": {
+          "username": {
+            "type": "string",
+            "title": "Username"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Expires At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "username",
+          "expires_at"
+        ],
+        "title": "SessionOut"
       },
       "StateOut": {
         "properties": {

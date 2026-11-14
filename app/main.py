@@ -13,6 +13,12 @@ from app.importing.middleware import ImportBodyLimitMiddleware
 from app.recommendations.routes import router as recommendations
 from app.analytics.routes import router as analytics
 from app.weather.routes import router as weather
+from app.editor.routes import (
+    public as editor_public,
+    auth as editor_auth,
+    editor as editor_api,
+)
+from app.web import router as web
 
 
 @asynccontextmanager
@@ -35,8 +41,20 @@ app.add_middleware(
     allow_methods=["GET", "POST", "PUT", "DELETE"],
     allow_headers=["Authorization", "Content-Type", "X-Admin-Key"],
 )
-for router in [catalog, admin, profiles, recommendations, imports, analytics, weather]:
+for router in [
+    catalog,
+    admin,
+    profiles,
+    recommendations,
+    imports,
+    analytics,
+    weather,
+    editor_public,
+    editor_auth,
+    editor_api,
+]:
     app.include_router(router, prefix="/api/v1")
+app.include_router(web)
 
 
 @app.get("/health/live", tags=["Состояние"], summary="Процесс приложения работает")
