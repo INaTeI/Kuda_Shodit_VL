@@ -26,5 +26,21 @@ test("weather shows actual response and handles errors", async ({ page }) => {
   ).toBeVisible();
 });
 
+test("the mobile weather control fits with a long wind direction", async ({ page }) => {
+  await page.route("**/api/v1/weather/current", (route) =>
+    route.fulfill({ json: { temperature_c: 8, wind_kph: 25, wind_dir: "NNW" } }),
+  );
+  for (const width of [320, 375, 390]) {
+    await page.setViewportSize({ width, height: 844 });
+    await page.goto("/");
+    const control = page.getByRole("button", { name: "Открыть прогноз на сегодня" });
+    await expect(control).toContainText("+8°");
+    const bounds = await control.boundingBox();
+    expect(bounds).not.toBeNull();
+    expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(width);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
+  }
+});
+
 
 

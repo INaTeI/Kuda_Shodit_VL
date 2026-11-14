@@ -3,7 +3,10 @@ error_page 404 410 /404.html;
 location = /404.html { internal; }
 location = /index.html { internal; }
 
-location = / { try_files /index.html =404; }
+location = / { proxy_pass $backend/web/home; }
+
+location = /assets/vdk-app.js { expires -1; }
+location = /assets/vdk-app.css { expires -1; }
 
 location = /robots.txt { proxy_pass $backend/robots.txt; }
 location = /sitemap.xml { proxy_pass $backend/sitemap.xml; }
@@ -14,7 +17,7 @@ location ~* "^/places/(?<place_id>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4
 }
 
 location ~* ^/catalog/?$ {
-    try_files /index.html =404;
+    proxy_pass $backend/web/catalog;
 }
 
 location ~* ^/(preferences|recommendations|discovery|taste)/?$ {

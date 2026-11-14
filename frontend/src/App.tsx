@@ -1,6 +1,6 @@
 import { useGeo } from "./geo";
 import { PlaceMap } from "./PlaceMap";
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type FormEvent } from "react";
 import {
   Link,
   NavLink,
@@ -43,15 +43,43 @@ const nav = [
   ["/recommendations", "Моя подборка"],
   ["/preferences", "Настройки"],
 ];
+const initialPath = window.location.pathname.replace(/\/$/, "") || "/";
+const publicOrigin = new URL(
+  document.querySelector<HTMLLinkElement>('link[rel="canonical"]')?.href ?? window.location.href,
+).origin;
+
+function setPageMetadata(title: string, description: string, path?: string) {
+  document.title = `${title} — Куда_Сходить_ВЛ`;
+  document.querySelector('meta[name="description"]')?.setAttribute("content", description);
+  const canonical = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+  if (!path) {
+    canonical?.remove();
+    return;
+  }
+  const link = canonical ?? document.createElement("link");
+  link.rel = "canonical";
+  link.href = new URL(path, publicOrigin).href;
+  if (!canonical) document.head.append(link);
+}
+
 export default function App() {
   const location = useLocation();
   const navigationType = useNavigationType();
   const guest = useGuest();
   useEffect(() => {
     if (navigationType !== "POP") window.scrollTo(0, 0);
-    document.title = `Куда_Сходить_ВЛ — ${nav.find(([p]) => location.pathname === p)?.[1] || "Один свайп до нового места"}`;
     document.querySelector<HTMLElement>("main")?.focus({ preventScroll: true });
   }, [location.pathname]);
+  const path = location.pathname.replace(/\/$/, "") || "/";
+  useLayoutEffect(() => {
+    if (path === "/") {
+      setPageMetadata("Куда сходить во Владивостоке", "Выбирайте места во Владивостоке по интересам и бюджету.", path);
+    } else if (path === "/catalog") {
+      setPageMetadata("Каталог мест Владивостока", "Места для прогулок, отдыха и встреч. В карточках — адреса, стоимость и советы для посещения.", path);
+    } else if (!(path === initialPath && document.querySelector('link[rel="canonical"]')?.getAttribute("href") === publicOrigin + path)) {
+      setPageMetadata(nav.find(([p]) => path === p)?.[1] ?? "Городской гид по Владивостоку", "");
+    }
+  }, [path]);
   return (
     <>
       <a className="skip" href="#main">
@@ -106,8 +134,8 @@ export default function App() {
       <footer className="wrap footer">
         <div className="footer-brand"><Link className="logo" to="/">
           <img className="brand-mark" src={logo} alt="" /><span className="brand-name">КСВЛ</span>
-        </Link><p>Места Владивостока для твоего свободного времени.</p></div>
-        <nav className="footer-links" aria-label="Навигация внизу страницы"><Link to="/catalog">Каталог мест</Link><Link to="/taste">Выбрать свайпами</Link><Link to="/recommendations">Моя подборка</Link><Link to="/preferences">Настройки</Link></nav>
+        </Link><p>Городской гид по Владивостоку. Выбирайте места по интересам, бюджету и расположению.</p></div>
+        <nav className="footer-links" aria-label="Навигация внизу страницы"><Link to="/catalog">Каталог мест</Link><Link to="/taste">Выбрать свайпами</Link><Link to="/recommendations">Моя подборка</Link><Link to="/preferences">Настройки</Link><a href="/sitemap.xml">Карта сайта (XML)</a></nav>
         <div className="footer-meta"><strong>Один свайп до нового места.</strong><span>Владивосток · 43°07′ с. ш.</span></div>
       </footer>
       <nav
@@ -133,7 +161,7 @@ function Home() {
         <div className="hero-copy">
           <div className="eyebrow">МЕСТА ВЛАДИВОСТОКА</div>
           <h1>
-            Один свайп до <em>нового места.</em>
+            Куда сходить <em>во Владивостоке</em>
           </h1>
           <p>
             Ищешь, где провести время во Владивостоке? Открой каталог или оценивай места карточками — твой выбор поможет составить подборку.
@@ -337,9 +365,9 @@ function Catalog() {
   return (
     <section className="wrap page">
       <div className="eyebrow">ГОРОД / КАТАЛОГ</div>
-      <h1>Все места Владивостока</h1>
+      <h1>Каталог мест Владивостока</h1>
       <p className="lede">
-        В каталоге собраны все опубликованные места. Выбери категорию или листай весь список; персональные рекомендации находятся в разделе «Моя подборка».
+        Места для прогулок, отдыха и встреч. В карточках — адреса, стоимость и советы для посещения.
       </p>
       <div className="desktop-filters panel">{form}</div>
       <button className="mobile-filter primary" onClick={() => setOpen(true)}>
@@ -849,6 +877,15 @@ function PlaceDetail() {
   const q = useLoad<Place>(`/places/${encodeURIComponent(id || "")}`);
   const design = useLoad<{ state: ConstructorState | null }>(`/constructor-state/${encodeURIComponent(id || "")}`);
   const p = q.data;
+  useEffect(() => {
+    if (p && p.id === id?.toLowerCase()) {
+      const description = p.description.trim().replace(/\s+/g, " ");
+      const summary = description.length > 160
+        ? description.slice(0, 159).replace(/\s+\S*$/, "") + "…"
+        : description;
+      setPageMetadata(p.name, summary, `/places/${p.id}`);
+    }
+  }, [id, p]);
   return (
     <section className="wrap page">
       <Link className="back-link" to={from || "/catalog"} onClick={(event) => { if (from) { event.preventDefault(); navigate(-1); } }}>
@@ -907,7 +944,11 @@ function PlaceDetail() {
                 <CostDetails place={p} />
                 <hr />
                 <h3>Где находится</h3>
-                <p>{p.address && !/^https?:\/\//i.test(p.address.trim()) ? p.address : "Адрес уточняется"}</p>
+                <p>
+                  {p.address && /^https?:\/\//i.test(p.address.trim()) ? (
+                    <a href={p.address.trim()} target="_blank" rel="noreferrer">Открыть на карте</a>
+                  ) : p.address || "Адрес уточняется"}
+                </p>
                 <PlaceMap key={p.id} latitude={p.latitude} longitude={p.longitude} name={p.name} />
                 <h3>Когда прийти</h3>
                 <p>{p.opening_hours || "Часы работы уточняются"}</p>

@@ -384,15 +384,9 @@ em {
   padding: 32px 0 40px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
   gap: 24px;
-}
-.footer p,
-.footer > span {
-  font-size: 11px;
-}
-.footer > span {
-  color: var(--muted);
 }
 .page {
   padding-top: 56px;
@@ -899,9 +893,6 @@ dialog::backdrop {
   .detail-layout h1 {
     font-size: 36px;
   }
-  .footer {
-    flex-wrap: wrap;
-  }
   .selection-toolbar {
     align-items: start;
     flex-direction: column;
@@ -1000,10 +991,6 @@ dialog::backdrop {
     margin-top: 56px;
     padding-bottom: 108px;
     gap: 12px;
-  }
-  .footer p {
-    width: 100%;
-    margin: 0;
   }
   .mobile-nav {
     display: flex;
@@ -1941,8 +1928,11 @@ main:focus-visible {
 .forecast-icon svg { display:block; }
 .forecast-astro { color:#80601d; font-size:12px; font-weight:600; margin:0 0 10px; }
 .header .weather-wind { max-width:220px; overflow:hidden; text-overflow:ellipsis; }
-@media(max-width:600px) { .header .weather-wind { max-width:110px; } .forecast-astro { grid-column:1 / -1; } }
-@media(max-width:600px){.header .weather-wind{white-space:normal;line-height:1.2;overflow-wrap:anywhere}}
+@media (max-width: 600px) {
+  .header .weather .weather-wind { display: none; }
+  .header .weather .weather-state { max-width: 9ch; white-space: normal; }
+  .forecast-astro { grid-column: 1 / -1; }
+}
 @media(max-width:600px){.header .logo{font-size:clamp(13px,3.6vw,18px);letter-spacing:-.5px}}
 .selection-count{margin:18px 0 4px;font-size:14px;color:var(--muted)}
 .selection-count strong{color:var(--ink);font-weight:650}

@@ -66,7 +66,7 @@ test.beforeEach(async ({ page }) => {
 });
 test("home explains both ways to choose a place", async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByRole("heading", { name: /Один свайп до нового места/ })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Куда сходить во Владивостоке" })).toBeVisible();
   await expect(page.locator(".hero").getByRole("link", { name: /Смотреть места/ })).toHaveAttribute("href", "/catalog");
   await page.getByRole("link", { name: "Начать выбирать места свайпами" }).click();
   await expect(page.getByRole("button", { name: "Начать выбор", exact: true })).toBeVisible();

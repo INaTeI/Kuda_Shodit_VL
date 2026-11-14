@@ -69,9 +69,18 @@ async def test_web_sitemap_and_place_status_follow_publication(client, admin, pl
     )
     assert updated.status_code == 200
     assert await sitemap_urls() == static_urls | {public_url}
-    published = await client.head(web_path)
+    published = await client.get(web_path)
     assert published.status_code == 200
-    assert published.headers["x-accel-redirect"] == "/index.html"
+    assert published.headers["content-type"].startswith("text/html")
+    assert f'<link rel="canonical" href="{public_url}">' in published.text
+    assert f'<h1>{place_payload["name"]}</h1>' in published.text
+    assert '<a href="/catalog">' in published.text
+    for route, canonical in (("/web/home", "/"), ("/web/catalog", "/catalog")):
+        page = await client.get(route)
+        assert page.status_code == 200
+        assert f'<link rel="canonical" href="{origin}{canonical}">' in page.text
+        assert f'<a href="/places/{place_id}">' in page.text
+    assert (await client.head(web_path)).status_code == 200
     assert (await client.delete(P + f"/admin/places/{place_id}", headers=admin)).status_code == 204
     assert await sitemap_urls() == static_urls
     assert (await client.get(web_path)).status_code == 410

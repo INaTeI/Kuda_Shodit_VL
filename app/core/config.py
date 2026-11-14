@@ -1,5 +1,5 @@
 from functools import lru_cache
-from pydantic import Field
+from pydantic import AnyHttpUrl, Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -10,11 +10,20 @@ class Settings(BaseSettings):
     cors_origins: list[str] = ["http://localhost:5173", "http://localhost:3000"]
     weatherapi_key: str = ""
     analytics_retention_days: int = Field(default=90, ge=1, le=365)
-    public_site_url: str = "http://localhost:8080"
     editor_username: str = "admin"
     editor_password_hash: str = ""
     editor_session_hours: int = Field(default=12, ge=1, le=168)
     editor_cookie_secure: bool = False
+    public_site_url: AnyHttpUrl = AnyHttpUrl("http://localhost:8080")
+
+    @field_validator("public_site_url")
+    @classmethod
+    def validate_public_site_url(cls, url: AnyHttpUrl) -> AnyHttpUrl:
+        if url.path not in (None, "/") or any(
+            value is not None for value in (url.username, url.password, url.query, url.fragment)
+        ):
+            raise ValueError("PUBLIC_SITE_URL must be an HTTP(S) origin")
+        return url
 
 
 @lru_cache
