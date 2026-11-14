@@ -19,6 +19,7 @@ from app.editor.routes import (
     editor as editor_api,
 )
 from app.web import router as web
+from app.constructor.routes import router as constructor, admin as constructor_admin
 
 
 @asynccontextmanager
@@ -52,6 +53,8 @@ for router in [
     editor_public,
     editor_auth,
     editor_api,
+    constructor,
+    constructor_admin,
 ]:
     app.include_router(router, prefix="/api/v1")
 app.include_router(web)
