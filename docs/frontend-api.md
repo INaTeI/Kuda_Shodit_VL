@@ -92,6 +92,7 @@ if (batch.status === "ready") {
 - Интересы/бюджет: `PUT /api/v1/me/preferences`.
 - Подбор: `POST /api/v1/recommendations`, для первого запроса достаточно `{"limit": 5}`.
 - Реакция: `PUT /api/v1/me/reactions/{place_id}`, тело `{"reaction": "like"}`.
+- Места с лайком: `GET /api/v1/me/liked-places?limit=12&offset=0` возвращает страницу опубликованных мест текущего профиля.
 - Другие значения: `dislike`, `neutral`. Свайп влево означает dislike, вправо — like.
 
 Qwen подключена на сервере за тем же методом рекомендаций; адрес модели

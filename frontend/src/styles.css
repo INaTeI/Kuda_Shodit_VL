@@ -554,6 +554,15 @@ input[type="checkbox"] {
 .preferences form > .panel {
   margin: 24px 0;
 }
+.preferences > .liked-places-panel {
+  margin: 32px 0;
+}
+.liked-places-panel > .grid {
+  margin-top: 20px;
+}
+.liked-places-count {
+  color: var(--muted);
+}
 .preferences .panel > label {
   margin: 20px 0;
 }

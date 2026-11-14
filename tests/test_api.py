@@ -175,6 +175,9 @@ async def test_reaction_known_undo_isolation(client, guest, place):
     reaction_url = P + "/me/reactions/" + place_id
     state = await client.put(reaction_url, json={"reaction": "like"}, headers=guest)
     assert state.json()["reaction"] == "like"
+    liked = await client.get(P + "/me/liked-places", headers=guest)
+    assert liked.json()["total"] == 1
+    assert liked.json()["items"][0]["id"] == place_id
     state = await client.put(P + "/me/known-places/" + place_id, json={"is_known": True}, headers=guest)
     assert state.json()["reaction"] == "like" and state.json()["is_known"]
     assert (await client.post(P + "/recommendations", json={}, headers=guest)).json()["items"] == []
@@ -185,6 +188,8 @@ async def test_reaction_known_undo_isolation(client, guest, place):
     assert (await client.get(P + "/me/place-states", headers=other)).json() == []
     assert (await client.post(P + "/recommendations", json={}, headers=other)).json()["total"] == 1
     assert (await client.delete(reaction_url, headers=guest)).status_code == 204
+    liked = await client.get(P + "/me/liked-places", headers=guest)
+    assert liked.json()["total"] == 0 and liked.json()["items"] == []
     states = (await client.get(P + "/me/place-states", headers=guest)).json()
     assert states[0]["reaction"] is None and states[0]["is_known"]
     await client.put(P + "/me/known-places/" + place_id, json={"is_known": False}, headers=guest)

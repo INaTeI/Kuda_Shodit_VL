@@ -1,10 +1,11 @@
 import secrets
-from fastapi import APIRouter, Response
-from sqlalchemy import case, select, update
+from fastapi import APIRouter, Query, Response
+from sqlalchemy import case, func, select, update
 from sqlalchemy.dialects.postgresql import insert
 from app.api.dependencies import DB, CurrentProfile, hash_token
 from app.catalog.service import get_public, validate_categories
-from app.db.models import Profile, PlaceState
+from app.db.models import Profile, Place, PlaceState
+from app.catalog.schemas import PlacePage
 from app.profiles.schemas import Preferences, ProfileOut, ProfileCreated, ReactionIn, KnownIn, StateOut
 from app.profiles.service import lock_profile
 from uuid import UUID
@@ -69,6 +70,34 @@ async def upsert_state(db, profile, place_id, values):
 @router.get("/me/place-states", response_model=list[StateOut], summary="Мои реакции и знакомые места")
 async def states(db: DB, profile: CurrentProfile):
     return (await db.scalars(select(PlaceState).where(PlaceState.profile_id == profile.id))).all()
+
+
+@router.get("/me/liked-places", response_model=PlacePage, summary="Мои места с лайком")
+async def liked_places(
+    db: DB,
+    profile: CurrentProfile,
+    limit: int = Query(default=12, ge=1, le=100),
+    offset: int = Query(default=0, ge=0),
+):
+    filters = (
+        PlaceState.profile_id == profile.id,
+        PlaceState.reaction == "like",
+        Place.status == "published",
+    )
+    total = await db.scalar(
+        select(func.count(Place.id)).join(PlaceState).where(*filters)
+    )
+    items = (
+        await db.scalars(
+            select(Place)
+            .join(PlaceState)
+            .where(*filters)
+            .order_by(Place.name.asc(), Place.id.asc())
+            .limit(limit)
+            .offset(offset)
+        )
+    ).all()
+    return {"items": items, "total": total or 0, "limit": limit, "offset": offset}
 
 
 @router.put("/me/reactions/{place_id}", response_model=StateOut, summary="Оценить место")

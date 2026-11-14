@@ -529,6 +529,14 @@ function Preferences() {
         </form>
       )}
       {g.profile && (
+        <section className="panel liked-places-panel" aria-labelledby="liked-places-title">
+          <span className="section-number">ТВОЙ СПИСОК</span>
+          <h2 id="liked-places-title">Понравившиеся места</h2>
+          <p>Все места, которым ты поставил лайк. Открой карточку, чтобы посмотреть подробности.</p>
+          <LikedPlaces token={g.token} />
+        </section>
+      )}
+      {g.profile && (
         <section className="panel">
           <h2>Начать подбор заново</h2>
           <p>
@@ -899,5 +907,36 @@ function HomeRecommendations() {
     <Empty title="Пока нет подходящих мест">
       <Link to="/preferences">Изменить предпочтения</Link>
     </Empty>
+  );
+}
+
+function LikedPlaces({ token }: { token: string }) {
+  const [offset, setOffset] = useState(0);
+  const q = useLoad<Page>(`/me/liked-places?limit=6&offset=${offset}`, undefined, token);
+  if (q.loading) return <Skeleton />;
+  if (q.error) return <ErrorBox message={q.error} retry={q.retry} />;
+  if (!q.data?.items.length) {
+    return (
+      <Empty title="Пока нет понравившихся мест">
+        <p>Ставь лайки в каталоге или во время выбора карточками — сохранённые места появятся здесь.</p>
+        <Link className="button primary" to="/catalog">Открыть каталог</Link>
+      </Empty>
+    );
+  }
+  const data = q.data;
+  return (
+    <>
+      <p className="liked-places-count" role="status">Сохранено мест: <strong>{data.total}</strong></p>
+      <div className="grid">
+        {data.items.map((place) => <Card key={place.id} place={place} />)}
+      </div>
+      {data.total > data.limit && (
+        <nav className="pagination" aria-label="Понравившиеся места">
+          <button disabled={offset === 0} onClick={() => setOffset(Math.max(0, offset - data.limit))}>← Назад</button>
+          <span>{Math.floor(offset / data.limit) + 1} / {Math.ceil(data.total / data.limit)}</span>
+          <button disabled={offset + data.limit >= data.total} onClick={() => setOffset(offset + data.limit)}>Далее →</button>
+        </nav>
+      )}
+    </>
   );
 }

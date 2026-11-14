@@ -250,6 +250,22 @@
               "default": 0,
               "title": "Offset"
             }
+          },
+          {
+            "name": "vdk_admin",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Vdk Admin"
+            }
           }
         ],
         "responses": {
@@ -284,6 +300,24 @@
         "security": [
           {
             "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "vdk_admin",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Vdk Admin"
+            }
           }
         ],
         "requestBody": {
@@ -342,6 +376,22 @@
               "format": "uuid",
               "title": "Place Id"
             }
+          },
+          {
+            "name": "vdk_admin",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Vdk Admin"
+            }
           }
         ],
         "requestBody": {
@@ -397,6 +447,22 @@
               "type": "string",
               "format": "uuid",
               "title": "Place Id"
+            }
+          },
+          {
+            "name": "vdk_admin",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Vdk Admin"
             }
           }
         ],
@@ -581,6 +647,67 @@
             "HTTPBearer": []
           }
         ]
+      }
+    },
+    "/api/v1/me/liked-places": {
+      "get": {
+        "tags": [
+          "Профиль и реакции"
+        ],
+        "summary": "Мои места с лайком",
+        "operationId": "liked_places_api_v1_me_liked_places_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 12,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlacePage"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/api/v1/me/reactions/{place_id}": {
@@ -838,15 +965,38 @@
         "summary": "Загрузить Excel и проверить без записи мест",
         "description": "Выберите .xlsx/.xlsm до 5 МБ. Места не создаются. Если status=ready, подтвердите загрузку по id в течение часа. Если status=invalid, смотрите report.errors и исправьте Excel.",
         "operationId": "preview_api_v1_admin_imports_preview_post",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "vdk_admin",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Vdk Admin"
+            }
+          }
+        ],
         "requestBody": {
+          "required": true,
           "content": {
             "multipart/form-data": {
               "schema": {
                 "$ref": "#/components/schemas/Body_preview_api_v1_admin_imports_preview_post"
               }
             }
-          },
-          "required": true
+          }
         },
         "responses": {
           "201": {
@@ -869,12 +1019,7 @@
               }
             }
           }
-        },
-        "security": [
-          {
-            "APIKeyHeader": []
-          }
-        ]
+        }
       }
     },
     "/api/v1/admin/imports/{import_id}": {
@@ -898,6 +1043,22 @@
               "type": "string",
               "format": "uuid",
               "title": "Import Id"
+            }
+          },
+          {
+            "name": "vdk_admin",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Vdk Admin"
             }
           }
         ],
@@ -947,6 +1108,22 @@
               "type": "string",
               "format": "uuid",
               "title": "Import Id"
+            }
+          },
+          {
+            "name": "vdk_admin",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Vdk Admin"
             }
           }
         ],
@@ -1044,6 +1221,22 @@
               "default": 7,
               "title": "Days"
             }
+          },
+          {
+            "name": "vdk_admin",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Vdk Admin"
+            }
           }
         ],
         "responses": {
@@ -1064,6 +1257,380 @@
                 "schema": {
                   "$ref": "#/components/schemas/HTTPValidationError"
                 }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/weather/current": {
+      "get": {
+        "tags": [
+          "Погода"
+        ],
+        "summary": "Текущая температура во Владивостоке",
+        "operationId": "current_weather_api_v1_weather_current_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WeatherOut"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/weather/forecast": {
+      "get": {
+        "tags": [
+          "Погода"
+        ],
+        "summary": "Прогноз на сегодня во Владивостоке",
+        "operationId": "today_forecast_api_v1_weather_forecast_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForecastOut"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/constructor-photo/{place_id}": {
+      "get": {
+        "tags": [
+          "Конструктор карточки"
+        ],
+        "summary": "Главное фото места из конструктора",
+        "operationId": "constructor_photo_api_v1_constructor_photo__place_id__get",
+        "parameters": [
+          {
+            "name": "place_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Place Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/constructor-state/{place_id}": {
+      "get": {
+        "tags": [
+          "Конструктор карточки"
+        ],
+        "summary": "Конструктор выбранного места",
+        "operationId": "get_place_constructor_api_v1_constructor_state__place_id__get",
+        "parameters": [
+          {
+            "name": "place_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Place Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Конструктор карточки"
+        ],
+        "summary": "Сохранить выбранное место",
+        "operationId": "put_place_constructor_api_v1_constructor_state__place_id__put",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "place_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Place Id"
+            }
+          },
+          {
+            "name": "vdk_admin",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Vdk Admin"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConstructorWrite"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/constructor-state": {
+      "get": {
+        "tags": [
+          "Конструктор карточки"
+        ],
+        "summary": "Общее состояние конструктора карточек",
+        "operationId": "get_constructor_state_api_v1_constructor_state_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Конструктор карточки"
+        ],
+        "summary": "Сохранить общее состояние конструктора карточек",
+        "operationId": "put_constructor_state_api_v1_constructor_state_put",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "vdk_admin",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Vdk Admin"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConstructorWrite"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/session": {
+      "post": {
+        "tags": [
+          "Администратор"
+        ],
+        "summary": "Войти администратором",
+        "operationId": "login_api_v1_admin_session_post",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdminLogin"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Администратор"
+        ],
+        "summary": "Проверить вход администратора",
+        "operationId": "session_status_api_v1_admin_session_get",
+        "parameters": [
+          {
+            "name": "vdk_admin",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Vdk Admin"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Администратор"
+        ],
+        "summary": "Выйти из панели администратора",
+        "operationId": "logout_api_v1_admin_session_delete",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
               }
             }
           }
@@ -1111,6 +1678,21 @@
   },
   "components": {
     "schemas": {
+      "AdminLogin": {
+        "properties": {
+          "key": {
+            "type": "string",
+            "maxLength": 512,
+            "minLength": 12,
+            "title": "Key"
+          }
+        },
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "title": "AdminLogin"
+      },
       "AdminPlaceOut": {
         "properties": {
           "id": {
@@ -1458,6 +2040,20 @@
         ],
         "title": "CategoryOut"
       },
+      "ConstructorWrite": {
+        "properties": {
+          "state": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "State"
+          }
+        },
+        "type": "object",
+        "required": [
+          "state"
+        ],
+        "title": "ConstructorWrite"
+      },
       "DuplicateRow": {
         "properties": {
           "row": {
@@ -1625,6 +2221,127 @@
           "reaction_revision"
         ],
         "title": "EventOut"
+      },
+      "ForecastOut": {
+        "properties": {
+          "date": {
+            "type": "string",
+            "title": "Date"
+          },
+          "sunrise": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sunrise"
+          },
+          "sunset": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sunset"
+          },
+          "periods": {
+            "items": {
+              "$ref": "#/components/schemas/ForecastPeriod"
+            },
+            "type": "array",
+            "title": "Periods"
+          },
+          "hours": {
+            "items": {
+              "$ref": "#/components/schemas/ForecastPeriod"
+            },
+            "type": "array",
+            "title": "Hours"
+          }
+        },
+        "type": "object",
+        "required": [
+          "date",
+          "periods"
+        ],
+        "title": "ForecastOut"
+      },
+      "ForecastPeriod": {
+        "properties": {
+          "period": {
+            "type": "string",
+            "title": "Period"
+          },
+          "time": {
+            "type": "string",
+            "title": "Time"
+          },
+          "temperature_c": {
+            "type": "number",
+            "title": "Temperature C"
+          },
+          "condition": {
+            "type": "string",
+            "title": "Condition"
+          },
+          "condition_code": {
+            "type": "integer",
+            "title": "Condition Code"
+          },
+          "is_day": {
+            "type": "boolean",
+            "title": "Is Day"
+          },
+          "wind_kph": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Wind Kph"
+          },
+          "chance_of_rain": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Chance Of Rain"
+          },
+          "chance_of_snow": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Chance Of Snow"
+          }
+        },
+        "type": "object",
+        "required": [
+          "period",
+          "time",
+          "temperature_c",
+          "condition",
+          "condition_code",
+          "is_day"
+        ],
+        "title": "ForecastPeriod"
       },
       "HTTPValidationError": {
         "properties": {
@@ -2587,6 +3304,51 @@
           "type"
         ],
         "title": "ValidationError"
+      },
+      "WeatherOut": {
+        "properties": {
+          "temperature_c": {
+            "type": "number",
+            "title": "Temperature C"
+          },
+          "observed_at": {
+            "type": "string",
+            "title": "Observed At"
+          },
+          "wind_kph": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Wind Kph"
+          },
+          "wind_dir": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Wind Dir"
+          },
+          "source": {
+            "type": "string",
+            "title": "Source",
+            "default": "WeatherAPI.com"
+          }
+        },
+        "type": "object",
+        "required": [
+          "temperature_c",
+          "observed_at"
+        ],
+        "title": "WeatherOut"
       }
     },
     "securitySchemes": {
