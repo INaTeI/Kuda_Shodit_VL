@@ -1,4 +1,20 @@
 import { test, expect } from "@playwright/test";
+
+test("footer links to the HTML sitemap and opens cookie settings", async ({ page }) => {
+  await page.route("**/api/v1/sitemap/places", (route) =>
+    route.fulfill({ json: [{ id: "test-place", name: "Тестовое место" }] }),
+  );
+  await page.context().addCookies([{
+    name: "vdk-cookie-choice", value: "necessary", url: "http://127.0.0.1:5173",
+  }]);
+  await page.goto("/");
+  const footer = page.getByRole("contentinfo");
+  await footer.getByRole("link", { name: "Карта сайта", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Карта сайта", level: 1 })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Тестовое место" })).toHaveAttribute("href", "/places/test-place");
+  await footer.getByRole("button", { name: "Настройки cookie", exact: true }).click();
+  await expect(page.getByRole("dialog", { name: "Настройки cookie" })).toBeVisible();
+});
 async function mock(page: import("@playwright/test").Page) {
   await page.route("**/api/v1/**", (r) =>
     r.fulfill({

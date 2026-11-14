@@ -10,6 +10,7 @@ location = /assets/vdk-app.css { expires -1; }
 
 location = /robots.txt { proxy_pass $backend/robots.txt; }
 location = /sitemap.xml { proxy_pass $backend/sitemap.xml; }
+location ~ ^/sitemap/?$ { proxy_pass $backend/web/sitemap; }
 
 location ~* "^/places/(?<place_id>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/?$" {
     proxy_pass $backend/web/places/$place_id;

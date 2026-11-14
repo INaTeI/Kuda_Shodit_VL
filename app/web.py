@@ -3,7 +3,7 @@ from uuid import UUID
 from xml.etree.ElementTree import Element, SubElement, tostring
 
 from fastapi import APIRouter, Request, Response
-from fastapi.responses import HTMLResponse, PlainTextResponse
+from fastapi.responses import HTMLResponse, JSONResponse, PlainTextResponse
 from sqlalchemy import select
 
 from app.api.dependencies import DB
@@ -42,7 +42,7 @@ def public_page(path: str, heading: str, description: str, content: str):
     <footer class="wrap footer">
       <p>Городской гид по Владивостоку</p>
       <nav aria-label="Навигация в подвале">
-        <a href="/catalog">Каталог мест</a> · <a href="/sitemap.xml">Карта сайта (XML)</a>
+        <a href="/catalog">Каталог мест</a> · <a href="/sitemap">Карта сайта</a>
       </nav>
     </footer>
   </div>
@@ -91,11 +91,49 @@ async def sitemap(db: DB):
         select(Place.id).where(Place.status == "published").order_by(Place.id)
     )
     root = Element("urlset", xmlns="http://www.sitemaps.org/schemas/sitemap/0.9")
-    for path in ("/", "/catalog", *(f"/places/{place_id}" for place_id in ids)):
+    for path in ("/", "/catalog", "/sitemap", *(f"/places/{place_id}" for place_id in ids)):
         SubElement(SubElement(root, "url"), "loc").text = origin + path
     return Response(
         tostring(root, encoding="utf-8", xml_declaration=True),
         media_type="application/xml",
+    )
+
+
+async def sitemap_places(db: DB):
+    rows = await db.execute(
+        select(Place.id, Place.name)
+        .where(Place.status == "published")
+        .order_by(Place.name, Place.id)
+    )
+    return [{"id": str(place_id), "name": name} for place_id, name in rows]
+
+
+@router.get("/api/v1/sitemap/places")
+async def sitemap_place_links(db: DB):
+    return JSONResponse(await sitemap_places(db))
+
+
+@router.api_route("/web/sitemap", methods=["GET", "HEAD"])
+async def sitemap_page(db: DB):
+    places = await sitemap_places(db)
+    items = "".join(
+        f'<li><a href="/places/{place["id"]}">{escape(place["name"])}</a></li>'
+        for place in places
+    )
+    content = (
+        '<h2>Разделы</h2><ul><li><a href="/">Главная</a></li>'
+        '<li><a href="/catalog">Каталог</a></li><li><a href="/taste">Свайпы</a></li>'
+        '<li><a href="/recommendations">Моя подборка</a></li>'
+        '<li><a href="/preferences">Настройки</a></li>'
+        '<li><a href="/discovery">Случайное место</a></li></ul>'
+        '<h2>Опубликованные места</h2>'
+    )
+    content += f"<ul>{items}</ul>" if items else "<p>В каталоге пока нет опубликованных мест.</p>"
+    content += '<p><a href="/sitemap.xml">Карта сайта в XML</a></p>'
+    return public_page(
+        "/sitemap", "Карта сайта",
+        "Разделы городского гида и все опубликованные места Владивостока.",
+        f'<div class="site-map">{content}</div>',
     )
 
 

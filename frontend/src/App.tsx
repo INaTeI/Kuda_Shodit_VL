@@ -1,4 +1,4 @@
-import { useGeo } from "./geo";
+import { CookieSettings, useGeo } from "./geo";
 import { PlaceMap } from "./PlaceMap";
 import { useEffect, useLayoutEffect, useRef, useState, type FormEvent } from "react";
 import {
@@ -76,6 +76,8 @@ export default function App() {
       setPageMetadata("Куда сходить во Владивостоке", "Выбирайте места во Владивостоке по интересам и бюджету.", path);
     } else if (path === "/catalog") {
       setPageMetadata("Каталог мест Владивостока", "Места для прогулок, отдыха и встреч. В карточках — адреса, стоимость и советы для посещения.", path);
+    } else if (path === "/sitemap") {
+      setPageMetadata("Карта сайта", "Разделы городского гида и все опубликованные места Владивостока.", path);
     } else if (!(path === initialPath && document.querySelector('link[rel="canonical"]')?.getAttribute("href") === publicOrigin + path)) {
       setPageMetadata(nav.find(([p]) => path === p)?.[1] ?? "Городской гид по Владивостоку", "");
     }
@@ -114,6 +116,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/catalog" element={<Catalog />} />
+          <Route path="/sitemap" element={<SiteMap />} />
           <Route path="/places/:id" element={<PlaceDetail />} />
           <Route path="/preferences" element={<Preferences />} />
           <Route path="/recommendations" element={<Selection />} />
@@ -135,7 +138,16 @@ export default function App() {
         <div className="footer-brand"><Link className="logo" to="/">
           <img className="brand-mark" src={logo} alt="" /><span className="brand-name">КСВЛ</span>
         </Link><p>Городской гид по Владивостоку. Выбирайте места по интересам, бюджету и расположению.</p></div>
-        <nav className="footer-links" aria-label="Навигация внизу страницы"><Link to="/catalog">Каталог мест</Link><Link to="/taste">Выбрать свайпами</Link><Link to="/recommendations">Моя подборка</Link><Link to="/preferences">Настройки</Link><a href="/sitemap.xml">Карта сайта (XML)</a></nav>
+        <div className="footer-links">
+          <nav aria-label="Навигация внизу страницы">
+            <Link to="/catalog">Каталог мест</Link>
+            <Link to="/taste">Выбрать свайпами</Link>
+            <Link to="/recommendations">Моя подборка</Link>
+            <Link to="/preferences">Настройки</Link>
+            <Link to="/sitemap">Карта сайта</Link>
+          </nav>
+          <CookieSettings />
+        </div>
         <div className="footer-meta"><strong>Один свайп до нового места.</strong><span>Владивосток · 43°07′ с. ш.</span></div>
       </footer>
       <nav
@@ -152,6 +164,28 @@ export default function App() {
     </>
   );
 }
+function SiteMap() {
+  const places = useLoad<{ id: string; name: string }[]>("/sitemap/places");
+  return (
+    <section className="wrap page site-map">
+      <h1>Карта сайта</h1>
+      <h2>Разделы</h2>
+      <ul>
+        <li><Link to="/">Главная</Link></li>
+        {nav.map(([path, label]) => <li key={path}><Link to={path}>{label}</Link></li>)}
+        <li><Link to="/discovery">Случайное место</Link></li>
+      </ul>
+      <h2>Опубликованные места</h2>
+      {places.loading && <p role="status">Загружаем места…</p>}
+      {places.error && <ErrorBox message={places.error} retry={places.retry} />}
+      {places.data && (places.data.length ? (
+        <ul>{places.data.map(({ id, name }) => <li key={id}><Link to={`/places/${id}`}>{name}</Link></li>)}</ul>
+      ) : <p>В каталоге пока нет опубликованных мест.</p>)}
+      <p><a href="/sitemap.xml">Карта сайта в XML</a></p>
+    </section>
+  );
+}
+
 function Home() {
   const guest = useGuest();
   const q = useLoad<Page>("/places?limit=3");

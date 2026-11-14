@@ -218,7 +218,7 @@ export function CookieNotice() {
 export function CookieSettings() {
   const geo = useGeo();
   return (
-    <div className="wrap cookie-settings">
+    <div className="cookie-settings">
       <button type="button" onClick={geo.openNotice}>
         Настройки cookie
       </button>

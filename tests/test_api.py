@@ -57,9 +57,10 @@ async def test_web_sitemap_and_place_status_follow_publication(client, admin, pl
     place_id = created.json()["id"]
     web_path = f"/web/places/{place_id}"
     public_url = f"{origin}/places/{place_id}"
-    static_urls = {f"{origin}/", f"{origin}/catalog"}
+    static_urls = {f"{origin}/", f"{origin}/catalog", f"{origin}/sitemap"}
 
     assert await sitemap_urls() == static_urls
+    assert (await client.get("/api/v1/sitemap/places")).json() == []
     assert (await client.get(web_path)).status_code == 404
     assert (await client.get(f"/web/places/{uuid4()}")).status_code == 404
     updated = await client.put(
@@ -75,14 +76,18 @@ async def test_web_sitemap_and_place_status_follow_publication(client, admin, pl
     assert f'<link rel="canonical" href="{public_url}">' in published.text
     assert f'<h1>{place_payload["name"]}</h1>' in published.text
     assert '<a href="/catalog">' in published.text
-    for route, canonical in (("/web/home", "/"), ("/web/catalog", "/catalog")):
+    for route, canonical in (("/web/home", "/"), ("/web/catalog", "/catalog"), ("/web/sitemap", "/sitemap")):
         page = await client.get(route)
         assert page.status_code == 200
         assert f'<link rel="canonical" href="{origin}{canonical}">' in page.text
         assert f'<a href="/places/{place_id}">' in page.text
+    assert (await client.get("/api/v1/sitemap/places")).json() == [
+        {"id": place_id, "name": place_payload["name"]}
+    ]
     assert (await client.head(web_path)).status_code == 200
     assert (await client.delete(P + f"/admin/places/{place_id}", headers=admin)).status_code == 204
     assert await sitemap_urls() == static_urls
+    assert f'href="/places/{place_id}"' not in (await client.get("/web/sitemap")).text
     assert (await client.get(web_path)).status_code == 410
 
 
