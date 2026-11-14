@@ -14,3 +14,4 @@ recommender/models/
 recommender/cache/
 recommender/.python/
 .DS_Store
+work/deploy-key
