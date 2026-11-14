@@ -65,7 +65,7 @@ test("live taste swipe, undo and persisted reactions", async ({
     await page.getByRole("button", { name: "Сохранить и перейти к карточкам" }).click();
     token = (await (await created).json()).access_token;
     await page.getByRole("button", { name: "Начать выбор →" }).click();
-    await expect(page.locator(".taste-card")).toBeVisible();
+    await expect(page.locator(".taste-card:not([inert])")).toBeVisible();
     const swipeReply = () =>
       page.waitForResponse(
         (r) =>
@@ -93,7 +93,7 @@ test("live taste swipe, undo and persisted reactions", async ({
     ).toMatchObject({ reaction: "dislike", reaction_revision: 3 });
     await page.getByRole("button", { name: "Закончить пока" }).click();
     await expect(page).toHaveURL(/\/recommendations$/);
-    await expect(page.locator(".taste-card")).toHaveCount(0);
+    await expect(page.locator(".taste-card:not([inert])")).toHaveCount(0);
   } finally {
     if (token)
       await request.delete("http://127.0.0.1:8000/api/v1/me", {

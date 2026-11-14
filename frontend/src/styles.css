@@ -2061,8 +2061,7 @@ main:focus-visible {
 }
 .dialog-head button { width: 48px; height: 48px; flex: 0 0 48px; padding: 0; display: grid; place-items: center; line-height: 1; }
 .chips button[aria-pressed="true"] { background: #16343b; border-color: #16343b; color: white; }
-.taste-under-card .taste-card-body { visibility: hidden; }
-.taste-card-body { max-height: none; overflow: visible; overflow-wrap: anywhere; }
+.taste-card-body { overflow-wrap: anywhere; }
 .hero-visual > .swipe-preview { min-height: 340px; border-radius: 120px 120px 24px 24px; background: #d8eae5; }
 .hero-visual .preview-stack { transform: translateY(-40px); }
 .hero-visual .preview-caption { top: 32%; }
@@ -2073,11 +2072,28 @@ main:focus-visible {
 .hero-label .hero-swipe-arrow { position: absolute; right: 25px; bottom: 26px; display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid var(--line); border-radius: 50%; font-size: 20px; line-height: 1; margin: 0; color: var(--ink); }
 .taste-page .taste-complete-card { height: auto; min-height: 420px; overflow: visible; }
 .taste-details .place-map { width: min(100%, 360px); }
-.taste-stack { height: auto; min-height: 460px; }
-.taste-card { height: auto; min-height: 460px; }
+.taste-stack { height: 540px; min-height: 0; }
+.taste-card { position: absolute; inset: 0; height: 100%; min-height: 0; box-sizing: border-box; }
+.taste-card-body { display: grid; grid-template-rows: 32px 87px 60px 44px 32px; gap: 6px; padding: 16px 20px; overflow: hidden; }
+.taste-card-body :is(.eyebrow,h2,p,small) { display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; margin: 0; }
+.taste-card-body :is(.eyebrow,small) { -webkit-line-clamp: 2; line-height: 16px; }
+.taste-card-body h2 { -webkit-line-clamp: 3; line-height: 29px; }
+.taste-card-body p { -webkit-line-clamp: 3; line-height: 20px; }
+.taste-card-price { min-width: 0; }
+.taste-card-price strong { font-size: 16px; }
+.taste-card-price button { flex-shrink: 0; }
 .cost-details p { margin: 6px 0; }
 @media (max-width: 600px) { .mobile-nav a { min-width: 0; flex: 1 1 0; } .hero-visual > .swipe-preview { min-height: 220px; } }
-@media (max-width: 600px) { .taste-stack { height: auto; min-height: 420px; } .taste-card { min-height: 420px; } }
+@media (max-width: 600px) { .taste-stack { height: 500px; min-height: 0; } .taste-card { min-height: 0; } }
+
+.recommendation-loading { min-height: 360px; padding: 40px 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; border: 1px solid var(--line); border-radius: 24px; background: #edf5f1; }
+.recommendation-loading svg { width: 180px; height: 140px; color: #167d8d; }
+.recommendation-loading h2 { max-width: 460px; margin: 16px 0 8px; font-size: clamp(24px, 4vw, 32px); }
+.recommendation-loading p { max-width: 400px; color: var(--muted); }
+.neural-links { opacity: .35; }
+.neural-node { fill: #167d8d; animation: neural-pulse 1.8s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+@keyframes neural-pulse { 0%,100% { opacity: .4; transform: scale(.8); } 50% { opacity: 1; transform: scale(1.2); } }
+@media (prefers-reduced-motion: reduce) { .neural-node { animation: none; opacity: 1; } }
 
 /* Clear entry points and a compact, informative end to the page. */
 .hero .hero-catalog-button { min-height: 72px; padding: 20px 36px; font-size: 18px; }

@@ -69,6 +69,19 @@ export function Empty({
     </div>
   );
 }
+export function RecommendationLoading() {
+  return <div className="recommendation-loading" role="status" aria-live="polite">
+    <svg viewBox="0 0 200 150" aria-hidden="true">
+      <g className="neural-links" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M25 35 85 25 160 35M25 35 90 75 160 35M25 115 90 75 160 115M25 115 85 125 160 115M85 25 160 115M85 125 160 35" />
+      </g>
+      {[ [25,35], [25,115], [85,25], [90,75], [85,125], [160,35], [160,115] ].map(([cx,cy], i) =>
+        <circle key={i} className="neural-node" cx={cx} cy={cy} r="8" style={{ animationDelay: `${i * 150}ms` }} />)}
+    </svg>
+    <h2>Модель подбирает места под тебя</h2>
+    <p>Учитываем твои интересы и оценки. Подборка появится здесь.</p>
+  </div>;
+}
 export function Skeleton() {
   return (
     <div className="grid" aria-label="Загружаем места" aria-busy="true">
@@ -81,9 +94,11 @@ export function Skeleton() {
 export function Artwork({
   place,
   hero = false,
+  eager = false,
 }: {
   place?: Place;
   hero?: boolean;
+  eager?: boolean;
 }) {
   const [failed, setFailed] = useState(false);
   const tone = place
@@ -95,7 +110,7 @@ export function Artwork({
         <img
           src={place.photo_url}
           alt={place.name}
-          loading={hero ? "eager" : "lazy"}
+          loading={hero || eager ? "eager" : "lazy"}
           onError={() => setFailed(true)}
         />
       ) : (

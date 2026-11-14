@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type PointerEvent } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type PointerEvent } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   api,
@@ -227,7 +227,16 @@ function TasteDeck() {
   guestRef.current = guest;
   const filtersKey = JSON.stringify(geo);
   const place = deck[index]?.place;
-  const nextPlace = deck[index + 1]?.place;
+  useEffect(() => {
+    const images = deck.slice(index, index + 4).flatMap(({ place }) => {
+      if (!place.photo_url) return [];
+      const image = new Image();
+      image.src = place.photo_url;
+      void image.decode().catch(() => undefined);
+      return [image];
+    });
+    return () => { images.forEach((image) => { image.onload = null; }); };
+  }, [deck, index]);
   const finished = !loading && deck.length > 0 && index >= deck.length;
   useEffect(() => {
     mounted.current = true;
@@ -320,7 +329,7 @@ function TasteDeck() {
       document.removeEventListener("visibilitychange", observe);
     };
   }, [place?.id, runId]);
-  useEffect(() => {
+  useLayoutEffect(() => {
     exitAnimation.current?.cancel();
     exitAnimation.current = null;
     resetDrag();
@@ -395,9 +404,6 @@ function TasteDeck() {
         { index, eventId: event.event_id, reaction },
       ]);
       swipeAttempt.current = null;
-      exitAnimation.current?.cancel();
-      exitAnimation.current = null;
-      resetDrag();
       setIndex((n) => n + 1);
       setExit("");
     } catch (e) {
@@ -555,35 +561,15 @@ function TasteDeck() {
           </div>
           <div className="taste-arena">
             <div className="taste-stack">
-              <div className="taste-under-card" aria-hidden="true" inert>
-                {nextPlace ? (
-                  <>
-                    <Artwork key={nextPlace.id} place={nextPlace} />
-                    <div className="taste-card-body">
-                      <div className="eyebrow">
-                        {nextPlace.categories.map((c) => c.name).join(" · ")}
-                      </div>
-                      <h2>{nextPlace.name}</h2>
-                      <p>{nextPlace.activity}</p>
-                      <div className="taste-card-price">
-                        <strong>{price(nextPlace)}</strong>
-                        <button tabIndex={-1}>О месте ↗</button>
-                      </div>
-                      <small>{nextPlace.price_note}</small>
-                    </div>
-                  </>
-                ) : (
-                  <div className="taste-complete-preview">
-                    <div className="finish-symbol">✓</div>
-                    <h2>Все карточки просмотрены</h2>
-                    <p>Твой выбор — начало подборки.</p>
-                  </div>
-                )}
-              </div>
+              {deck.slice(index, index + 3).map(({ place }, depth) => (
               <article
-                ref={card}
-                className={`taste-card ${exit ? `taste-exit-${exit}` : ""}`}
-                tabIndex={0}
+                key={place.id}
+                ref={depth === 0 ? card : undefined}
+                className={`taste-card ${depth === 0 && exit ? `taste-exit-${exit}` : ""}`}
+                style={{ zIndex: 3 - depth }}
+                inert={depth > 0}
+                aria-hidden={depth > 0}
+                tabIndex={depth === 0 ? 0 : -1}
                 aria-label={`Карточка места: ${place.name}. Влево — не подходит, вправо — нравится.`}
                 aria-busy={busy}
                 onKeyDown={(event) => {
@@ -625,7 +611,7 @@ function TasteDeck() {
                   else resetDrag();
                 }}
               >
-                <Artwork key={place.id} place={place} />
+                <Artwork place={place} eager />
                 <span className="taste-stamp stamp-no" aria-hidden="true">
                   НЕ ПОДХОДИТ
                 </span>
@@ -663,6 +649,7 @@ function TasteDeck() {
                   <small>{place.price_note}</small>
                 </div>
               </article>
+              ))}
             </div>
             <div className="taste-reaction-dock" aria-label="Оценить место">
               <button

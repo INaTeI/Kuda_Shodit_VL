@@ -29,6 +29,7 @@ import {
   ErrorBox,
   Reactions,
   Skeleton,
+  RecommendationLoading,
   useLoad,
 } from "./components";
 import { useGuest } from "./state";
@@ -775,7 +776,7 @@ function SelectionResults({ discovery }: { discovery: boolean }) {
       <p role="status">{message}</p>
       {error && <ErrorBox message={error} />}
       {q.loading ? (
-        <Skeleton />
+        discovery ? <Skeleton /> : <RecommendationLoading />
       ) : q.error ? (
         <ErrorBox message={q.error} retry={q.retry} />
       ) : q.data?.items.length ? (

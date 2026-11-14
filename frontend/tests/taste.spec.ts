@@ -109,6 +109,46 @@ async function begin(page: Page) {
   await expect(modal).toBeVisible();
   return modal;
 }
+for (const width of [390, 1280]) test(`prepared deck keeps nodes and dimensions ${width}`, async ({ page }) => {
+  const { places } = await mock(page, { count: 3 });
+  places[1].name = 'Очень длинное название места '.repeat(12);
+  places[1].activity = 'Подробное описание занятия '.repeat(30);
+  for (const place of places) (place as any).photo_url = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"><rect width="40" height="40" fill="teal"/></svg>');
+  await page.setViewportSize({ width, height: 900 });
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await page.goto('/taste');
+  await page.getByRole('button', { name: 'Начать выбор →' }).click();
+  await expect(page.locator('.taste-card')).toHaveCount(3);
+  const next = await page.locator('.taste-card').nth(1).elementHandle();
+  await expect(page.locator('.taste-card').nth(1).locator('h2')).toHaveText(places[1].name.trim());
+  await expect.poll(() => page.locator('.taste-card img').evaluateAll((images) => images.every((image) => (image as HTMLImageElement).complete))).toBe(true);
+  const before = await page.locator('.taste-card').first().boundingBox();
+  await page.getByRole('button', { name: 'Нравится — вправо' }).click();
+  await expect(page.getByText('Карточка 2 из 3')).toBeVisible();
+  expect(await next!.evaluate((node) => node === document.querySelector('.taste-card'))).toBe(true);
+  const after = await page.locator('.taste-card').first().boundingBox();
+  expect(after!.height).toBe(before!.height);
+  expect(after!.width).toBe(before!.width);
+  await page.screenshot({ path: `test-results/prepared-deck-${width}.png` });
+  if (width > 600) {
+    await page.getByRole('button', { name: '↶ Отменить', exact: true }).click();
+    await expect(page.getByText('Карточка 1 из 3')).toBeVisible();
+  }
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+});
+test('recommendation loading shows neural animation only while request is pending', async ({ page }) => {
+  await mock(page);
+  let release!: () => void;
+  const pending = new Promise<void>((resolve) => { release = resolve; });
+  await page.route('**/api/v1/recommendations', async (route) => {
+    await pending;
+    await route.fulfill({ json: { recommendation_id: 'test', items: [], total: 0 } });
+  });
+  await page.goto('/recommendations');
+  await expect(page.getByText('Модель подбирает места под тебя')).toBeVisible();
+  release();
+  await expect(page.locator('.recommendation-loading')).toBeHidden();
+});
 test("first questionnaire offers optional setup; returning profile is not prompted", async ({
   page,
 }) => {
@@ -143,7 +183,7 @@ test("keyboard directions, view ordering, undo and completion of 12 cards", asyn
   const modal = await begin(page);
   await modal.getByRole("button", { name: "Начать выбор →" }).click();
   await expect(page).toHaveURL(/\/taste$/);
-  const card = page.locator(".taste-card");
+  const card = page.locator(".taste-card:not([inert])");
   await card.focus();
   await page.keyboard.press("ArrowLeft");
   await expect(page.getByText("Карточка 2 из 12")).toBeVisible();
@@ -211,7 +251,7 @@ for (const width of [360, 390, 768, 1280])
     const { events } = await mock(page, { count: 3 });
     await page.goto("/taste");
     await page.getByRole("button", { name: "Начать выбор →" }).click();
-    const card = page.locator(".taste-card");
+    const card = page.locator(".taste-card:not([inert])");
     await expect(card).toBeVisible();
     expect(
       await page.evaluate(
@@ -273,7 +313,7 @@ test("phone touch swipe right likes the place; vertical scrolling does not react
   const { events } = await mock(page, { count: 3 });
   await page.goto("/taste");
   await page.getByRole("button", { name: "Начать выбор →" }).click();
-  const card = page.locator(".taste-card");
+  const card = page.locator(".taste-card:not([inert])");
   await expect(card).toBeVisible();
   await card.scrollIntoViewIfNeeded();
   const box = (await card.boundingBox())!;
@@ -325,14 +365,14 @@ test("invitation appears on every reentry and reload before cards are requested"
     await expect(
       page.getByRole("dialog", { name: "Выбирай места карточками" }),
     ).toBeVisible();
-    await expect(page.locator(".taste-card")).toHaveCount(0);
+    await expect(page.locator(".taste-card:not([inert])")).toHaveCount(0);
     await page.getByRole("button", { name: "Начать выбор →" }).click();
-    await expect(page.locator(".taste-card")).toBeVisible();
+    await expect(page.locator(".taste-card:not([inert])")).toBeVisible();
     await page.getByRole("button", { name: "Закончить пока" }).click();
   }
   await page.getByRole("link", { name: "Выбрать ещё карточки ♡" }).click();
   await page.getByRole("button", { name: "Начать выбор →" }).click();
-  await expect(page.locator(".taste-card")).toBeVisible();
+  await expect(page.locator(".taste-card:not([inert])")).toBeVisible();
   await page.reload();
   await expect(
     page.getByRole("dialog", { name: "Выбирай места карточками" }),
@@ -386,7 +426,7 @@ test("drag release flies from the released position while server reply is delaye
   });
   await page.goto("/taste");
   await page.getByRole("button", { name: "Начать выбор →" }).click();
-  const card = page.locator(".taste-card");
+  const card = page.locator(".taste-card:not([inert])");
   await expect(card).toBeVisible();
   await card.scrollIntoViewIfNeeded();
   const box = (await card.boundingBox())!;
@@ -460,7 +500,7 @@ test("next card is underneath without a view event, last card reveals green chec
   const { events, places } = await mock(page, { count: 2 });
   await page.goto("/taste");
   await page.getByRole("button", { name: "Начать выбор →" }).click();
-  const active = page.locator(".taste-card");
+  const active = page.locator(".taste-card:not([inert])");
   const underneath = page.locator(".taste-under-card");
   await expect(underneath).toHaveAttribute("inert", "");
   await expect(underneath).toContainText(places[1].name);
